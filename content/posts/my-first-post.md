@@ -1,5 +1,5 @@
 ---
-title: "My First Post"
+title: "The sort of post I could make"
 author: ""
 type: ""
 date: 2024-10-21T21:43:52-07:00

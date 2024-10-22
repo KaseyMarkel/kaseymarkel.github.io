@@ -1,4 +1,4 @@
-baseurl = "https://username.github.io"
+baseurl = "https://kaseymarkel.github.io"
 DefaultContentLanguage = "en"
 title = "Beautiful Hugo"
 # Using theme as git submodule 
@@ -55,7 +55,6 @@ pygmentsCodefencesGuessSyntax = true
 [Params.author]
   # Set only your "username" for default hosts and full URLs otherwise (e.g., "https://MyGitLab.org/username")
   name = "Kasey Markel"
-  website = "yourwebsite.com"
   email = "youremail@domain.com"
   github = "kaseymarkel"
   bandcamp = "https://savagecitizen.bandcamp.com"
