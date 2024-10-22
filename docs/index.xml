@@ -2,19 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Beautiful Hugo</title>
-    <link>https://kaseymarkel.github.io/</link>
+    <link>http://localhost:65318/</link>
     <description>Recent content on Beautiful Hugo</description>
     <generator>Hugo</generator>
     <language>en</language>
-    <managingEditor>youremail@domain.com (Kasey Markel)</managingEditor>
-    <webMaster>youremail@domain.com (Kasey Markel)</webMaster>
     <lastBuildDate>Mon, 21 Oct 2024 21:43:52 -0700</lastBuildDate>
-    <atom:link href="https://kaseymarkel.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://localhost:65318/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>The sort of post I could make</title>
-      <link>https://kaseymarkel.github.io/posts/my-first-post/</link>
-      <pubDate>Mon, 21 Oct 2024 21:43:52 -0700</pubDate><author>youremail@domain.com (Kasey Markel)</author>
-      <guid>https://kaseymarkel.github.io/posts/my-first-post/</guid>
+      <link>http://localhost:65318/posts/my-first-post/</link>
+      <pubDate>Mon, 21 Oct 2024 21:43:52 -0700</pubDate>
+      <guid>http://localhost:65318/posts/my-first-post/</guid>
       <description>&lt;p&gt;This is trying to &lt;strong&gt;type bold&lt;/strong&gt; things and also have some &lt;em&gt;italics&lt;/em&gt;&lt;/p&gt;</description>
     </item>
   </channel>

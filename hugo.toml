@@ -20,17 +20,17 @@ pygmentsCodefencesGuessSyntax = true
     # id = "XXX"
 
 [Params]
-#  homeTitle = "Beautiful Hugo Theme" # Set a different text for the header on the home page
-  subtitle = "Build a beautiful and simple website in minutes"
+  homeTitle = "Kasey Markel" # Set a different text for the header on the home page
+  subtitle = "Plant Biologist"
   mainSections = ["post","posts"]
   logo = "img/avatar-icon.png" # Expecting square dimensions
   favicon = "img/favicon.ico"
   dateFormat = "January 2, 2006"
   commit = false
-  rss = true
+  rss = false
   comments = true
-  readingTime = true
-  wordCount = true
+  readingTime = false
+  wordCount = false
   useHLJS = true
   socialShare = true
   delayDisqus = true
@@ -40,9 +40,9 @@ pygmentsCodefencesGuessSyntax = true
 #  gcse = "012345678901234567890:abcdefghijk" # Get your code from google.com/cse. Make sure to go to "Look and Feel" and change Layout to "Full Width" and Theme to "Classic"
 #  disclaimerText = "The opinions expressed herein are my own personal opinions and do not represent my employer’s view in any way."
 
-#[[Params.bigimg]]
-#  src = "img/triangle.jpg"
-#  desc = "Triangle"
+[[Params.bigimg]]
+ src = "img/path.jpg"
+ desc = "nice road"
 #[[Params.bigimg]]
 #  src = "img/sphere.jpg"
 #  desc = "Sphere"
@@ -55,7 +55,7 @@ pygmentsCodefencesGuessSyntax = true
 [Params.author]
   # Set only your "username" for default hosts and full URLs otherwise (e.g., "https://MyGitLab.org/username")
   name = "Kasey Markel"
-  email = "youremail@domain.com"
+  # email = "youremail@domain.com"
   github = "kaseymarkel"
   bandcamp = "https://savagecitizen.bandcamp.com"
   500px = "kaseymarkel"
