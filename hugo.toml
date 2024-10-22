@@ -3,6 +3,7 @@ DefaultContentLanguage = "en"
 title = "Beautiful Hugo"
 # Using theme as git submodule 
 theme = "beautifulhugo"
+publishDir = "docs"
 # Or when using theme as hugo module
 # theme = "github.com/halogenica/beautifulhugo"
 pygmentsStyle = "trac"
