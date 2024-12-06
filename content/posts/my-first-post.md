@@ -9,3 +9,6 @@ tags: []
 ---
 
 This is trying to **type bold** things and also have some *italics*
+
+And now we should try actually adding some content - it's pretty cool to have content, and shos that I actually know how to run this thing.
+
