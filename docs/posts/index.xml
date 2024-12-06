@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Posts on </title>
-    <link>https://kaseymarkel.github.io/posts/</link>
+    <link>http://localhost:1313/posts/</link>
     <description>Recent content in Posts on </description>
     <generator>Hugo</generator>
     <language>en</language>
     <lastBuildDate>Mon, 21 Oct 2024 21:43:52 -0700</lastBuildDate>
-    <atom:link href="https://kaseymarkel.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://localhost:1313/posts/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>About me</title>
-      <link>https://kaseymarkel.github.io/posts/my-first-post/</link>
+      <link>http://localhost:1313/posts/my-first-post/</link>
       <pubDate>Mon, 21 Oct 2024 21:43:52 -0700</pubDate>
-      <guid>https://kaseymarkel.github.io/posts/my-first-post/</guid>
+      <guid>http://localhost:1313/posts/my-first-post/</guid>
       <description>&lt;p&gt;Hello! I am a plant biotechnologist, humanist, and optimist - the second two lead me to the first. I am deeply inspired by &lt;a href=&#34;https://www.effectivealtruism.org/&#34;&gt;effective altruism&lt;/a&gt;, which aims to use engineering-style thinking to do as much good as possible. This moral inclination lead me to choose the field of plant biotechnology as a lever for improving global human welfare, because plants constitute the vast majority of the human food supply and nutritional deficiencies have always been among humanity&amp;rsquo;s top problems (but might not be in another few decades!)&lt;/p&gt;</description>
     </item>
   </channel>

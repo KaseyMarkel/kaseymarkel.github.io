@@ -2,23 +2,23 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Pages on </title>
-    <link>https://kaseymarkel.github.io/page/</link>
+    <link>http://localhost:1313/page/</link>
     <description>Recent content in Pages on </description>
     <generator>Hugo</generator>
     <language>en</language>
-    <atom:link href="https://kaseymarkel.github.io/page/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://localhost:1313/page/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title></title>
-      <link>https://kaseymarkel.github.io/page/academia/</link>
+      <link>http://localhost:1313/page/academia/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://kaseymarkel.github.io/page/academia/</guid>
+      <guid>http://localhost:1313/page/academia/</guid>
       <description>&lt;p&gt;The most consistently-updated places to find all of my academic papers are my  &lt;a href=&#34;https://orcid.org/0000-0002-8285-3888&#34;&gt;ORCID&lt;/a&gt; or &lt;a href=&#34;https://scholar.google.com/citations?user=yLxNBqcAAAAJ&amp;amp;hl=en&#34;&gt;Google Scholar&lt;/a&gt; pages.&lt;/p&gt;&#xA;&lt;p&gt;Neither of those pages give me the option to explain the narrative arc of my academic career, nor to provide commentary or summaries of my favorite research projects - that&amp;rsquo;s what this page is for.&lt;/p&gt;&#xA;&lt;h3 id=&#34;narrative-career-arc&#34;&gt;Narrative career arc&lt;/h3&gt;&#xA;&lt;p&gt;I did short stints in the &lt;a href=&#34;https://umiamihealth.org/en/sylvester-comprehensive-cancer-center/research/labs/daunert-lab/research&#34;&gt;Daunert&lt;/a&gt; and &lt;a href=&#34;https://scholars.uow.edu.au/antoine-van-oijen&#34;&gt;Van Oijen&lt;/a&gt; labs as an undergraduate, but spent last couple of years of my undergraduate research career working with the late &lt;a href=&#34;https://news.miami.edu/as/stories/2017/05/remembering-jeffrey-s-prince.html&#34;&gt;Jeff Prince&lt;/a&gt;, using scanning and transmission electron microscopy to answer a variety of biological questions.&lt;/p&gt;</description>
     </item>
     <item>
       <title></title>
-      <link>https://kaseymarkel.github.io/page/cv/</link>
+      <link>http://localhost:1313/page/cv/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://kaseymarkel.github.io/page/cv/</guid>
+      <guid>http://localhost:1313/page/cv/</guid>
       <description>&lt;p&gt;asdf&#xA;asdf&lt;/p&gt;</description>
     </item>
   </channel>
