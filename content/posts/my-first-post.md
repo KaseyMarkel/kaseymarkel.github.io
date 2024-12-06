@@ -1,5 +1,5 @@
 ---
-title: "The sort of post I could make"
+title: "About me"
 author: ""
 type: ""
 date: 2024-10-21T21:43:52-07:00
@@ -8,10 +8,6 @@ image: ""
 tags: []
 ---
 
-This is trying to **type bold** things and also have some *italics*
+Hello! I am a plant biotechnologist, humanist, and optimist - the second two lead me to the first. I am deeply inspired by [effective altruism](https://www.effectivealtruism.org/), which aims to use engineering-style thinking to do as much good as possible. This moral inclination lead me to choose the field of plant biotechnology as a lever for improving global human welfare, because plants constitute the vast majority of the human food supply and nutritional deficiencies have always been among humanity's top problems (but might not be in another few decades!)
 
-I am a plant biotechnologist by training, and like doing cool science.
-
-
-And now we should try actually adding some content - it's pretty cool to have content, and shos that I actually know how to run this thing.
-
+Outside of my career, I enjoy backpacking, rock climbing, paragliding, wingfoiling, and making things.

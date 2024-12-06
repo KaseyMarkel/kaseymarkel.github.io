@@ -1,0 +1,13 @@
+## Rock climbing
+/Users/kasey/personal_website/public/img/sphere.jpg
+
+asdf trying method two
+
+![Cool pic of sphere](themes/beautifulhugo/static/img/sphere.jpg)
+
+and direct HTML format
+<img src="themes/beautifulhugo/static/img/sphere.jpg" alt="Beautiful sunset" width="600">
+
+
+And text description of what I'm doing here
+## Paragliding

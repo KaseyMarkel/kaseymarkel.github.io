@@ -72,7 +72,12 @@ pygmentsCodefencesGuessSyntax = true
     weight = 3
 
 [[menu.main]]
+    name = "Recreation"
+    url = "page/recreation"
+    weight = 3
+
+[[menu.main]]
     name = "CV"
-    url = "page/CV"
+    url = "https://drive.google.com/file/d/1F-yNnG4zWyzE1ymb0lh30Yq95Hih4JHA/view?usp=sharing"
     weight = 3
 
