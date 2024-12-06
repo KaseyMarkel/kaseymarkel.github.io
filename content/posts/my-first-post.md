@@ -9,3 +9,6 @@ tags: []
 ---
 
 This is trying to **type bold** things and also have some *italics*
+
+I am a plant biotechnologist by training, and like doing cool science.
+
