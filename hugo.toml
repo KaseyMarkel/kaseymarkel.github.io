@@ -67,6 +67,11 @@ pygmentsCodefencesGuessSyntax = true
     weight = 1
 
 [[menu.main]]
+    name = "My academic career"
+    url = "page/academia/"
+    weight = 3
+
+[[menu.main]]
     name = "CV"
     url = "page/CV/"
     weight = 3
