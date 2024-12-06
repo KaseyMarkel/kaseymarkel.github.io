@@ -1,19 +1,33 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Beautiful Hugo</title>
+    <title></title>
     <link>https://kaseymarkel.github.io/</link>
-    <description>Recent content on Beautiful Hugo</description>
+    <description>Recent content on </description>
     <generator>Hugo</generator>
     <language>en</language>
     <lastBuildDate>Mon, 21 Oct 2024 21:43:52 -0700</lastBuildDate>
     <atom:link href="https://kaseymarkel.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>A second blog post</title>
+      <link>https://kaseymarkel.github.io/posts/my-second-post/</link>
+      <pubDate>Mon, 21 Oct 2024 21:43:52 -0700</pubDate>
+      <guid>https://kaseymarkel.github.io/posts/my-second-post/</guid>
+      <description>&lt;p&gt;This is trying to &lt;strong&gt;type bold&lt;/strong&gt; things and also have some &lt;em&gt;italics&lt;/em&gt;&lt;/p&gt;&#xA;&lt;p&gt;I am a plant biotechnologist by training, and like doing cool science.&lt;/p&gt;&#xA;&lt;p&gt;And now we should try actually adding some content - it&amp;rsquo;s pretty cool to have content, and shos that I actually know how to run this thing.&lt;/p&gt;</description>
+    </item>
     <item>
       <title>The sort of post I could make</title>
       <link>https://kaseymarkel.github.io/posts/my-first-post/</link>
       <pubDate>Mon, 21 Oct 2024 21:43:52 -0700</pubDate>
       <guid>https://kaseymarkel.github.io/posts/my-first-post/</guid>
       <description>&lt;p&gt;This is trying to &lt;strong&gt;type bold&lt;/strong&gt; things and also have some &lt;em&gt;italics&lt;/em&gt;&lt;/p&gt;&#xA;&lt;p&gt;I am a plant biotechnologist by training, and like doing cool science.&lt;/p&gt;&#xA;&lt;p&gt;And now we should try actually adding some content - it&amp;rsquo;s pretty cool to have content, and shos that I actually know how to run this thing.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title></title>
+      <link>https://kaseymarkel.github.io/page/academia/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://kaseymarkel.github.io/page/academia/</guid>
+      <description>&lt;p&gt;The most consistently-updated places to find all of my academic papers are my  &lt;a href=&#34;https://orcid.org/0000-0002-8285-3888&#34;&gt;ORCID&lt;/a&gt; or &lt;a href=&#34;https://scholar.google.com/citations?user=yLxNBqcAAAAJ&amp;amp;hl=en&#34;&gt;Google Scholar&lt;/a&gt; pages.&lt;/p&gt;&#xA;&lt;p&gt;Unfortunately, neither of those pages give me the option to provide commentary or summaries, of my favorite research projects, so I&amp;rsquo;ll do so here.&lt;/p&gt;&#xA;&lt;h3 id=&#34;gall-paper&#34;&gt;Gall paper&lt;/h3&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://academic.oup.com/plphys/article/195/1/698/7571489&#34;&gt;My gall paper&lt;/a&gt; was the first first-author paper of my PhD to be published, and is probably my most widely-ranging paper with respect to experimental techniques.&lt;/p&gt;</description>
     </item>
   </channel>
 </rss>

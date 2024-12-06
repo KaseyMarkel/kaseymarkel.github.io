@@ -1,13 +1,20 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Posts on Beautiful Hugo</title>
+    <title>Posts on </title>
     <link>https://kaseymarkel.github.io/posts/</link>
-    <description>Recent content in Posts on Beautiful Hugo</description>
+    <description>Recent content in Posts on </description>
     <generator>Hugo</generator>
     <language>en</language>
     <lastBuildDate>Mon, 21 Oct 2024 21:43:52 -0700</lastBuildDate>
     <atom:link href="https://kaseymarkel.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>A second blog post</title>
+      <link>https://kaseymarkel.github.io/posts/my-second-post/</link>
+      <pubDate>Mon, 21 Oct 2024 21:43:52 -0700</pubDate>
+      <guid>https://kaseymarkel.github.io/posts/my-second-post/</guid>
+      <description>&lt;p&gt;This is trying to &lt;strong&gt;type bold&lt;/strong&gt; things and also have some &lt;em&gt;italics&lt;/em&gt;&lt;/p&gt;&#xA;&lt;p&gt;I am a plant biotechnologist by training, and like doing cool science.&lt;/p&gt;&#xA;&lt;p&gt;And now we should try actually adding some content - it&amp;rsquo;s pretty cool to have content, and shos that I actually know how to run this thing.&lt;/p&gt;</description>
+    </item>
     <item>
       <title>The sort of post I could make</title>
       <link>https://kaseymarkel.github.io/posts/my-first-post/</link>
