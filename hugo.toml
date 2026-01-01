@@ -85,6 +85,6 @@ pygmentsCodefencesGuessSyntax = true
 
 [[menu.main]]
     name = "CV"
-    url = "page/CV"
+    url = "page/cv"
     weight = 4
 
