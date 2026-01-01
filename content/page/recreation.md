@@ -88,3 +88,44 @@ Outside of my academic work, I'm passionate about outdoor adventure sports and c
 
 I enjoy working with my hands and creating things, whether it's woodworking, electronics projects, or other DIY endeavors. There's satisfaction in bringing an idea from concept to reality.
 
+{{< rawhtml >}}
+<style>
+.things-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  margin-top: 30px;
+  margin-bottom: 40px;
+}
+.thing-button {
+  display: block;
+  padding: 20px;
+  text-align: center;
+  background-color: #f5f5f5;
+  border: 2px solid #0085a1;
+  border-radius: 8px;
+  color: #0085a1;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+.thing-button:hover {
+  background-color: #0085a1;
+  color: white;
+  text-decoration: none;
+}
+@media (max-width: 768px) {
+  .things-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+
+<div class="things-grid">
+  <a href="/page/thing-1/" class="thing-button">Thing 1</a>
+  <a href="/page/thing-2/" class="thing-button">Thing 2</a>
+  <a href="/page/thing-3/" class="thing-button">Thing 3</a>
+  <a href="/page/thing-4/" class="thing-button">Thing 4</a>
+</div>
+{{< /rawhtml >}}
+

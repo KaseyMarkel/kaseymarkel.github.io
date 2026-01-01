@@ -28,5 +28,33 @@
       <guid>https://kaseymarkel.github.io/page/recreation/</guid>
       <description>&lt;style&gt;&#xA;.recreation-section {&#xA;  margin-bottom: 60px;&#xA;  display: flex;&#xA;  flex-wrap: wrap;&#xA;  align-items: center;&#xA;}&#xA;.recreation-section.reverse {&#xA;  flex-direction: row-reverse;&#xA;}&#xA;.recreation-text {&#xA;  flex: 1;&#xA;  min-width: 300px;&#xA;  padding: 20px 30px;&#xA;}&#xA;.recreation-image {&#xA;  flex: 1;&#xA;  min-width: 300px;&#xA;}&#xA;.recreation-image img {&#xA;  width: 100%;&#xA;  height: auto;&#xA;  border-radius: 8px;&#xA;  box-shadow: 0 2px 8px rgba(0,0,0,0.1);&#xA;}&#xA;@media (max-width: 768px) {&#xA;  .recreation-section {&#xA;    flex-direction: column !important;&#xA;  }&#xA;  .recreation-text {&#xA;    padding: 20px 0;&#xA;  }&#xA;}&#xA;&lt;/style&gt;&#xA;&#xA;&#xA;&#xA;&lt;p&gt;Outside of my academic work, I&amp;rsquo;m passionate about outdoor adventure sports and creative pursuits. Here are some of the activities I enjoy:&lt;/p&gt;</description>
     </item>
+    <item>
+      <title>Thing 1</title>
+      <link>https://kaseymarkel.github.io/page/thing-1/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://kaseymarkel.github.io/page/thing-1/</guid>
+      <description>&lt;p&gt;This is a placeholder page for Thing 1.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Thing 2</title>
+      <link>https://kaseymarkel.github.io/page/thing-2/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://kaseymarkel.github.io/page/thing-2/</guid>
+      <description>&lt;p&gt;This is a placeholder page for Thing 2.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Thing 3</title>
+      <link>https://kaseymarkel.github.io/page/thing-3/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://kaseymarkel.github.io/page/thing-3/</guid>
+      <description>&lt;p&gt;This is a placeholder page for Thing 3.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Thing 4</title>
+      <link>https://kaseymarkel.github.io/page/thing-4/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://kaseymarkel.github.io/page/thing-4/</guid>
+      <description>&lt;p&gt;This is a placeholder page for Thing 4.&lt;/p&gt;</description>
+    </item>
   </channel>
 </rss>

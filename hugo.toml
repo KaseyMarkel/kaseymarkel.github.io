@@ -47,7 +47,7 @@ pygmentsCodefencesGuessSyntax = true
 
 [[Params.bigimg]]
  src = "img/path.jpg"
- desc = "Wilderness path"
+ desc = ""
 #[[Params.bigimg]]
 #  src = "img/sphere.jpg"
 #  desc = "Sphere"
@@ -72,7 +72,7 @@ pygmentsCodefencesGuessSyntax = true
     weight = 1
 
 [[menu.main]]
-    name = "My academic career"
+    name = "Academic career"
     url = "page/academia"
     weight = 2
 
