@@ -133,7 +133,7 @@ Outside of work, I'm passionate about outdoor adventure sports and creative purs
     <div class="recreation-image-wrapper">
       <img src="/img/wingfoiling%20pic.JPG" alt="Wingfoiling">
       <div class="recreation-image-caption">
-        <p>Wingfoiling on the bay. Hair down and no shades for the photo, normally I'm fairly covered and a lot harder to identify.</p>
+        <p>Wingfoiling on the bay. Hair down and no shades for the photo, normally I'm fairly covered and a lot harder to identify. Photo credit @drethelin</p>
       </div>
     </div>
   </div>
