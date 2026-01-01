@@ -5,6 +5,13 @@ socialShare: false
 
 {{< rawhtml >}}
 <style>
+/* Hide page heading */
+.intro-header .page-heading,
+.intro-header .page-heading h1,
+.intro-header .page-heading hr {
+  display: none !important;
+}
+
 .academia-section {
   margin-bottom: 60px;
   display: flex;

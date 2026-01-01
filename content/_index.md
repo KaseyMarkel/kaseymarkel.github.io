@@ -5,91 +5,74 @@ socialShare: false
 
 {{< rawhtml >}}
 <style>
-/* Custom styles for home page with full-height image and overlay content */
-body {
-  position: relative;
-}
+/* Custom styles for home page - full sunset image with overlay text box */
 
-.header-section.has-img {
-  position: relative;
-  margin-bottom: 0;
-}
-
-.intro-header.big-img {
-  background-size: contain !important;
-  background-position: center top !important;
-  margin-bottom: 0 !important;
-  position: relative;
-  /* Set height based on image aspect ratio - adjust as needed */
-  height: auto;
-  min-height: 56.25vw; /* Approximate aspect ratio of sunset image */
-}
-
-.intro-header.big-img .page-heading {
-  padding: 40px 0 20px 0 !important;
-}
-
-.intro-header.big-img .page-heading h1 {
-  font-size: 30px !important;
-  margin-bottom: 10px;
-}
-
+/* Hide the page heading/title elements */
+.intro-header.big-img .page-heading,
+.intro-header.big-img .page-heading h1,
+.intro-header.big-img .page-heading hr,
 .intro-header.big-img .page-subheading {
   display: none !important;
 }
 
-/* Position content overlay - fixed position relative to image using vw units */
+/* Make the header show the full image without cropping */
+.intro-header.big-img {
+  background-size: cover !important;
+  background-position: center center !important;
+  min-height: 100vh !important;
+  height: 100vh !important;
+  margin-bottom: 0 !important;
+  position: relative !important;
+}
+
+/* Position the main content container over the image */
 div[role="main"].container {
-  position: absolute;
-  top: 22vw; /* Position based on viewport width to match image scaling */
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-  max-width: 1200px;
-  z-index: 100;
-  padding-left: 15px;
-  padding-right: 15px;
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  width: 100% !important;
+  max-width: 900px !important;
+  z-index: 100 !important;
+  margin: 0 !important;
+  padding: 0 15px !important;
 }
 
-/* Position footer right below the header image */
-footer {
-  position: relative;
-  margin-top: 0 !important;
-}
-
+/* Style the content well */
 .well {
   background-color: rgba(60, 60, 60, 0.4) !important;
+  backdrop-filter: blur(5px) !important;
   border: none !important;
+  border-radius: 8px !important;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
+  padding: 30px 40px !important;
+  color: #fff !important;
 }
 
-div[role="main"] .container .row .col-lg-8 .well {
-  position: relative;
-  padding: 30px 40px;
-  border-radius: 8px;
-  color: #fff;
-  margin: 0 auto;
-  backdrop-filter: blur(5px);
-  max-width: 800px;
-}
-
-.container .row .col-lg-8 .well p {
-  color: #fff;
+.well p {
+  color: #fff !important;
   margin-bottom: 15px;
   line-height: 1.7;
 }
 
-.container .row .col-lg-8 .well strong {
-  color: #fff;
+.well p:last-child {
+  margin-bottom: 0 !important;
 }
 
-.container .row .col-lg-8 .well a {
-  color: #a8d5ff;
-  text-decoration: none;
+.well strong {
+  color: #fff !important;
 }
 
-.container .row .col-lg-8 .well a:hover {
-  color: #c4e3ff;
+.well a {
+  color: #a8d5ff !important;
+  text-decoration: none !important;
+  border-bottom: 1px solid rgba(168, 213, 255, 0.5);
+  transition: all 0.3s ease;
+}
+
+.well a:hover {
+  color: #d0e9ff !important;
+  border-bottom: 2px solid #d0e9ff;
 }
 
 /* Remove underlines from all links site-wide */
@@ -132,31 +115,16 @@ a {
   opacity: 1;
 }
 
-/* Responsive adjustments */
-@media only screen and (max-width: 768px) {
-  .intro-header.big-img .page-heading h1 {
-    font-size: 25px !important;
-  }
-  
-  .container .row .col-lg-8 .well {
-    padding: 20px 25px;
-    width: calc(100% - 20px);
-  }
-  
-  div[role="main"].container {
-    top: 22vw;
-    transform: translateX(-50%);
-  }
+/* Position the footer below the sunset */
+footer {
+  position: relative !important;
+  z-index: 50 !important;
 }
 
-@media only screen and (min-width: 768px) {
-  .intro-header.big-img .page-heading h1 {
-    font-size: 35px !important;
-  }
-  
-  div[role="main"].container {
-    top: 22vw;
-    transform: translateX(-50%);
+/* Responsive adjustments */
+@media only screen and (max-width: 768px) {
+  .well {
+    padding: 20px 25px !important;
   }
 }
 </style>

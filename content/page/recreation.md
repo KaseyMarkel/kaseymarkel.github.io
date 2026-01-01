@@ -5,6 +5,13 @@ socialShare: false
 
 {{< rawhtml >}}
 <style>
+/* Hide page heading */
+.intro-header .page-heading,
+.intro-header .page-heading h1,
+.intro-header .page-heading hr {
+  display: none !important;
+}
+
 .recreation-section {
   margin-bottom: 60px;
   display: flex;
@@ -40,13 +47,13 @@ socialShare: false
 </style>
 {{< /rawhtml >}}
 
-Outside of my academic work, I'm passionate about outdoor adventure sports and creative pursuits. Here are some of the activities I enjoy:
+Outside of work, I'm passionate about outdoor adventure sports and creative pursuits. Here are some of the activities I enjoy:
 
 {{< rawhtml >}}
 <div class="recreation-section">
   <div class="recreation-text">
     <h2>Rock Climbing</h2>
-    <p>Rock climbing combines physical challenge with problem-solving in beautiful natural settings. Whether it's bouldering, sport climbing, or traditional climbing, I love the mental and physical aspects of this sport.</p>
+    <p>Rock climbing combines physical challenge with problem-solving in beautiful natural settings. Whether it's bouldering, sport climbing, or traditional climbing, I love the mental and physical aspects of this sport. These days my climbing mostly consists of regular social sessions in the gym and low-frequency trips for big trad lines like Matthes Crest (pictured) and Saber Ridge.</p>
   </div>
   <div class="recreation-image">
     <img src="/img/Climbing%20pic%20for%20website.jpg" alt="Rock Climbing">
@@ -56,7 +63,7 @@ Outside of my academic work, I'm passionate about outdoor adventure sports and c
 <div class="recreation-section reverse">
   <div class="recreation-text">
     <h2>Paragliding</h2>
-    <p>Flying through the air with nothing but a wing and harness is an incredible experience. Paragliding offers a unique perspective on the world below and the freedom of flight.</p>
+    <p>Flying through the air with nothing but a wing and harness is an incredible experience. Paragliding offers a unique perspective on the world below and the freedom of flight. It's an aircraft that fits in a backpack - what more could you want?</p>
   </div>
   <div class="recreation-image">
     <img src="/img/shasta%20pic%20for%20website.jpg" alt="Paragliding">
@@ -66,7 +73,7 @@ Outside of my academic work, I'm passionate about outdoor adventure sports and c
 <div class="recreation-section">
   <div class="recreation-text">
     <h2>Wingfoiling</h2>
-    <p>Wingfoiling combines elements of windsurfing, kitesurfing, and foiling into one exciting water sport. It's a relatively new discipline that's rapidly growing in popularity.</p>
+    <p>Wingfoiling combines elements of windsurfing, kitesurfing, and foiling into one exciting water sport. It's a relatively new discipline that's rapidly growing in popularity. It's an awesome way to explore the bay: cheaper, faster, and more flexible than sailing, but with the right gear still secure enough to be comfortable going miles from shore.</p>
   </div>
   <div class="recreation-image">
     <img src="/img/wingfoiling%20pic.JPG" alt="Wingfoiling">
@@ -76,7 +83,7 @@ Outside of my academic work, I'm passionate about outdoor adventure sports and c
 <div class="recreation-section reverse">
   <div class="recreation-text">
     <h2>Backpacking</h2>
-    <p>Exploring remote wilderness areas with everything I need on my back is one of my favorite ways to disconnect and reconnect with nature. There's something special about waking up to a sunrise in the backcountry.</p>
+    <p>Exploring remote wilderness areas with everything I need on my back is one of my favorite ways to disconnect and reconnect with nature. There's something special about waking up to a sunrise in the backcountry. I've thru-hiked the Colorado Trail, Tour du Mont Blanc, and Cradle Mountain Trek.</p>
   </div>
   <div class="recreation-image">
     <img src="/img/website%20backpacking%20photo.jpg" alt="Backpacking">
@@ -125,7 +132,7 @@ I enjoy working with my hands and creating things, whether it's woodworking, ele
   <a href="/page/wing-watchers-perch/" class="thing-button">Wing Watcher's Perch</a>
   <a href="/page/living-wall/" class="thing-button">Living Wall</a>
   <a href="/page/origin/" class="thing-button">Origin</a>
-  <a href="/page/thing-4/" class="thing-button">Thing 4</a>
+  <a href="/page/glass/" class="thing-button">Glass</a>
 </div>
 {{< /rawhtml >}}
 

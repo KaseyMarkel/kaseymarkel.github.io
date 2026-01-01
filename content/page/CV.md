@@ -5,6 +5,13 @@ socialShare: false
 
 {{< rawhtml >}}
 <style>
+/* Hide page heading */
+.intro-header .page-heading,
+.intro-header .page-heading h1,
+.intro-header .page-heading hr {
+  display: none !important;
+}
+
 .cv-content {
   max-width: 900px;
   margin: 0 auto;

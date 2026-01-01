@@ -227,6 +227,13 @@
     <div class="post-entry">
         
         <style>
+/* Hide page heading */
+.intro-header .page-heading,
+.intro-header .page-heading h1,
+.intro-header .page-heading hr {
+  display: none !important;
+}
+
 .academia-section {
   margin-bottom: 60px;
   display: flex;
@@ -301,6 +308,13 @@
     <div class="post-entry">
         
         <style>
+/* Hide page heading */
+.intro-header .page-heading,
+.intro-header .page-heading h1,
+.intro-header .page-heading hr {
+  display: none !important;
+}
+
 .cv-content {
   max-width: 900px;
   margin: 0 auto;
@@ -420,7 +434,7 @@
 </article>
           
             <article class="post-preview">
-    <a href="https://kaseymarkel.github.io/page/thing-4/">
+    <a href="https://kaseymarkel.github.io/page/glass/">
         <h2 class="post-title">Glass</h2>
         
         
@@ -447,11 +461,50 @@
     </p>
     <div class="post-entry">
         
-        <p>I&rsquo;ve had the immense fortune to be in the right place at the right time to learn the ancient art of glassblowing at a steeply discounted price.</p>
-<h2>Furnace glass</h2>
-I first learned Furnace Glass in undergrad at one of the few schools that has a furnace studio that a random science major can just take classes at and then start using whenever it was free - so I ended up being an odd duck that usually works alone in an art style mostly performed in a team.
-<p>Furnace glass still follows the basic process developed in ancient Rome: start with a pot of glowing golden liquid glass in the furnace, then use ~2m long metal rods and tubes to gather it, shape it, and blow it into hollow vessels.</p>
-        <a href="https://kaseymarkel.github.io/page/thing-4/" class="post-read-more">[Read More]</a>
+        <style>
+.glass-image {
+  width: 200px;
+  height: auto;
+  border-radius: 4px;
+  margin: 10px 15px;
+  float: left;
+  clear: left;
+}
+.glass-image.right {
+  float: right;
+  clear: right;
+}
+.glass-image.left {
+  float: left;
+  clear: left;
+}
+.glass-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin: 20px 0;
+  clear: both;
+}
+.glass-grid img {
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+@media (max-width: 768px) {
+  .glass-image {
+    width: 150px;
+    margin: 8px 10px;
+  }
+  .glass-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+</style>
+
+
+
+<p>I&rsquo;ve had the immense fortune to be in the right place at the right time to learn the ancient art of glassblowing at a steeply discounted price.</p>
+        <a href="https://kaseymarkel.github.io/page/glass/" class="post-read-more">[Read More]</a>
         
     </div>
 
@@ -613,6 +666,13 @@ I first learned Furnace Glass in undergrad at one of the few schools that has a 
     <div class="post-entry">
         
         <style>
+/* Hide page heading */
+.intro-header .page-heading,
+.intro-header .page-heading h1,
+.intro-header .page-heading hr {
+  display: none !important;
+}
+
 .recreation-section {
   margin-bottom: 60px;
   display: flex;
@@ -649,7 +709,7 @@ I first learned Furnace Glass in undergrad at one of the few schools that has a 
 
 
 
-<p>Outside of my academic work, I&rsquo;m passionate about outdoor adventure sports and creative pursuits. Here are some of the activities I enjoy:</p>
+<p>Outside of work, I&rsquo;m passionate about outdoor adventure sports and creative pursuits. Here are some of the activities I enjoy:</p>
         <a href="https://kaseymarkel.github.io/page/recreation/" class="post-read-more">[Read More]</a>
         
     </div>
@@ -808,17 +868,12 @@ I first learned Furnace Glass in undergrad at one of the few schools that has a 
 
           &nbsp;&bull;&nbsp;&copy;
           
-            0001
+            2026
           
 
           
             &nbsp;&bull;&nbsp;
             <a href="https://kaseymarkel.github.io/">Kasey Markel</a>
-          
-        </p>
-        
-        <p class="credits theme-by text-muted">
-          <a href="https://gohugo.io">Hugo v0.136.3</a> powered &nbsp;&bull;&nbsp; Theme <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a> adapted from <a href="https://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
           
         </p>
       </div>
@@ -834,6 +889,7 @@ I first learned Furnace Glass in undergrad at one of the few schools that has a 
 <script> hljs.initHighlightingOnLoad(); </script>
 <script> $(document).ready(function() {$("pre.chroma").css("padding","0");}); </script><script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js" integrity="sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script><script src="https://kaseymarkel.github.io/js/load-photoswipe.js"></script>
+
 
 
 
