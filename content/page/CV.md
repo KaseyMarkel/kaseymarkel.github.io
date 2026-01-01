@@ -5,11 +5,18 @@ socialShare: false
 
 {{< rawhtml >}}
 <style>
-/* Hide page heading */
-.intro-header .page-heading,
-.intro-header .page-heading h1,
-.intro-header .page-heading hr {
+/* Hide entire header section and add top spacing */
+.intro-header {
   display: none !important;
+}
+.header-section.has-img {
+  display: none !important;
+}
+
+/* Add top padding to main content to account for navigation bar */
+div[role="main"].container {
+  padding-top: 120px !important;
+  margin-top: 0 !important;
 }
 
 .cv-content {

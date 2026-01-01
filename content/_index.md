@@ -7,6 +7,24 @@ socialShare: false
 <style>
 /* Custom styles for home page - full sunset image with overlay text box */
 
+/* Ensure navbar matches other pages */
+.navbar-custom {
+  background: #F5F5F5 !important;
+  border-bottom: 1px solid #EAEAEA !important;
+}
+.navbar-custom .navbar-brand,
+.navbar-custom .nav li a {
+  color: #404040 !important;
+  text-transform: uppercase !important;
+  font-size: 12px !important;
+  letter-spacing: 1px !important;
+  font-weight: 800 !important;
+}
+.navbar-custom .navbar-brand:hover,
+.navbar-custom .nav li a:hover {
+  color: #0085a1 !important;
+}
+
 /* Hide the page heading/title elements */
 .intro-header.big-img .page-heading,
 .intro-header.big-img .page-heading h1,
@@ -15,13 +33,25 @@ socialShare: false
   display: none !important;
 }
 
-/* Make the header show the full image without cropping */
+/* Hide the no-img header that shows at bottom */
+.intro-header.no-img {
+  display: none !important;
+}
+
+/* Make the header show the full image, zoomed in 30% */
+.header-section.has-img {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
 .intro-header.big-img {
-  background-size: cover !important;
+  background-size: 130% !important;
   background-position: center center !important;
-  min-height: 100vh !important;
-  height: 100vh !important;
+  background-repeat: no-repeat !important;
+  min-height: calc(100vh - 50px) !important;
+  height: calc(100vh - 50px) !important;
+  margin-top: 0 !important;
   margin-bottom: 0 !important;
+  padding-top: 0 !important;
   position: relative !important;
 }
 
@@ -66,13 +96,13 @@ div[role="main"].container {
 .well a {
   color: #a8d5ff !important;
   text-decoration: none !important;
-  border-bottom: 1px solid rgba(168, 213, 255, 0.5);
+  border-bottom: none !important;
   transition: all 0.3s ease;
 }
 
 .well a:hover {
   color: #d0e9ff !important;
-  border-bottom: 2px solid #d0e9ff;
+  border-bottom: none !important;
 }
 
 /* Remove underlines from all links site-wide */
@@ -115,10 +145,16 @@ a {
   opacity: 1;
 }
 
-/* Position the footer below the sunset */
+/* Position the footer directly below the sunset */
 footer {
   position: relative !important;
   z-index: 50 !important;
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+body {
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 /* Responsive adjustments */
@@ -134,7 +170,7 @@ Hello! I am a **plant biotechnologist**, **humanist**, and **optimist** - the se
 
 I am deeply inspired by [effective altruism](https://www.effectivealtruism.org/), which aims to use engineering-style thinking to do as much good as possible. This moral inclination led me to choose the field of plant biotechnology as a lever for improving global human welfare, because plants constitute the vast majority of the human food supply and nutritional deficiencies have always been among humanity's top problems (but might not be in another few decades!)
 
-Outside of my career, I enjoy **rock climbing**, **paragliding**, **wingfoiling**, **backpacking**, and **making things**.
+Outside of my career, I enjoy rock climbing, paragliding, wingfoiling, backpacking, and making things.
 
 {{< rawhtml >}}
 <p>You can contact me at <span class="email-spoiler" onclick="this.classList.toggle('revealed')">
