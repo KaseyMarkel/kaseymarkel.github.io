@@ -1,6 +1,6 @@
 baseurl = "https://kaseymarkel.github.io"
 DefaultContentLanguage = "en"
-title = ""
+title = "Kasey Markel"
 # Using theme as git submodule 
 theme = "beautifulhugo"
 publishDir = "docs"
@@ -42,7 +42,7 @@ pygmentsCodefencesGuessSyntax = true
 
 [[Params.bigimg]]
  src = "img/path.jpg"
- desc = "nice road"
+ desc = "Wilderness path"
 #[[Params.bigimg]]
 #  src = "img/sphere.jpg"
 #  desc = "Sphere"
@@ -69,7 +69,7 @@ pygmentsCodefencesGuessSyntax = true
 [[menu.main]]
     name = "My academic career"
     url = "page/academia"
-    weight = 3
+    weight = 2
 
 [[menu.main]]
     name = "Recreation"
@@ -79,5 +79,5 @@ pygmentsCodefencesGuessSyntax = true
 [[menu.main]]
     name = "CV"
     url = "https://drive.google.com/file/d/1GQp6cJvrJcUDek92hM_Oqig9b5lhqiV_/view?usp=sharing"
-    weight = 3
+    weight = 4
 

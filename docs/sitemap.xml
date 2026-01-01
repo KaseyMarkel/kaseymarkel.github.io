@@ -2,23 +2,18 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>http://localhost:1313/</loc>
-    <lastmod>2024-10-21T21:43:52-07:00</lastmod>
+    <loc>https://kaseymarkel.github.io/</loc>
   </url><url>
-    <loc>http://localhost:1313/posts/my-first-post/</loc>
-    <lastmod>2024-10-21T21:43:52-07:00</lastmod>
+    <loc>https://kaseymarkel.github.io/categories/</loc>
   </url><url>
-    <loc>http://localhost:1313/posts/</loc>
-    <lastmod>2024-10-21T21:43:52-07:00</lastmod>
+    <loc>https://kaseymarkel.github.io/page/cv/</loc>
   </url><url>
-    <loc>http://localhost:1313/page/academia/</loc>
+    <loc>https://kaseymarkel.github.io/page/academia/</loc>
   </url><url>
-    <loc>http://localhost:1313/page/cv/</loc>
+    <loc>https://kaseymarkel.github.io/page/</loc>
   </url><url>
-    <loc>http://localhost:1313/categories/</loc>
+    <loc>https://kaseymarkel.github.io/page/recreation/</loc>
   </url><url>
-    <loc>http://localhost:1313/page/</loc>
-  </url><url>
-    <loc>http://localhost:1313/tags/</loc>
+    <loc>https://kaseymarkel.github.io/tags/</loc>
   </url>
 </urlset>
