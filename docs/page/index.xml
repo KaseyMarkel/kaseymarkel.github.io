@@ -22,25 +22,18 @@
       <description>&lt;p&gt;You can view and download my full CV &lt;a href=&#34;https://drive.google.com/file/d/1GQp6cJvrJcUDek92hM_Oqig9b5lhqiV_/view?usp=sharing&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;For a narrative overview of my academic career and research, please visit my &lt;a href=&#34;https://kaseymarkel.github.io/page/academia/&#34;&gt;Academic Career page&lt;/a&gt;.&lt;/p&gt;</description>
     </item>
     <item>
+      <title>Living Wall</title>
+      <link>https://kaseymarkel.github.io/page/thing-2/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://kaseymarkel.github.io/page/thing-2/</guid>
+      <description>&lt;style&gt;&#xA;.living-wall-photo-grid {&#xA;  display: grid;&#xA;  grid-template-columns: repeat(2, 1fr);&#xA;  gap: 15px;&#xA;  margin: 20px 0;&#xA;}&#xA;.living-wall-photo-grid img {&#xA;  width: 100%;&#xA;  height: auto;&#xA;  border-radius: 8px;&#xA;  box-shadow: 0 2px 8px rgba(0,0,0,0.1);&#xA;}&#xA;@media (max-width: 768px) {&#xA;  .living-wall-photo-grid {&#xA;    grid-template-columns: 1fr;&#xA;  }&#xA;}&#xA;&lt;/style&gt;&#xA;&#xA;&#xA;&#xA;&lt;p&gt;This is a 1 square meter living wall I designed and built. It&amp;rsquo;s a fairly complex mixed media project, requiring a waterproof frame that contains many places for plants to live.&lt;/p&gt;&#xA;&#xA;&lt;div class=&#34;living-wall-photo-grid&#34;&gt;&#xA;  &lt;img src=&#34;https://kaseymarkel.github.io/img/PW1.jpg&#34; alt=&#34;Living Wall&#34;&gt;&#xA;  &lt;img src=&#34;https://kaseymarkel.github.io/img/PW2.jpg&#34; alt=&#34;Living Wall design&#34;&gt;&#xA;&lt;/div&gt;&#xA;&#xA;&#xA;&#xA;&lt;p&gt;The basic design is a rectangular prism made of wood on 4 sides, plastic on one, and open on the 6th. On top and bottom there are two &amp;ldquo;buckets&amp;rdquo; - I water into the top bucket (generally 4-10 liters depending on the state of the soil), it slowly drips down through the wall thanks to a few dozen small holes in the 1x6 between that bucket and the main space, and drain excess out of the bottom bucket - it has a spigot so I can do so in a controlled fashion.&lt;/p&gt;</description>
+    </item>
+    <item>
       <title>Recreation</title>
       <link>https://kaseymarkel.github.io/page/recreation/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <guid>https://kaseymarkel.github.io/page/recreation/</guid>
       <description>&lt;style&gt;&#xA;.recreation-section {&#xA;  margin-bottom: 60px;&#xA;  display: flex;&#xA;  flex-wrap: wrap;&#xA;  align-items: center;&#xA;}&#xA;.recreation-section.reverse {&#xA;  flex-direction: row-reverse;&#xA;}&#xA;.recreation-text {&#xA;  flex: 1;&#xA;  min-width: 300px;&#xA;  padding: 20px 30px;&#xA;}&#xA;.recreation-image {&#xA;  flex: 1;&#xA;  min-width: 300px;&#xA;}&#xA;.recreation-image img {&#xA;  width: 100%;&#xA;  height: auto;&#xA;  border-radius: 8px;&#xA;  box-shadow: 0 2px 8px rgba(0,0,0,0.1);&#xA;}&#xA;@media (max-width: 768px) {&#xA;  .recreation-section {&#xA;    flex-direction: column !important;&#xA;  }&#xA;  .recreation-text {&#xA;    padding: 20px 0;&#xA;  }&#xA;}&#xA;&lt;/style&gt;&#xA;&#xA;&#xA;&#xA;&lt;p&gt;Outside of my academic work, I&amp;rsquo;m passionate about outdoor adventure sports and creative pursuits. Here are some of the activities I enjoy:&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>Thing 1</title>
-      <link>https://kaseymarkel.github.io/page/thing-1/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://kaseymarkel.github.io/page/thing-1/</guid>
-      <description>&lt;p&gt;This is a placeholder page for Thing 1.&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>Thing 2</title>
-      <link>https://kaseymarkel.github.io/page/thing-2/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://kaseymarkel.github.io/page/thing-2/</guid>
-      <description>&lt;p&gt;This is a placeholder page for Thing 2.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Thing 3</title>
@@ -55,6 +48,13 @@
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <guid>https://kaseymarkel.github.io/page/thing-4/</guid>
       <description>&lt;p&gt;This is a placeholder page for Thing 4.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Wing Watcher&#39;s Perch</title>
+      <link>https://kaseymarkel.github.io/page/thing-1/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://kaseymarkel.github.io/page/thing-1/</guid>
+      <description>&lt;style&gt;&#xA;.wwp-photo-grid {&#xA;  display: grid;&#xA;  grid-template-columns: repeat(2, 1fr);&#xA;  gap: 15px;&#xA;  margin: 20px 0;&#xA;}&#xA;.wwp-photo-grid img {&#xA;  width: 100%;&#xA;  height: auto;&#xA;  border-radius: 8px;&#xA;  box-shadow: 0 2px 8px rgba(0,0,0,0.1);&#xA;}&#xA;@media (max-width: 768px) {&#xA;  .wwp-photo-grid {&#xA;    grid-template-columns: 1fr;&#xA;  }&#xA;}&#xA;&lt;/style&gt;&#xA;&#xA;&#xA;&#xA;&lt;p&gt;This is a public bench I built on the shore of the bay area.&lt;/p&gt;&#xA;&#xA;&lt;div class=&#34;wwp-photo-grid&#34;&gt;&#xA;  &lt;img src=&#34;https://kaseymarkel.github.io/img/WWP1.jpg&#34; alt=&#34;Wing Watcher&#39;s Perch&#34;&gt;&#xA;  &lt;img src=&#34;https://kaseymarkel.github.io/img/WWP2.jpg&#34; alt=&#34;Wing Watcher&#39;s Perch construction&#34;&gt;&#xA;&lt;/div&gt;&#xA;&#xA;&#xA;&#xA;&lt;p&gt;It&amp;rsquo;s made out of a ton of two of pre-existing concrete that I used about 350 pounds of cement to combine into one solid item, along with a few chunks of rebar and a bunch of layers of paint.&lt;/p&gt;</description>
     </item>
   </channel>
 </rss>
