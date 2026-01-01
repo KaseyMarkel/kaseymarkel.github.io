@@ -12,21 +12,35 @@
       <link>https://kaseymarkel.github.io/page/academia/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <guid>https://kaseymarkel.github.io/page/academia/</guid>
-      <description>&lt;p&gt;The most consistently-updated places to find all of my academic papers are my &lt;a href=&#34;https://orcid.org/0000-0002-8285-3888&#34;&gt;ORCID&lt;/a&gt; or &lt;a href=&#34;https://scholar.google.com/citations?user=yLxNBqcAAAAJ&amp;amp;hl=en&#34;&gt;Google Scholar&lt;/a&gt; pages.&lt;/p&gt;&#xA;&lt;p&gt;Neither of those pages give me the option to explain the narrative arc of my academic career, nor to provide commentary or summaries of my favorite research projects - that&amp;rsquo;s what this page is for.&lt;/p&gt;&#xA;&lt;h2 id=&#34;narrative-career-arc&#34;&gt;Narrative Career Arc&lt;/h2&gt;&#xA;&lt;p&gt;I did short stints in the &lt;a href=&#34;https://umiamihealth.org/en/sylvester-comprehensive-cancer-center/research/labs/daunert-lab/research&#34;&gt;Daunert&lt;/a&gt; and &lt;a href=&#34;https://scholars.uow.edu.au/antoine-van-oijen&#34;&gt;Van Oijen&lt;/a&gt; labs as an undergraduate, but spent the last couple of years of my undergraduate research career working with the late &lt;a href=&#34;https://news.miami.edu/as/stories/2017/05/remembering-jeffrey-s-prince.html&#34;&gt;Jeff Prince&lt;/a&gt;, using scanning and transmission electron microscopy to answer a variety of biological questions.&lt;/p&gt;</description>
+      <description>&lt;style&gt;&#xA;.academia-section {&#xA;  margin-bottom: 60px;&#xA;  display: flex;&#xA;  flex-wrap: wrap;&#xA;  align-items: center;&#xA;}&#xA;.academia-section.reverse {&#xA;  flex-direction: row-reverse;&#xA;}&#xA;.academia-text {&#xA;  flex: 1;&#xA;  min-width: 300px;&#xA;  padding: 20px 30px;&#xA;}&#xA;.academia-image {&#xA;  flex: 1;&#xA;  min-width: 300px;&#xA;}&#xA;.academia-image img {&#xA;  width: 100%;&#xA;  height: auto;&#xA;  border-radius: 8px;&#xA;  box-shadow: 0 2px 8px rgba(0,0,0,0.1);&#xA;}&#xA;@media (max-width: 768px) {&#xA;  .academia-section {&#xA;    flex-direction: column !important;&#xA;  }&#xA;  .academia-text {&#xA;    padding: 20px 0;&#xA;  }&#xA;}&#xA;&lt;/style&gt;&#xA;&#xA;&#xA;&#xA;&lt;p&gt;The most consistently-updated places to find all of my academic papers are my &lt;a href=&#34;https://orcid.org/0000-0002-8285-3888&#34;&gt;ORCID&lt;/a&gt; or &lt;a href=&#34;https://scholar.google.com/citations?user=yLxNBqcAAAAJ&amp;amp;hl=en&#34;&gt;Google Scholar&lt;/a&gt; pages.&lt;/p&gt;</description>
     </item>
     <item>
       <title>CV</title>
       <link>https://kaseymarkel.github.io/page/cv/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <guid>https://kaseymarkel.github.io/page/cv/</guid>
-      <description>&lt;p&gt;You can view and download my full CV &lt;a href=&#34;https://drive.google.com/file/d/1GQp6cJvrJcUDek92hM_Oqig9b5lhqiV_/view?usp=sharing&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;For a narrative overview of my academic career and research, please visit my &lt;a href=&#34;https://kaseymarkel.github.io/page/academia/&#34;&gt;Academic Career page&lt;/a&gt;.&lt;/p&gt;</description>
+      <description>&lt;style&gt;&#xA;.cv-content {&#xA;  max-width: 900px;&#xA;  margin: 0 auto;&#xA;  padding: 30px;&#xA;  line-height: 1.6;&#xA;  color: #333;&#xA;}&#xA;&#xA;.cv-section {&#xA;  margin-bottom: 30px;&#xA;}&#xA;&#xA;.cv-section h2 {&#xA;  font-size: 24px;&#xA;  font-weight: 600;&#xA;  margin-bottom: 15px;&#xA;  padding-bottom: 8px;&#xA;  border-bottom: 2px solid #ddd;&#xA;  color: #222;&#xA;}&#xA;&#xA;.cv-section h3 {&#xA;  font-size: 18px;&#xA;  font-weight: 600;&#xA;  margin-top: 20px;&#xA;  margin-bottom: 8px;&#xA;  color: #333;&#xA;}&#xA;&#xA;.cv-item {&#xA;  margin-bottom: 20px;&#xA;}&#xA;&#xA;.cv-item-title {&#xA;  font-weight: 600;&#xA;  font-size: 16px;&#xA;  margin-bottom: 4px;&#xA;}&#xA;&#xA;.cv-item-org {&#xA;  font-style: italic;&#xA;  color: #555;&#xA;  margin-bottom: 4px;&#xA;}&#xA;&#xA;.cv-item-date {&#xA;  color: #777;&#xA;  font-size: 14px;&#xA;  margin-bottom: 8px;&#xA;}&#xA;&#xA;.cv-item-description {&#xA;  margin-top: 8px;&#xA;  margin-left: 0;&#xA;}&#xA;&#xA;.cv-item-description ul {&#xA;  margin-top: 8px;&#xA;  margin-bottom: 8px;&#xA;  padding-left: 25px;&#xA;}&#xA;&#xA;.cv-item-description li {&#xA;  margin-bottom: 4px;&#xA;}&#xA;&#xA;.cv-publication {&#xA;  margin-bottom: 12px;&#xA;  padding-left: 0;&#xA;}&#xA;&#xA;.cv-publication p {&#xA;  margin-bottom: 4px;&#xA;}&#xA;&#xA;.cv-skills {&#xA;  display: flex;&#xA;  flex-wrap: wrap;&#xA;  gap: 10px;&#xA;}&#xA;&#xA;.cv-skills span {&#xA;  background-color: #f0f0f0;&#xA;  padding: 4px 12px;&#xA;  border-radius: 4px;&#xA;  font-size: 14px;&#xA;}&#xA;&#xA;@media (max-width: 768px) {&#xA;  .cv-content {&#xA;    padding: 20px 15px;&#xA;  }&#xA;  &#xA;  .cv-section h2 {&#xA;    font-size: 20px;&#xA;  }&#xA;  &#xA;  .cv-section h3 {&#xA;    font-size: 16px;&#xA;  }&#xA;}&#xA;&lt;/style&gt;&#xA;&#xA;&#xA;&#xA;&#xA;&lt;div class=&#34;cv-content&#34;&gt;&#xA;  &lt;div style=&#34;text-align: center; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 3px solid #333;&#34;&gt;&#xA;    &lt;h1 style=&#34;font-size: 32px; font-weight: 700; margin-bottom: 10px; color: #222;&#34;&gt;KASEY MARKEL&lt;/h1&gt;&#xA;    &lt;p style=&#34;color: #666; font-size: 16px; margin: 0;&#34;&gt;(+1) 970-217-2682 ◾ &lt;a href=&#34;mailto:Kaseymarkel@gmail.com&#34; style=&#34;color: #666; text-decoration: none;&#34;&gt;KASEYMARKEL@GMAIL.COM&lt;/a&gt; ◾ Berkeley, CA&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Glass</title>
+      <link>https://kaseymarkel.github.io/page/thing-4/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://kaseymarkel.github.io/page/thing-4/</guid>
+      <description>&lt;p&gt;I&amp;rsquo;ve had the immense fortune to be in the right place at the right time to learn the ancient art of glassblowing at a steeply discounted price.&lt;/p&gt;&#xA;&lt;h2&gt;Furnace glass&lt;/h2&gt;&#xA;I first learned Furnace Glass in undergrad at one of the few schools that has a furnace studio that a random science major can just take classes at and then start using whenever it was free - so I ended up being an odd duck that usually works alone in an art style mostly performed in a team.&#xA;&lt;p&gt;Furnace glass still follows the basic process developed in ancient Rome: start with a pot of glowing golden liquid glass in the furnace, then use ~2m long metal rods and tubes to gather it, shape it, and blow it into hollow vessels.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Living Wall</title>
-      <link>https://kaseymarkel.github.io/page/thing-2/</link>
+      <link>https://kaseymarkel.github.io/page/living-wall/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://kaseymarkel.github.io/page/thing-2/</guid>
+      <guid>https://kaseymarkel.github.io/page/living-wall/</guid>
       <description>&lt;style&gt;&#xA;.living-wall-photo-grid {&#xA;  display: grid;&#xA;  grid-template-columns: repeat(2, 1fr);&#xA;  gap: 15px;&#xA;  margin: 20px 0;&#xA;}&#xA;.living-wall-photo-grid img {&#xA;  width: 100%;&#xA;  height: auto;&#xA;  border-radius: 8px;&#xA;  box-shadow: 0 2px 8px rgba(0,0,0,0.1);&#xA;}&#xA;@media (max-width: 768px) {&#xA;  .living-wall-photo-grid {&#xA;    grid-template-columns: 1fr;&#xA;  }&#xA;}&#xA;&lt;/style&gt;&#xA;&#xA;&#xA;&#xA;&lt;p&gt;This is a 1 square meter living wall I designed and built. It&amp;rsquo;s a fairly complex mixed media project, requiring a waterproof frame that contains many places for plants to live.&lt;/p&gt;&#xA;&#xA;&lt;div class=&#34;living-wall-photo-grid&#34;&gt;&#xA;  &lt;img src=&#34;https://kaseymarkel.github.io/img/PW1.jpg&#34; alt=&#34;Living Wall&#34;&gt;&#xA;  &lt;img src=&#34;https://kaseymarkel.github.io/img/PW2.jpg&#34; alt=&#34;Living Wall design&#34;&gt;&#xA;&lt;/div&gt;&#xA;&#xA;&#xA;&#xA;&lt;p&gt;The basic design is a rectangular prism made of wood on 4 sides, plastic on one, and open on the 6th. On top and bottom there are two &amp;ldquo;buckets&amp;rdquo; - I water into the top bucket (generally 4-10 liters depending on the state of the soil), it slowly drips down through the wall thanks to a few dozen small holes in the 1x6 between that bucket and the main space, and drain excess out of the bottom bucket - it has a spigot so I can do so in a controlled fashion.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Origin</title>
+      <link>https://kaseymarkel.github.io/page/origin/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://kaseymarkel.github.io/page/origin/</guid>
+      <description>&lt;style&gt;&#xA;.origin-album-art {&#xA;  max-width: 400px;&#xA;  width: 100%;&#xA;  height: auto;&#xA;  border-radius: 8px;&#xA;  box-shadow: 0 2px 8px rgba(0,0,0,0.1);&#xA;  margin: 20px auto;&#xA;  display: block;&#xA;}&#xA;&lt;/style&gt;&#xA;&#xA;&#xA;&#xA;&#xA;&lt;img src=&#34;https://kaseymarkel.github.io/img/Origin%20Album%20Art.png&#34; alt=&#34;Origin Album Art&#34; class=&#34;origin-album-art&#34;&gt;&#xA;&#xA;&#xA;&#xA;&lt;p&gt;The world of atoms holds a special place in my heart, surely at least in part because my academic training and current job force me to spend quite a lot of time in the world of bits.&lt;/p&gt;&#xA;&lt;p&gt;Nonetheless, I wanted to highlight at least one project made of bits here, something that I wouldn&amp;rsquo;t have had the time and dedication to make manually, and for which I&amp;rsquo;m extremely grateful for modern AI systems that make building in the world of bits easier than it once was.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Recreation</title>
@@ -36,24 +50,10 @@
       <description>&lt;style&gt;&#xA;.recreation-section {&#xA;  margin-bottom: 60px;&#xA;  display: flex;&#xA;  flex-wrap: wrap;&#xA;  align-items: center;&#xA;}&#xA;.recreation-section.reverse {&#xA;  flex-direction: row-reverse;&#xA;}&#xA;.recreation-text {&#xA;  flex: 1;&#xA;  min-width: 300px;&#xA;  padding: 20px 30px;&#xA;}&#xA;.recreation-image {&#xA;  flex: 1;&#xA;  min-width: 300px;&#xA;}&#xA;.recreation-image img {&#xA;  width: 100%;&#xA;  height: auto;&#xA;  border-radius: 8px;&#xA;  box-shadow: 0 2px 8px rgba(0,0,0,0.1);&#xA;}&#xA;@media (max-width: 768px) {&#xA;  .recreation-section {&#xA;    flex-direction: column !important;&#xA;  }&#xA;  .recreation-text {&#xA;    padding: 20px 0;&#xA;  }&#xA;}&#xA;&lt;/style&gt;&#xA;&#xA;&#xA;&#xA;&lt;p&gt;Outside of my academic work, I&amp;rsquo;m passionate about outdoor adventure sports and creative pursuits. Here are some of the activities I enjoy:&lt;/p&gt;</description>
     </item>
     <item>
-      <title>Thing 3</title>
-      <link>https://kaseymarkel.github.io/page/thing-3/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://kaseymarkel.github.io/page/thing-3/</guid>
-      <description>&lt;p&gt;This is a placeholder page for Thing 3.&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>Thing 4</title>
-      <link>https://kaseymarkel.github.io/page/thing-4/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://kaseymarkel.github.io/page/thing-4/</guid>
-      <description>&lt;p&gt;This is a placeholder page for Thing 4.&lt;/p&gt;</description>
-    </item>
-    <item>
       <title>Wing Watcher&#39;s Perch</title>
-      <link>https://kaseymarkel.github.io/page/thing-1/</link>
+      <link>https://kaseymarkel.github.io/page/wing-watchers-perch/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://kaseymarkel.github.io/page/thing-1/</guid>
+      <guid>https://kaseymarkel.github.io/page/wing-watchers-perch/</guid>
       <description>&lt;style&gt;&#xA;.wwp-photo-grid {&#xA;  display: grid;&#xA;  grid-template-columns: repeat(2, 1fr);&#xA;  gap: 15px;&#xA;  margin: 20px 0;&#xA;}&#xA;.wwp-photo-grid img {&#xA;  width: 100%;&#xA;  height: auto;&#xA;  border-radius: 8px;&#xA;  box-shadow: 0 2px 8px rgba(0,0,0,0.1);&#xA;}&#xA;@media (max-width: 768px) {&#xA;  .wwp-photo-grid {&#xA;    grid-template-columns: 1fr;&#xA;  }&#xA;}&#xA;&lt;/style&gt;&#xA;&#xA;&#xA;&#xA;&lt;p&gt;This is a public bench I built on the shore of the bay area.&lt;/p&gt;&#xA;&#xA;&lt;div class=&#34;wwp-photo-grid&#34;&gt;&#xA;  &lt;img src=&#34;https://kaseymarkel.github.io/img/WWP1.jpg&#34; alt=&#34;Wing Watcher&#39;s Perch&#34;&gt;&#xA;  &lt;img src=&#34;https://kaseymarkel.github.io/img/WWP2.jpg&#34; alt=&#34;Wing Watcher&#39;s Perch construction&#34;&gt;&#xA;&lt;/div&gt;&#xA;&#xA;&#xA;&#xA;&lt;p&gt;It&amp;rsquo;s made out of a ton of two of pre-existing concrete that I used about 350 pounds of cement to combine into one solid item, along with a few chunks of rebar and a bunch of layers of paint.&lt;/p&gt;</description>
     </item>
   </channel>

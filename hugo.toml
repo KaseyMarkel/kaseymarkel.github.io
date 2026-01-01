@@ -28,7 +28,7 @@ pygmentsCodefencesGuessSyntax = true
   homeTitle = "Kasey Markel" # Set a different text for the header on the home page
   subtitle = "Plant Biologist"
   mainSections = ["post","posts"]
-  logo = "img/avatar-icon.png" # Expecting square dimensions
+  # logo = "img/avatar-icon.png" # Expecting square dimensions - disabled to remove avatar
   favicon = "img/favicon.ico"
   dateFormat = "January 2, 2006"
   commit = false
@@ -46,7 +46,7 @@ pygmentsCodefencesGuessSyntax = true
 #  disclaimerText = "The opinions expressed herein are my own personal opinions and do not represent my employer’s view in any way."
 
 [[Params.bigimg]]
- src = "img/path.jpg"
+ src = "img/sunset.jpg"
  desc = ""
 #[[Params.bigimg]]
 #  src = "img/sphere.jpg"
@@ -64,6 +64,8 @@ pygmentsCodefencesGuessSyntax = true
   github = "kaseymarkel"
   bandcamp = "https://savagecitizen.bandcamp.com"
   500px = "kaseymarkel"
+  linkedin = "kasey-markel"
+  googlescholar = "https://scholar.google.com/citations?user=yLxNBqcAAAAJ&hl=en&oi=ao"
   
 
 [[menu.main]]
@@ -83,6 +85,6 @@ pygmentsCodefencesGuessSyntax = true
 
 [[menu.main]]
     name = "CV"
-    url = "https://drive.google.com/file/d/1GQp6cJvrJcUDek92hM_Oqig9b5lhqiV_/view?usp=sharing"
+    url = "page/CV"
     weight = 4
 

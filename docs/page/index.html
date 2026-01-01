@@ -36,13 +36,11 @@
 </script>
 
 <meta property="og:title" content="Pages" />
-<meta property="og:image" content="https://kaseymarkel.github.io/img/avatar-icon.png" />
 <meta property="og:url" content="https://kaseymarkel.github.io/page/" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Kasey Markel" />
 
   <meta name="twitter:title" content="Pages" />
-  <meta name="twitter:image" content="https://kaseymarkel.github.io/img/avatar-icon.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <link href='https://kaseymarkel.github.io/img/favicon.ico' rel='icon' type='image/x-icon'/>
   <meta name="generator" content="Hugo 0.136.3">
@@ -90,7 +88,7 @@
         
           
             <li>
-              <a title="CV" href="https://drive.google.com/file/d/1GQp6cJvrJcUDek92hM_Oqig9b5lhqiV_/view?usp=sharing">CV</a>
+              <a title="CV" href="/page/CV">CV</a>
             </li>
           
         
@@ -101,15 +99,6 @@
       </ul>
     </div>
 
-    
-      <div class="avatar-container">
-        <div class="avatar-img-border">
-          <a title="Kasey Markel" href="https://kaseymarkel.github.io/">
-            <img class="avatar-img" src="https://kaseymarkel.github.io/img/avatar-icon.png" alt="Kasey Markel" />
-           
-          </a>
-        </div>
-      </div>
     
 
   </div>
@@ -237,10 +226,44 @@
     </p>
     <div class="post-entry">
         
-        <p>The most consistently-updated places to find all of my academic papers are my <a href="https://orcid.org/0000-0002-8285-3888">ORCID</a> or <a href="https://scholar.google.com/citations?user=yLxNBqcAAAAJ&amp;hl=en">Google Scholar</a> pages.</p>
-<p>Neither of those pages give me the option to explain the narrative arc of my academic career, nor to provide commentary or summaries of my favorite research projects - that&rsquo;s what this page is for.</p>
-<h2 id="narrative-career-arc">Narrative Career Arc</h2>
-<p>I did short stints in the <a href="https://umiamihealth.org/en/sylvester-comprehensive-cancer-center/research/labs/daunert-lab/research">Daunert</a> and <a href="https://scholars.uow.edu.au/antoine-van-oijen">Van Oijen</a> labs as an undergraduate, but spent the last couple of years of my undergraduate research career working with the late <a href="https://news.miami.edu/as/stories/2017/05/remembering-jeffrey-s-prince.html">Jeff Prince</a>, using scanning and transmission electron microscopy to answer a variety of biological questions.</p>
+        <style>
+.academia-section {
+  margin-bottom: 60px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.academia-section.reverse {
+  flex-direction: row-reverse;
+}
+.academia-text {
+  flex: 1;
+  min-width: 300px;
+  padding: 20px 30px;
+}
+.academia-image {
+  flex: 1;
+  min-width: 300px;
+}
+.academia-image img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+@media (max-width: 768px) {
+  .academia-section {
+    flex-direction: column !important;
+  }
+  .academia-text {
+    padding: 20px 0;
+  }
+}
+</style>
+
+
+
+<p>The most consistently-updated places to find all of my academic papers are my <a href="https://orcid.org/0000-0002-8285-3888">ORCID</a> or <a href="https://scholar.google.com/citations?user=yLxNBqcAAAAJ&amp;hl=en">Google Scholar</a> pages.</p>
         <a href="https://kaseymarkel.github.io/page/academia/" class="post-read-more">[Read More]</a>
         
     </div>
@@ -277,9 +300,118 @@
     </p>
     <div class="post-entry">
         
-        <p>You can view and download my full CV <a href="https://drive.google.com/file/d/1GQp6cJvrJcUDek92hM_Oqig9b5lhqiV_/view?usp=sharing">here</a>.</p>
-<p>For a narrative overview of my academic career and research, please visit my <a href="/page/academia/">Academic Career page</a>.</p>
+        <style>
+.cv-content {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 30px;
+  line-height: 1.6;
+  color: #333;
+}
 
+.cv-section {
+  margin-bottom: 30px;
+}
+
+.cv-section h2 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 15px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #ddd;
+  color: #222;
+}
+
+.cv-section h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-top: 20px;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.cv-item {
+  margin-bottom: 20px;
+}
+
+.cv-item-title {
+  font-weight: 600;
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+
+.cv-item-org {
+  font-style: italic;
+  color: #555;
+  margin-bottom: 4px;
+}
+
+.cv-item-date {
+  color: #777;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.cv-item-description {
+  margin-top: 8px;
+  margin-left: 0;
+}
+
+.cv-item-description ul {
+  margin-top: 8px;
+  margin-bottom: 8px;
+  padding-left: 25px;
+}
+
+.cv-item-description li {
+  margin-bottom: 4px;
+}
+
+.cv-publication {
+  margin-bottom: 12px;
+  padding-left: 0;
+}
+
+.cv-publication p {
+  margin-bottom: 4px;
+}
+
+.cv-skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.cv-skills span {
+  background-color: #f0f0f0;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+@media (max-width: 768px) {
+  .cv-content {
+    padding: 20px 15px;
+  }
+  
+  .cv-section h2 {
+    font-size: 20px;
+  }
+  
+  .cv-section h3 {
+    font-size: 16px;
+  }
+}
+</style>
+
+
+
+
+<div class="cv-content">
+  <div style="text-align: center; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 3px solid #333;">
+    <h1 style="font-size: 32px; font-weight: 700; margin-bottom: 10px; color: #222;">KASEY MARKEL</h1>
+    <p style="color: #666; font-size: 16px; margin: 0;">(+1) 970-217-2682 ◾ <a href="mailto:Kaseymarkel@gmail.com" style="color: #666; text-decoration: none;">KASEYMARKEL@GMAIL.COM</a> ◾ Berkeley, CA</p>
+        <a href="https://kaseymarkel.github.io/page/cv/" class="post-read-more">[Read More]</a>
         
     </div>
 
@@ -288,7 +420,47 @@
 </article>
           
             <article class="post-preview">
-    <a href="https://kaseymarkel.github.io/page/thing-2/">
+    <a href="https://kaseymarkel.github.io/page/thing-4/">
+        <h2 class="post-title">Glass</h2>
+        
+        
+        
+    </a>
+
+    <p class="post-meta">
+        <span class="post-meta">
+  
+  
+  <i class="fas fa-calendar"></i>&nbsp;Posted on January 1, 0001
+  
+  
+  
+  
+    
+      &nbsp;|&nbsp;<i class="fas fa-user"></i>&nbsp;Kasey Markel
+    
+  
+  
+</span>
+
+
+    </p>
+    <div class="post-entry">
+        
+        <p>I&rsquo;ve had the immense fortune to be in the right place at the right time to learn the ancient art of glassblowing at a steeply discounted price.</p>
+<h2>Furnace glass</h2>
+I first learned Furnace Glass in undergrad at one of the few schools that has a furnace studio that a random science major can just take classes at and then start using whenever it was free - so I ended up being an odd duck that usually works alone in an art style mostly performed in a team.
+<p>Furnace glass still follows the basic process developed in ancient Rome: start with a pot of glowing golden liquid glass in the furnace, then use ~2m long metal rods and tubes to gather it, shape it, and blow it into hollow vessels.</p>
+        <a href="https://kaseymarkel.github.io/page/thing-4/" class="post-read-more">[Read More]</a>
+        
+    </div>
+
+    
+
+</article>
+          
+            <article class="post-preview">
+    <a href="https://kaseymarkel.github.io/page/living-wall/">
         <h2 class="post-title">Living Wall</h2>
         
         
@@ -347,7 +519,64 @@
 
 
 <p>The basic design is a rectangular prism made of wood on 4 sides, plastic on one, and open on the 6th. On top and bottom there are two &ldquo;buckets&rdquo; - I water into the top bucket (generally 4-10 liters depending on the state of the soil), it slowly drips down through the wall thanks to a few dozen small holes in the 1x6 between that bucket and the main space, and drain excess out of the bottom bucket - it has a spigot so I can do so in a controlled fashion.</p>
-        <a href="https://kaseymarkel.github.io/page/thing-2/" class="post-read-more">[Read More]</a>
+        <a href="https://kaseymarkel.github.io/page/living-wall/" class="post-read-more">[Read More]</a>
+        
+    </div>
+
+    
+
+</article>
+          
+            <article class="post-preview">
+    <a href="https://kaseymarkel.github.io/page/origin/">
+        <h2 class="post-title">Origin</h2>
+        
+        
+        
+    </a>
+
+    <p class="post-meta">
+        <span class="post-meta">
+  
+  
+  <i class="fas fa-calendar"></i>&nbsp;Posted on January 1, 0001
+  
+  
+  
+  
+    
+      &nbsp;|&nbsp;<i class="fas fa-user"></i>&nbsp;Kasey Markel
+    
+  
+  
+</span>
+
+
+    </p>
+    <div class="post-entry">
+        
+        <style>
+.origin-album-art {
+  max-width: 400px;
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  margin: 20px auto;
+  display: block;
+}
+</style>
+
+
+
+
+<img src="/img/Origin%20Album%20Art.png" alt="Origin Album Art" class="origin-album-art">
+
+
+
+<p>The world of atoms holds a special place in my heart, surely at least in part because my academic training and current job force me to spend quite a lot of time in the world of bits.</p>
+<p>Nonetheless, I wanted to highlight at least one project made of bits here, something that I wouldn&rsquo;t have had the time and dedication to make manually, and for which I&rsquo;m extremely grateful for modern AI systems that make building in the world of bits easier than it once was.</p>
+        <a href="https://kaseymarkel.github.io/page/origin/" class="post-read-more">[Read More]</a>
         
     </div>
 
@@ -430,81 +659,7 @@
 </article>
           
             <article class="post-preview">
-    <a href="https://kaseymarkel.github.io/page/thing-3/">
-        <h2 class="post-title">Thing 3</h2>
-        
-        
-        
-    </a>
-
-    <p class="post-meta">
-        <span class="post-meta">
-  
-  
-  <i class="fas fa-calendar"></i>&nbsp;Posted on January 1, 0001
-  
-  
-  
-  
-    
-      &nbsp;|&nbsp;<i class="fas fa-user"></i>&nbsp;Kasey Markel
-    
-  
-  
-</span>
-
-
-    </p>
-    <div class="post-entry">
-        
-        <p>This is a placeholder page for Thing 3.</p>
-
-        
-    </div>
-
-    
-
-</article>
-          
-            <article class="post-preview">
-    <a href="https://kaseymarkel.github.io/page/thing-4/">
-        <h2 class="post-title">Thing 4</h2>
-        
-        
-        
-    </a>
-
-    <p class="post-meta">
-        <span class="post-meta">
-  
-  
-  <i class="fas fa-calendar"></i>&nbsp;Posted on January 1, 0001
-  
-  
-  
-  
-    
-      &nbsp;|&nbsp;<i class="fas fa-user"></i>&nbsp;Kasey Markel
-    
-  
-  
-</span>
-
-
-    </p>
-    <div class="post-entry">
-        
-        <p>This is a placeholder page for Thing 4.</p>
-
-        
-    </div>
-
-    
-
-</article>
-          
-            <article class="post-preview">
-    <a href="https://kaseymarkel.github.io/page/thing-1/">
+    <a href="https://kaseymarkel.github.io/page/wing-watchers-perch/">
         <h2 class="post-title">Wing Watcher&#39;s Perch</h2>
         
         
@@ -563,7 +718,7 @@
 
 
 <p>It&rsquo;s made out of a ton of two of pre-existing concrete that I used about 350 pounds of cement to combine into one solid item, along with a few chunks of rebar and a bunch of layers of paint.</p>
-        <a href="https://kaseymarkel.github.io/page/thing-1/" class="post-read-more">[Read More]</a>
+        <a href="https://kaseymarkel.github.io/page/wing-watchers-perch/" class="post-read-more">[Read More]</a>
         
     </div>
 
@@ -604,6 +759,16 @@
               </li>
               <li>
 		
+		  <a href="https://linkedin.com/in/kasey-markel" title="LinkedIn">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-linkedin fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
 		  <a href="https://savagecitizen.bandcamp.com" title="Bandcamp">
 		
                   <span class="fa-stack fa-lg">
@@ -619,6 +784,16 @@
                   <span class="fa-stack fa-lg">
                     <i class="fas fa-circle fa-stack-2x"></i>
                     <i class="fab fa-500px fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://scholar.google.com/citations?user=yLxNBqcAAAAJ&amp;hl=en&amp;oi=ao" title="Google Scholar">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fas fa-graduation-cap fa-stack-1x fa-inverse"></i>
                   </span>
                 </a>
               </li>

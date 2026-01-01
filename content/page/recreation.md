@@ -122,9 +122,9 @@ I enjoy working with my hands and creating things, whether it's woodworking, ele
 </style>
 
 <div class="things-grid">
-  <a href="/page/thing-1/" class="thing-button">Wing Watcher's Perch</a>
-  <a href="/page/thing-2/" class="thing-button">Living Wall</a>
-  <a href="/page/thing-3/" class="thing-button">Thing 3</a>
+  <a href="/page/wing-watchers-perch/" class="thing-button">Wing Watcher's Perch</a>
+  <a href="/page/living-wall/" class="thing-button">Living Wall</a>
+  <a href="/page/origin/" class="thing-button">Origin</a>
   <a href="/page/thing-4/" class="thing-button">Thing 4</a>
 </div>
 {{< /rawhtml >}}

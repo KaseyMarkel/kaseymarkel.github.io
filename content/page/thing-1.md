@@ -1,5 +1,6 @@
 ---
 title: "Wing Watcher's Perch"
+slug: "wing-watchers-perch"
 socialShare: false
 ---
 

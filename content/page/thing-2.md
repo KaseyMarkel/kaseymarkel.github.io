@@ -1,5 +1,6 @@
 ---
 title: "Living Wall"
+slug: "living-wall"
 socialShare: false
 ---
 
