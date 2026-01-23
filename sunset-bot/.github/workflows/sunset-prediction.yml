@@ -1,0 +1,46 @@
+name: Sunset Prediction Bot
+
+on:
+  schedule:
+    # Runs at 6:30 PM CST (00:30 UTC next day) - adjust based on actual sunset
+    # In winter: sunsets ~6:00 PM, in summer: ~8:00 PM in Texcoco
+    # Running at 6:30 PM should catch most, will need seasonal adjustment
+    - cron: '30 0 * * *'  # 6:30 PM CST daily
+  
+  workflow_dispatch:  # Allows manual testing
+
+jobs:
+  predict-sunset:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    
+    - name: Install dependencies
+      run: |
+        cd sunset-bot
+        pip install requests astral pytz
+    
+    - name: Run sunset prediction
+      env:
+        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        OPENWEATHER_API_KEY: ${{ secrets.OPENWEATHER_API_KEY }}
+      run: |
+        cd sunset-bot
+        python sunset_bot.py
+    
+    - name: Commit updated data
+      run: |
+        cd sunset-bot
+        git config --local user.email "github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+        git add -A
+        git diff --quiet && git diff --staged --quiet || git commit -m "Update sunset predictions and feedback [skip ci]"
+        git push
+      continue-on-error: true  # Don't fail if no changes to commit
