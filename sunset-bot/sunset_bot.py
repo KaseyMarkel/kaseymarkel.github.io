@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Sunset Quality Prediction Bot for Texcoco, Mexico
+Sunset Quality Prediction Bot - Multi-user version
 Predicts aesthetic quality of sunsets based on weather data
 """
 
@@ -23,12 +23,12 @@ class SunsetPredictor:
     def load_weights(self):
         """Load model weights from file, or use defaults"""
         default_weights = {
-            'cloud_cover_optimal': 0.4,  # 40% cloud cover is often ideal
+            'cloud_cover_optimal': 0.4,
             'cloud_cover_weight': 3.0,
             'humidity_weight': 1.5,
             'visibility_weight': 2.0,
             'pollution_weight': 1.0,
-            'dust_weight': 2.5,  # Dust can create spectacular sunsets
+            'dust_weight': 2.5,
         }
         
         if os.path.exists('model_weights.json'):
@@ -42,50 +42,36 @@ class SunsetPredictor:
             json.dump(self.weights, f, indent=2)
     
     def predict(self, weather_data):
-        """
-        Predict sunset quality on 1-10 scale
-        
-        Args:
-            weather_data: dict with keys:
-                - cloud_cover: percentage (0-100)
-                - humidity: percentage (0-100)
-                - visibility: meters
-                - aqi: air quality index (optional)
-                - pm25: PM2.5 level (optional)
-        
-        Returns:
-            float: predicted quality (1-10)
-        """
-        score = 5.0  # Start at middle
+        """Predict sunset quality on 1-10 scale"""
+        score = 5.0
         
         # Cloud cover: Sweet spot around 30-50%
         cloud_cover = weather_data.get('cloud_cover', 50)
         cloud_deviation = abs(cloud_cover - (self.weights['cloud_cover_optimal'] * 100))
         cloud_score = (100 - cloud_deviation) / 100 * self.weights['cloud_cover_weight']
-        score += (cloud_score - 1.5)  # Center around 0
+        score += (cloud_score - 1.5)
         
-        # Humidity: Lower is generally better for vivid colors
+        # Humidity: Lower is better
         humidity = weather_data.get('humidity', 60)
         humidity_score = (100 - humidity) / 100 * self.weights['humidity_weight']
         score += (humidity_score - 0.75)
         
-        # Visibility: Higher is better, but diminishing returns
+        # Visibility: Higher is better
         visibility = weather_data.get('visibility', 10000)
         visibility_km = visibility / 1000
         visibility_score = min(visibility_km / 10, 1.0) * self.weights['visibility_weight']
         score += (visibility_score - 1.0)
         
-        # Air quality: Some particulates help, but too much is bad
+        # Air quality: Sweet spot for colorful sunsets
         pm25 = weather_data.get('pm25', 15)
-        if 10 <= pm25 <= 35:  # Sweet spot for colorful sunsets
+        if 10 <= pm25 <= 35:
             dust_score = self.weights['dust_weight'] * 0.5
-        elif pm25 < 10:  # Too clean
+        elif pm25 < 10:
             dust_score = -self.weights['dust_weight'] * 0.3
-        else:  # Too polluted
+        else:
             dust_score = -self.weights['dust_weight'] * 0.5
         score += dust_score
         
-        # Clamp to 1-10 range
         return max(1.0, min(10.0, score))
 
 
@@ -141,11 +127,11 @@ class WeatherFetcher:
                 'pm10': components.get('pm10', 20),
             }
         except:
-            return {'aqi': 3, 'pm25': 15, 'pm10': 20}  # Defaults
+            return {'aqi': 3, 'pm25': 15, 'pm10': 20}
 
 
 class SunsetBot:
-    """Main bot controller"""
+    """Main bot controller with multi-user support"""
     
     def __init__(self, telegram_token, weather_api_key, location_name, lat, lon):
         self.telegram_token = telegram_token
@@ -158,21 +144,46 @@ class SunsetBot:
         self.init_database()
     
     def init_database(self):
-        """Initialize SQLite database for feedback storage"""
+        """Initialize SQLite database"""
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
+        
+        # Users table
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS users (
+                chat_id INTEGER PRIMARY KEY,
+                username TEXT,
+                first_name TEXT,
+                registered_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                active INTEGER DEFAULT 1
+            )
+        ''')
+        
+        # Predictions table
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS predictions (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 date TEXT NOT NULL,
                 sunset_time TEXT NOT NULL,
                 predicted_quality REAL NOT NULL,
-                actual_quality INTEGER,
                 weather_data TEXT NOT NULL,
-                feedback_time TEXT,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         ''')
+        
+        # Feedback table (links users to predictions)
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS feedback (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                prediction_id INTEGER NOT NULL,
+                chat_id INTEGER NOT NULL,
+                rating INTEGER NOT NULL,
+                feedback_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (prediction_id) REFERENCES predictions(id),
+                FOREIGN KEY (chat_id) REFERENCES users(chat_id)
+            )
+        ''')
+        
         conn.commit()
         conn.close()
     
@@ -208,17 +219,61 @@ class SunsetBot:
         response = requests.get(url)
         return response.json()
     
-    def get_chat_id(self, username):
-        """Get chat ID for a username from recent updates"""
+    def register_users_from_updates(self):
+        """Check for new users and register them"""
         updates = self.get_telegram_updates()
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
         
+        new_users = 0
         for update in updates.get('result', []):
             if 'message' in update:
                 msg = update['message']
-                if msg.get('from', {}).get('username', '').lower() == username.lower().replace('@', ''):
-                    return msg['chat']['id']
+                chat_id = msg['chat']['id']
+                username = msg.get('from', {}).get('username', '')
+                first_name = msg.get('from', {}).get('first_name', '')
+                
+                # Check if user exists
+                cursor.execute('SELECT chat_id FROM users WHERE chat_id = ?', (chat_id,))
+                if not cursor.fetchone():
+                    # New user - register them
+                    cursor.execute('''
+                        INSERT INTO users (chat_id, username, first_name)
+                        VALUES (?, ?, ?)
+                    ''', (chat_id, username, first_name))
+                    new_users += 1
+                    
+                    # Send welcome message
+                    welcome = f"""🌅 Welcome to Sunset Predictions, {first_name}!
+
+You're now registered to receive daily sunset quality predictions 30 minutes before sunset in {self.location_name}.
+
+After each sunset, reply with a number 1-10 to rate the actual quality and help improve the predictions!
+
+Rating guide:
+• 1-3: Disappointing
+• 4-6: Average
+• 7-8: Beautiful
+• 9-10: Spectacular
+"""
+                    self.send_telegram_message(chat_id, welcome)
         
-        return None
+        conn.commit()
+        conn.close()
+        
+        if new_users > 0:
+            print(f"Registered {new_users} new user(s)")
+        
+        return new_users
+    
+    def get_active_users(self):
+        """Get all active registered users"""
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
+        cursor.execute('SELECT chat_id, username, first_name FROM users WHERE active = 1')
+        users = cursor.fetchall()
+        conn.close()
+        return users
     
     def save_prediction(self, sunset_time, predicted_quality, weather_data):
         """Save prediction to database"""
@@ -233,11 +288,23 @@ class SunsetBot:
             predicted_quality,
             json.dumps(weather_data)
         ))
+        prediction_id = cursor.lastrowid
         conn.commit()
         conn.close()
+        return prediction_id
     
-    def run_prediction(self, chat_id):
-        """Main prediction workflow"""
+    def run_prediction(self):
+        """Main prediction workflow - send to all users"""
+        # First, register any new users
+        self.register_users_from_updates()
+        
+        # Get all active users
+        users = self.get_active_users()
+        
+        if not users:
+            print("No registered users yet!")
+            return
+        
         # Get sunset time
         sunset_time = self.get_sunset_time()
         
@@ -250,7 +317,7 @@ class SunsetBot:
         predicted_quality = self.predictor.predict(weather)
         
         # Save to database
-        self.save_prediction(sunset_time, predicted_quality, weather)
+        prediction_id = self.save_prediction(sunset_time, predicted_quality, weather)
         
         # Format message
         message = f"""🌅 *Sunset Prediction for {self.location_name}*
@@ -259,20 +326,34 @@ class SunsetBot:
 *Predicted Quality:* {predicted_quality:.1f}/10
 
 *Current Conditions:*
-- Cloud Cover: {weather['cloud_cover']}%
-- Humidity: {weather['humidity']}%
-- Visibility: {weather['visibility']/1000:.1f} km
-- PM2.5: {weather.get('pm25', 'N/A')}
-- Weather: {weather['description']}
+• Cloud Cover: {weather['cloud_cover']}%
+• Humidity: {weather['humidity']}%
+• Visibility: {weather['visibility']/1000:.1f} km
+• PM2.5: {weather.get('pm25', 'N/A')}
+• Weather: {weather['description']}
 
 After watching the sunset, reply with a number 1-10 to help calibrate the model!
 """
         
-        # Send message
-        result = self.send_telegram_message(chat_id, message)
-        return result
+        # Send to all users
+        sent_count = 0
+        for chat_id, username, first_name in users:
+            try:
+                result = self.send_telegram_message(chat_id, message)
+                if result.get('ok'):
+                    sent_count += 1
+                    print(f"Sent prediction to @{username} (chat_id: {chat_id})")
+                else:
+                    print(f"Failed to send to @{username}: {result}")
+            except Exception as e:
+                print(f"Error sending to @{username}: {e}")
+        
+        print(f"Sent predictions to {sent_count}/{len(users)} users")
+        
+        # Process any pending feedback
+        self.process_feedback(prediction_id)
     
-    def process_feedback(self):
+    def process_feedback(self, latest_prediction_id):
         """Check for feedback messages and update database"""
         updates = self.get_telegram_updates()
         
@@ -282,27 +363,32 @@ After watching the sunset, reply with a number 1-10 to help calibrate the model!
         for update in updates.get('result', []):
             if 'message' in update:
                 msg = update['message']
+                chat_id = msg['chat']['id']
                 text = msg.get('text', '').strip()
                 
                 # Check if it's a rating (1-10)
                 try:
                     rating = int(text)
                     if 1 <= rating <= 10:
-                        # Update most recent prediction without feedback
+                        # Check if this user already rated this prediction
                         cursor.execute('''
-                            UPDATE predictions
-                            SET actual_quality = ?, feedback_time = ?
-                            WHERE actual_quality IS NULL
-                            ORDER BY created_at DESC
-                            LIMIT 1
-                        ''', (rating, datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
-                        conn.commit()
+                            SELECT id FROM feedback 
+                            WHERE prediction_id = ? AND chat_id = ?
+                        ''', (latest_prediction_id, chat_id))
                         
-                        # Send confirmation
-                        self.send_telegram_message(
-                            msg['chat']['id'],
-                            f"Thanks! Recorded your rating of {rating}/10 🌅"
-                        )
+                        if not cursor.fetchone():
+                            # Save feedback
+                            cursor.execute('''
+                                INSERT INTO feedback (prediction_id, chat_id, rating)
+                                VALUES (?, ?, ?)
+                            ''', (latest_prediction_id, chat_id, rating))
+                            conn.commit()
+                            
+                            # Send confirmation
+                            self.send_telegram_message(
+                                chat_id,
+                                f"Thanks! Recorded your rating of {rating}/10 🌅"
+                            )
                 except ValueError:
                     pass
         
@@ -328,21 +414,8 @@ def main():
     # Initialize bot
     bot = SunsetBot(telegram_token, weather_api_key, location_name, lat, lon)
     
-    # Get chat ID (you may need to message the bot first)
-    username = "Kaseymarkel"
-    chat_id = bot.get_chat_id(username)
-    
-    if not chat_id:
-        print(f"Could not find chat ID for @{username}")
-        print("Please message the bot first at t.me/Bayweatherbot")
-        return
-    
-    # Run prediction and send message
-    result = bot.run_prediction(chat_id)
-    print(f"Prediction sent: {result}")
-    
-    # Process any pending feedback
-    bot.process_feedback()
+    # Run prediction and send to all registered users
+    bot.run_prediction()
 
 
 if __name__ == "__main__":
