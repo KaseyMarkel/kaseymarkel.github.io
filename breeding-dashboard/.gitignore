@@ -1,0 +1,33 @@
+# Credentials and sensitive data
+.env
+.env.local
+config.local.js
+*api-key*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+npm-debug.log*
+
+# Dependencies (if you add build process later)
+node_modules/
+package-lock.json
+yarn.lock
+
+# Build outputs
+dist/
+build/
+
+# Temporary files
+.tmp/
+temp/
