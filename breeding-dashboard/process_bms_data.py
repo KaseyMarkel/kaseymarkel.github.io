@@ -542,6 +542,58 @@ def compute_historical_trends(observations):
     return trends
 
 
+def compute_distributions(observations):
+    """Compute histogram data for continuous metrics"""
+    zinc_vals = []
+    trp_vals = []
+    yield_vals = []
+
+    for obs in observations:
+        var_name = obs.get('observationVariableName', '')
+        value = safe_float(obs.get('value'))
+
+        if var_name in ['Zinc_sn', 'Zn_manual'] and 5 < value < 100:
+            zinc_vals.append(value)
+        elif var_name in ['Trp_sn', 'Trp_manual'] and 0.01 < value < 0.2:
+            trp_vals.append(value)
+        elif var_name == 'RendTM_Ha' and 0 < value < 20:
+            yield_vals.append(value)
+
+    def make_histogram(vals, bins=20):
+        if not vals:
+            return {'bins': [], 'counts': [], 'labels': []}
+
+        min_val = min(vals)
+        max_val = max(vals)
+        bin_width = (max_val - min_val) / bins
+
+        bin_edges = [min_val + i * bin_width for i in range(bins + 1)]
+        counts = [0] * bins
+
+        for v in vals:
+            bin_idx = min(int((v - min_val) / bin_width), bins - 1)
+            counts[bin_idx] += 1
+
+        labels = [f"{bin_edges[i]:.1f}-{bin_edges[i+1]:.1f}" for i in range(bins)]
+        midpoints = [(bin_edges[i] + bin_edges[i+1]) / 2 for i in range(bins)]
+
+        return {
+            'bins': midpoints,
+            'counts': counts,
+            'labels': labels,
+            'min': round(min_val, 2),
+            'max': round(max_val, 2),
+            'mean': round(sum(vals) / len(vals), 2),
+            'n': len(vals)
+        }
+
+    return {
+        'zinc': make_histogram(zinc_vals, 15),
+        'tryptophan': make_histogram(trp_vals, 15),
+        'yield': make_histogram(yield_vals, 15)
+    }
+
+
 def main():
     print("Loading BMS data...")
 
@@ -605,6 +657,10 @@ def main():
     # Compute historical trends
     print("Computing historical trends...")
     historical_trends = compute_historical_trends(observations)
+
+    # Compute distributions for summary stats
+    print("Computing distributions...")
+    distributions = compute_distributions(observations)
     print(f"  Found {len(historical_trends['periods'])} time periods: {historical_trends['periods']}")
 
     # Compute by region
@@ -633,6 +689,7 @@ def main():
         },
         **all_metrics,
         'historicalTrends': historical_trends,
+        'distributions': distributions,
         'byRegion': by_region,
         'byTrait': by_trait,
         'studies': [{

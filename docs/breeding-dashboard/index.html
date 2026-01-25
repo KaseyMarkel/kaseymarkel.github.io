@@ -558,6 +558,17 @@
             padding: 16px;
             background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
             border-radius: 12px;
+            transition: all 0.2s;
+        }
+
+        .summary-item.clickable {
+            cursor: pointer;
+        }
+
+        .summary-item.clickable:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.25);
+            background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
         }
 
         .summary-value {
@@ -1178,20 +1189,20 @@
             container.innerHTML = html;
         }
 
-        // Render summary stats
+        // Render summary stats (clickable)
         function renderSummary(data) {
             var container = document.getElementById('summary-container');
             if (!container || !data) return;
 
             var items = [
-                { label: 'Studies', value: data.totalStudies || 0 },
-                { label: 'Active', value: data.activeStudies || 0 },
-                { label: 'Obs Units', value: data.totalObsUnits || 0 },
-                { label: 'Plants', value: data.plantsHarvested || 0 },
-                { label: 'Ears', value: data.earsHarvested || 0 },
-                { label: 'Yield (t/ha)', value: data.avgYield || 0 },
-                { label: 'Zinc (ppm)', value: data.avgZinc || 0 },
-                { label: 'Trp (%)', value: data.avgTryptophan || 0 },
+                { label: 'Studies', value: data.totalStudies || 0, key: 'studies', type: 'timeseries' },
+                { label: 'Active', value: data.activeStudies || 0, key: 'active', type: 'timeseries' },
+                { label: 'Obs Units', value: data.totalObsUnits || 0, key: 'observations', type: 'timeseries' },
+                { label: 'Plants', value: data.plantsHarvested || 0, key: 'plants', type: 'info' },
+                { label: 'Ears', value: data.earsHarvested || 0, key: 'ears', type: 'info' },
+                { label: 'Yield (t/ha)', value: data.avgYield || 0, key: 'yield', type: 'distribution' },
+                { label: 'Zinc (ppm)', value: data.avgZinc || 0, key: 'zinc', type: 'distribution' },
+                { label: 'Trp (%)', value: data.avgTryptophan || 0, key: 'tryptophan', type: 'distribution' },
             ];
 
             var html = '';
@@ -1200,12 +1211,106 @@
                 var val = typeof item.value === 'number' ?
                     (item.value > 1000 ? item.value.toLocaleString() :
                      item.value < 1 ? item.value.toFixed(3) : item.value.toFixed(1)) : item.value;
-                html += '<div class="summary-item">' +
+                html += '<div class="summary-item clickable" onclick="showSummaryDetails(\'' + item.key + '\', \'' + item.type + '\', \'' + item.label + '\')">' +
                     '<div class="summary-value">' + val + '</div>' +
                     '<div class="summary-label">' + item.label + '</div>' +
                 '</div>';
             }
             container.innerHTML = html;
+        }
+
+        // Render histogram chart
+        function renderHistogram(dist, title, unit) {
+            if (!dist || !dist.bins || dist.bins.length === 0) {
+                return '<p style="color: #6b7280;">No distribution data available.</p>';
+            }
+
+            var width = 450, height = 220;
+            var marginLeft = 50, marginRight = 20, marginTop = 30, marginBottom = 50;
+            var chartWidth = width - marginLeft - marginRight;
+            var chartHeight = height - marginTop - marginBottom;
+
+            var maxCount = Math.max.apply(null, dist.counts);
+            var barWidth = chartWidth / dist.bins.length - 2;
+
+            var svg = '<svg width="' + width + '" height="' + height + '" style="background: #f9fafb; border-radius: 8px; font-family: Inter, sans-serif;">';
+
+            // Y-axis grid lines and labels
+            var yTicks = 5;
+            for (var t = 0; t <= yTicks; t++) {
+                var yPos = marginTop + chartHeight - (t / yTicks) * chartHeight;
+                var tickVal = Math.round(maxCount * t / yTicks);
+                svg += '<line x1="' + marginLeft + '" y1="' + yPos + '" x2="' + (width - marginRight) + '" y2="' + yPos + '" stroke="#e5e7eb" stroke-dasharray="' + (t === 0 ? '0' : '4,4') + '" />';
+                svg += '<text x="' + (marginLeft - 8) + '" y="' + (yPos + 4) + '" font-size="10" fill="#6b7280" text-anchor="end">' + tickVal + '</text>';
+            }
+
+            // Y-axis title
+            svg += '<text x="14" y="' + (marginTop + chartHeight / 2) + '" font-size="11" fill="#374151" text-anchor="middle" transform="rotate(-90, 14, ' + (marginTop + chartHeight / 2) + ')">Count</text>';
+
+            // Bars
+            for (var i = 0; i < dist.bins.length; i++) {
+                var x = marginLeft + i * (chartWidth / dist.bins.length) + 1;
+                var barHeight = (dist.counts[i] / maxCount) * chartHeight;
+                var y = marginTop + chartHeight - barHeight;
+
+                svg += '<rect x="' + x + '" y="' + y + '" width="' + barWidth + '" height="' + barHeight + '" fill="#667eea" rx="2" />';
+            }
+
+            // X-axis labels (show a few)
+            var xLabelsToShow = [0, Math.floor(dist.bins.length / 2), dist.bins.length - 1];
+            for (var i = 0; i < xLabelsToShow.length; i++) {
+                var idx = xLabelsToShow[i];
+                var x = marginLeft + idx * (chartWidth / dist.bins.length) + barWidth / 2;
+                svg += '<text x="' + x + '" y="' + (height - marginBottom + 18) + '" font-size="10" fill="#6b7280" text-anchor="middle">' + dist.bins[idx].toFixed(1) + '</text>';
+            }
+
+            // X-axis title
+            svg += '<text x="' + (marginLeft + chartWidth / 2) + '" y="' + (height - 8) + '" font-size="11" fill="#374151" text-anchor="middle">' + unit + '</text>';
+
+            svg += '</svg>';
+
+            // Stats summary
+            var stats = '<div style="display: flex; gap: 20px; justify-content: center; margin-top: 16px;">';
+            stats += '<div style="text-align: center;"><div style="font-weight: 600; color: #374151;">' + dist.n.toLocaleString() + '</div><div style="font-size: 0.8rem; color: #6b7280;">Samples</div></div>';
+            stats += '<div style="text-align: center;"><div style="font-weight: 600; color: #374151;">' + dist.mean + '</div><div style="font-size: 0.8rem; color: #6b7280;">Mean</div></div>';
+            stats += '<div style="text-align: center;"><div style="font-weight: 600; color: #374151;">' + dist.min + '</div><div style="font-size: 0.8rem; color: #6b7280;">Min</div></div>';
+            stats += '<div style="text-align: center;"><div style="font-weight: 600; color: #374151;">' + dist.max + '</div><div style="font-size: 0.8rem; color: #6b7280;">Max</div></div>';
+            stats += '</div>';
+
+            return svg + stats;
+        }
+
+        // Show summary stat details
+        function showSummaryDetails(key, type, label) {
+            var html = '<div style="padding: 20px;">';
+
+            if (type === 'distribution' && cachedData.distributions && cachedData.distributions[key]) {
+                var dist = cachedData.distributions[key];
+                var unit = key === 'zinc' ? 'ppm' : (key === 'tryptophan' ? '%' : 't/ha');
+                html += '<h3 style="margin-bottom: 16px;">' + label + ' Distribution</h3>';
+                html += renderHistogram(dist, label, unit);
+            } else if (type === 'timeseries' && cachedData.historicalTrends) {
+                var trends = cachedData.historicalTrends;
+                html += '<h3 style="margin-bottom: 16px;">' + label + ' Over Time</h3>';
+                if (key === 'studies' || key === 'active') {
+                    html += renderTrendChart(trends.periods, trends.studies, label, 'count');
+                } else if (key === 'observations') {
+                    html += renderTrendChart(trends.periods, trends.observations, label, 'count');
+                }
+                // Data table
+                html += '<div style="margin-top: 16px; max-height: 150px; overflow-y: auto;">';
+                html += '<table style="width: 100%; font-size: 0.8rem;"><thead><tr><th>Period</th><th style="text-align:right;">Count</th></tr></thead><tbody>';
+                var dataKey = key === 'observations' ? 'observations' : 'studies';
+                for (var i = trends.periods.length - 1; i >= 0; i--) {
+                    html += '<tr><td>' + trends.periods[i] + '</td><td style="text-align:right;">' + trends[dataKey][i].toLocaleString() + '</td></tr>';
+                }
+                html += '</tbody></table></div>';
+            } else {
+                html += '<p>Detailed breakdown for ' + label + '</p>';
+            }
+
+            html += '</div>';
+            showModal(label + ' - Details', html);
         }
 
         // Drill-down for biofort
