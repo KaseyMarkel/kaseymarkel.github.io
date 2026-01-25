@@ -1,0 +1,51 @@
+[
+  {
+    "programDbId": "febb4f0f-b4af-4399-bdec-73e88a5d2223",
+    "programName": "Mejoramiento Semilla Nueva",
+    "leadPersonDbId": "1",
+    "leadPersonName": "admin",
+    "commonCropName": "maize"
+  },
+  {
+    "programDbId": "200cbd5e-5601-41c6-90a5-09258d185beb",
+    "programName": "Evaluaci\u00f3n Semilla Nueva",
+    "leadPersonDbId": "3",
+    "leadPersonName": "kevas",
+    "commonCropName": "maize"
+  },
+  {
+    "programDbId": "ced9a75d-b8fe-4c19-86b2-ac9963c2c677",
+    "programName": "Incrementos y Formaciones SN",
+    "leadPersonDbId": "3",
+    "leadPersonName": "kevas",
+    "commonCropName": "maize"
+  },
+  {
+    "programDbId": "0b9210c9-6c36-494b-b934-414d6e67e273",
+    "programName": "Monitoreo y Evaluacion SN",
+    "leadPersonDbId": "3",
+    "leadPersonName": "kevas",
+    "commonCropName": "maize"
+  },
+  {
+    "programDbId": "1471e546-c855-461f-aa70-076201328def",
+    "programName": "LISTADOS DE TERCEROS",
+    "leadPersonDbId": "3",
+    "leadPersonName": "kevas",
+    "commonCropName": "maize"
+  },
+  {
+    "programDbId": "27541c08-97db-42a9-a073-43437aea1186",
+    "programName": "Criollos Guatemala",
+    "leadPersonDbId": "1",
+    "leadPersonName": "admin",
+    "commonCropName": "maize"
+  },
+  {
+    "programDbId": "4e1e1380-dfa6-4b88-a743-fe052ad49f00",
+    "programName": "Control de Calidad",
+    "leadPersonDbId": "3",
+    "leadPersonName": "kevas",
+    "commonCropName": "maize"
+  }
+]
