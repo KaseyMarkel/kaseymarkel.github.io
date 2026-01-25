@@ -180,16 +180,21 @@ def compute_comprehensive_metrics(study_data, all_observations, all_obs_units):
         elif var_name == 'PESO_GRANOsn' and value > 0:
             metrics['grain_weight_vals'].append(value)
 
-        # Biofortification
-        elif var_name in ['Zinc_sn', 'Zn_manual'] and value > 0:
+        # Biofortification (with outlier filtering for data entry errors)
+        # Zinc: realistic range 5-100 ppm (filters out typos like 36439)
+        elif var_name in ['Zinc_sn', 'Zn_manual'] and 5 < value < 100:
             metrics['zinc_vals'].append(value)
-        elif var_name in ['Fe_sn', 'Fe_manual'] and value > 0:
+        # Iron: realistic range 10-150 ppm
+        elif var_name in ['Fe_sn', 'Fe_manual'] and 10 < value < 150:
             metrics['iron_vals'].append(value)
-        elif var_name in ['Prot_sn', 'Prot_manual'] and value > 0:
+        # Protein: realistic range 5-20%
+        elif var_name in ['Prot_sn', 'Prot_manual'] and 5 < value < 20:
             metrics['protein_vals'].append(value)
-        elif var_name in ['Lys_sn', 'Lys_manual'] and value > 0:
+        # Lysine: realistic range 0.1-1.0% of protein
+        elif var_name in ['Lys_sn', 'Lys_manual'] and 0.1 < value < 1.0:
             metrics['lysine_vals'].append(value)
-        elif var_name in ['Trp_sn', 'Trp_manual'] and value > 0:
+        # Tryptophan: realistic range 0.01-0.2% of protein
+        elif var_name in ['Trp_sn', 'Trp_manual'] and 0.01 < value < 0.2:
             metrics['tryptophan_vals'].append(value)
 
         # Flowering
@@ -476,9 +481,10 @@ def compute_historical_trends(observations):
         if study_id:
             by_period[period]['studies'].add(study_id)
 
-        if var_name in ['Zinc_sn', 'Zn_manual'] and value > 0:
+        # Apply same outlier filters as main metrics
+        if var_name in ['Zinc_sn', 'Zn_manual'] and 5 < value < 100:
             by_period[period]['zinc_vals'].append(value)
-        elif var_name in ['Trp_sn', 'Trp_manual'] and value > 0:
+        elif var_name in ['Trp_sn', 'Trp_manual'] and 0.01 < value < 0.2:
             by_period[period]['tryptophan_vals'].append(value)
         elif var_name == 'RendTM_Ha' and value > 0:
             by_period[period]['yield_vals'].append(value)

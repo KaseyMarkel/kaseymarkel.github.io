@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-01-25T22:08:35.858002",
+  "lastUpdated": "2026-01-25T22:12:40.760594",
   "filters": {
     "regions": [
       "All",
@@ -199,7 +199,7 @@
   "biofortMetrics": [
     {
       "name": "Avg Zinc (ppm)",
-      "value": 29.5,
+      "value": 25.1,
       "threshold": null,
       "status": "neutral",
       "target": null,
@@ -231,7 +231,7 @@
     },
     {
       "name": "Avg Tryptophan (%)",
-      "value": 0.052,
+      "value": 0.051,
       "threshold": 0.07,
       "status": "red",
       "target": 0.07,
@@ -241,26 +241,26 @@
   "stackProgress": [
     {
       "level": "Zn \u226525 ppm",
-      "count": 3972,
-      "target": 5063,
+      "count": 3971,
+      "target": 5062,
       "description": "Minimum zinc threshold"
     },
     {
       "level": "Zn \u226530 ppm",
-      "count": 1783,
+      "count": 1782,
       "target": 2531,
       "description": "Target zinc level"
     },
     {
       "level": "Zn \u226535 ppm",
-      "count": 564,
+      "count": 563,
       "target": 1265,
       "description": "High zinc threshold"
     },
     {
       "level": "QPM Pass (Trp \u22650.07%)",
-      "count": 356,
-      "target": 4219,
+      "count": 319,
+      "target": 4200,
       "description": "Meeting QPM criteria"
     }
   ],
@@ -387,8 +387,8 @@
     "plantsHarvested": 388641,
     "earsHarvested": 404163,
     "avgYield": 5.78,
-    "avgZinc": 29.5,
-    "avgTryptophan": 0.052
+    "avgZinc": 25.1,
+    "avgTryptophan": 0.051
   },
   "historicalTrends": {
     "periods": [
@@ -417,7 +417,7 @@
       25.44,
       22.96,
       25.13,
-      80.49
+      24.73
     ],
     "tryptophan": [
       0,
@@ -427,7 +427,7 @@
       0.06,
       0.06,
       0.05,
-      0.07,
+      0.06,
       0.05,
       0.04,
       0.05,
@@ -731,7 +731,7 @@
         },
         {
           "name": "Avg Iron (ppm)",
-          "value": 16.3,
+          "value": 16.4,
           "threshold": null,
           "status": "neutral",
           "target": null,
@@ -747,7 +747,7 @@
         },
         {
           "name": "Avg Lysine (%)",
-          "value": 0.27,
+          "value": 0.29,
           "threshold": 0.4,
           "status": "red",
           "target": 0.4,
@@ -755,9 +755,9 @@
         },
         {
           "name": "Avg Tryptophan (%)",
-          "value": 0.057,
+          "value": 0.038,
           "threshold": 0.07,
-          "status": "yellow",
+          "status": "red",
           "target": 0.07,
           "unit": "%"
         }
@@ -783,8 +783,8 @@
         },
         {
           "level": "QPM Pass (Trp \u22650.07%)",
-          "count": 41,
-          "target": 216,
+          "count": 6,
+          "target": 199,
           "description": "Meeting QPM criteria"
         }
       ],
@@ -912,7 +912,7 @@
         "earsHarvested": 23414,
         "avgYield": 6.8,
         "avgZinc": 21.2,
-        "avgTryptophan": 0.057
+        "avgTryptophan": 0.038
       }
     },
     "Centro Exp": {
@@ -2062,7 +2062,7 @@
       "biofortMetrics": [
         {
           "name": "Avg Zinc (ppm)",
-          "value": 53.4,
+          "value": 26.1,
           "threshold": null,
           "status": "neutral",
           "target": null,
@@ -2078,7 +2078,7 @@
         },
         {
           "name": "Avg Protein (%)",
-          "value": 9.91,
+          "value": 9.92,
           "threshold": null,
           "status": "neutral",
           "target": null,
@@ -2104,26 +2104,26 @@
       "stackProgress": [
         {
           "level": "Zn \u226525 ppm",
-          "count": 743,
-          "target": 800,
+          "count": 742,
+          "target": 799,
           "description": "Minimum zinc threshold"
         },
         {
           "level": "Zn \u226530 ppm",
-          "count": 334,
-          "target": 400,
+          "count": 333,
+          "target": 399,
           "description": "Target zinc level"
         },
         {
           "level": "Zn \u226535 ppm",
-          "count": 104,
-          "target": 200,
+          "count": 103,
+          "target": 199,
           "description": "High zinc threshold"
         },
         {
           "level": "QPM Pass (Trp \u22650.07%)",
-          "count": 39,
-          "target": 667,
+          "count": 38,
+          "target": 666,
           "description": "Meeting QPM criteria"
         }
       ],
@@ -2250,7 +2250,7 @@
         "plantsHarvested": 63342,
         "earsHarvested": 60745,
         "avgYield": 5.8,
-        "avgZinc": 53.4,
+        "avgZinc": 26.1,
         "avgTryptophan": 0.051
       }
     },
@@ -2758,7 +2758,7 @@
         },
         {
           "name": "Avg Protein (%)",
-          "value": 10.63,
+          "value": 10.62,
           "threshold": null,
           "status": "neutral",
           "target": null,
@@ -2802,8 +2802,8 @@
         },
         {
           "level": "QPM Pass (Trp \u22650.07%)",
-          "count": 203,
-          "target": 2288,
+          "count": 202,
+          "target": 2287,
           "description": "Meeting QPM criteria"
         }
       ],
@@ -3806,7 +3806,7 @@
       "biofortMetrics": [
         {
           "name": "Avg Zinc (ppm)",
-          "value": 29.5,
+          "value": 25.1,
           "threshold": null,
           "status": "neutral",
           "target": null,
@@ -3838,7 +3838,7 @@
         },
         {
           "name": "Avg Tryptophan (%)",
-          "value": 0.052,
+          "value": 0.051,
           "threshold": 0.07,
           "status": "red",
           "target": 0.07,
@@ -3848,26 +3848,26 @@
       "stackProgress": [
         {
           "level": "Zn \u226525 ppm",
-          "count": 3972,
-          "target": 5063,
+          "count": 3971,
+          "target": 5062,
           "description": "Minimum zinc threshold"
         },
         {
           "level": "Zn \u226530 ppm",
-          "count": 1783,
+          "count": 1782,
           "target": 2531,
           "description": "Target zinc level"
         },
         {
           "level": "Zn \u226535 ppm",
-          "count": 564,
+          "count": 563,
           "target": 1265,
           "description": "High zinc threshold"
         },
         {
           "level": "QPM Pass (Trp \u22650.07%)",
-          "count": 356,
-          "target": 4219,
+          "count": 319,
+          "target": 4200,
           "description": "Meeting QPM criteria"
         }
       ],
@@ -3994,8 +3994,8 @@
         "plantsHarvested": 324688,
         "earsHarvested": 328160,
         "avgYield": 5.82,
-        "avgZinc": 29.5,
-        "avgTryptophan": 0.052
+        "avgZinc": 25.1,
+        "avgTryptophan": 0.051
       }
     }
   },
