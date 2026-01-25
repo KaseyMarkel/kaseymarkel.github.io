@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-01-25T23:41:45.957303",
+  "lastUpdated": "2026-01-25T23:47:42.165668",
   "filters": {
     "regions": [
       "All",
@@ -353,32 +353,7 @@
       "trend": "stable"
     }
   ],
-  "cycleTimeHistory": [
-    {
-      "cycle": "2022",
-      "sampling": 38,
-      "genotyping": 14,
-      "planning": 20
-    },
-    {
-      "cycle": "2023",
-      "sampling": 36,
-      "genotyping": 13,
-      "planning": 18
-    },
-    {
-      "cycle": "2024",
-      "sampling": 35,
-      "genotyping": 12,
-      "planning": 16
-    },
-    {
-      "cycle": "2025",
-      "sampling": 34,
-      "genotyping": 12,
-      "planning": 15
-    }
-  ],
+  "cycleTimeHistory": [],
   "summary": {
     "totalStudies": 402,
     "activeStudies": 399,
@@ -1050,32 +1025,7 @@
           "trend": "stable"
         }
       ],
-      "cycleTimeHistory": [
-        {
-          "cycle": "2022",
-          "sampling": 38,
-          "genotyping": 14,
-          "planning": 20
-        },
-        {
-          "cycle": "2023",
-          "sampling": 36,
-          "genotyping": 13,
-          "planning": 18
-        },
-        {
-          "cycle": "2024",
-          "sampling": 35,
-          "genotyping": 12,
-          "planning": 16
-        },
-        {
-          "cycle": "2025",
-          "sampling": 34,
-          "genotyping": 12,
-          "planning": 15
-        }
-      ],
+      "cycleTimeHistory": [],
       "summary": {
         "totalStudies": 11,
         "activeStudies": 11,
@@ -1404,32 +1354,7 @@
           "trend": "stable"
         }
       ],
-      "cycleTimeHistory": [
-        {
-          "cycle": "2022",
-          "sampling": 38,
-          "genotyping": 14,
-          "planning": 20
-        },
-        {
-          "cycle": "2023",
-          "sampling": 36,
-          "genotyping": 13,
-          "planning": 18
-        },
-        {
-          "cycle": "2024",
-          "sampling": 35,
-          "genotyping": 12,
-          "planning": 16
-        },
-        {
-          "cycle": "2025",
-          "sampling": 34,
-          "genotyping": 12,
-          "planning": 15
-        }
-      ],
+      "cycleTimeHistory": [],
       "summary": {
         "totalStudies": 71,
         "activeStudies": 68,
@@ -1681,32 +1606,7 @@
         }
       ],
       "topIssues": [],
-      "cycleTimeHistory": [
-        {
-          "cycle": "2022",
-          "sampling": 38,
-          "genotyping": 14,
-          "planning": 20
-        },
-        {
-          "cycle": "2023",
-          "sampling": 36,
-          "genotyping": 13,
-          "planning": 18
-        },
-        {
-          "cycle": "2024",
-          "sampling": 35,
-          "genotyping": 12,
-          "planning": 16
-        },
-        {
-          "cycle": "2025",
-          "sampling": 34,
-          "genotyping": 12,
-          "planning": 15
-        }
-      ],
+      "cycleTimeHistory": [],
       "summary": {
         "totalStudies": 74,
         "activeStudies": 74,
@@ -2028,32 +1928,7 @@
           "trend": "stable"
         }
       ],
-      "cycleTimeHistory": [
-        {
-          "cycle": "2022",
-          "sampling": 38,
-          "genotyping": 14,
-          "planning": 20
-        },
-        {
-          "cycle": "2023",
-          "sampling": 36,
-          "genotyping": 13,
-          "planning": 18
-        },
-        {
-          "cycle": "2024",
-          "sampling": 35,
-          "genotyping": 12,
-          "planning": 16
-        },
-        {
-          "cycle": "2025",
-          "sampling": 34,
-          "genotyping": 12,
-          "planning": 15
-        }
-      ],
+      "cycleTimeHistory": [],
       "summary": {
         "totalStudies": 42,
         "activeStudies": 42,
@@ -2389,32 +2264,7 @@
           "trend": "stable"
         }
       ],
-      "cycleTimeHistory": [
-        {
-          "cycle": "2022",
-          "sampling": 38,
-          "genotyping": 14,
-          "planning": 20
-        },
-        {
-          "cycle": "2023",
-          "sampling": 36,
-          "genotyping": 13,
-          "planning": 18
-        },
-        {
-          "cycle": "2024",
-          "sampling": 35,
-          "genotyping": 12,
-          "planning": 16
-        },
-        {
-          "cycle": "2025",
-          "sampling": 34,
-          "genotyping": 12,
-          "planning": 15
-        }
-      ],
+      "cycleTimeHistory": [],
       "summary": {
         "totalStudies": 67,
         "activeStudies": 67,
@@ -2722,32 +2572,7 @@
           "trend": "stable"
         }
       ],
-      "cycleTimeHistory": [
-        {
-          "cycle": "2022",
-          "sampling": 38,
-          "genotyping": 14,
-          "planning": 20
-        },
-        {
-          "cycle": "2023",
-          "sampling": 36,
-          "genotyping": 13,
-          "planning": 18
-        },
-        {
-          "cycle": "2024",
-          "sampling": 35,
-          "genotyping": 12,
-          "planning": 16
-        },
-        {
-          "cycle": "2025",
-          "sampling": 34,
-          "genotyping": 12,
-          "planning": 15
-        }
-      ],
+      "cycleTimeHistory": [],
       "summary": {
         "totalStudies": 21,
         "activeStudies": 21,
@@ -3069,32 +2894,7 @@
           "trend": "stable"
         }
       ],
-      "cycleTimeHistory": [
-        {
-          "cycle": "2022",
-          "sampling": 38,
-          "genotyping": 14,
-          "planning": 20
-        },
-        {
-          "cycle": "2023",
-          "sampling": 36,
-          "genotyping": 13,
-          "planning": 18
-        },
-        {
-          "cycle": "2024",
-          "sampling": 35,
-          "genotyping": 12,
-          "planning": 16
-        },
-        {
-          "cycle": "2025",
-          "sampling": 34,
-          "genotyping": 12,
-          "planning": 15
-        }
-      ],
+      "cycleTimeHistory": [],
       "summary": {
         "totalStudies": 110,
         "activeStudies": 110,
@@ -3439,32 +3239,7 @@
           "trend": "stable"
         }
       ],
-      "cycleTimeHistory": [
-        {
-          "cycle": "2022",
-          "sampling": 38,
-          "genotyping": 14,
-          "planning": 20
-        },
-        {
-          "cycle": "2023",
-          "sampling": 36,
-          "genotyping": 13,
-          "planning": 18
-        },
-        {
-          "cycle": "2024",
-          "sampling": 35,
-          "genotyping": 12,
-          "planning": 16
-        },
-        {
-          "cycle": "2025",
-          "sampling": 34,
-          "genotyping": 12,
-          "planning": 15
-        }
-      ],
+      "cycleTimeHistory": [],
       "summary": {
         "totalStudies": 248,
         "activeStudies": 245,
@@ -3786,32 +3561,7 @@
           "trend": "stable"
         }
       ],
-      "cycleTimeHistory": [
-        {
-          "cycle": "2022",
-          "sampling": 38,
-          "genotyping": 14,
-          "planning": 20
-        },
-        {
-          "cycle": "2023",
-          "sampling": 36,
-          "genotyping": 13,
-          "planning": 18
-        },
-        {
-          "cycle": "2024",
-          "sampling": 35,
-          "genotyping": 12,
-          "planning": 16
-        },
-        {
-          "cycle": "2025",
-          "sampling": 34,
-          "genotyping": 12,
-          "planning": 15
-        }
-      ],
+      "cycleTimeHistory": [],
       "summary": {
         "totalStudies": 17,
         "activeStudies": 17,
@@ -4133,32 +3883,7 @@
           "trend": "stable"
         }
       ],
-      "cycleTimeHistory": [
-        {
-          "cycle": "2022",
-          "sampling": 38,
-          "genotyping": 14,
-          "planning": 20
-        },
-        {
-          "cycle": "2023",
-          "sampling": 36,
-          "genotyping": 13,
-          "planning": 18
-        },
-        {
-          "cycle": "2024",
-          "sampling": 35,
-          "genotyping": 12,
-          "planning": 16
-        },
-        {
-          "cycle": "2025",
-          "sampling": 34,
-          "genotyping": 12,
-          "planning": 15
-        }
-      ],
+      "cycleTimeHistory": [],
       "summary": {
         "totalStudies": 137,
         "activeStudies": 137,

@@ -419,13 +419,9 @@ def compute_comprehensive_metrics(study_data, all_observations, all_obs_units):
             'trend': 'stable'
         })
 
-    # Historical cycle data (placeholder - would need actual date tracking)
-    cycle_history = [
-        {'cycle': '2022', 'sampling': 38, 'genotyping': 14, 'planning': 20},
-        {'cycle': '2023', 'sampling': 36, 'genotyping': 13, 'planning': 18},
-        {'cycle': '2024', 'sampling': 35, 'genotyping': 12, 'planning': 16},
-        {'cycle': '2025', 'sampling': 34, 'genotyping': 12, 'planning': 15}
-    ]
+    # Cycle time data removed - requires date fields not in current BMS export
+    # (Sampling_Date, Genotyping_Result_Date, Next_Planting_Date)
+    cycle_history = []
 
     return {
         'funnelData': funnel_data,

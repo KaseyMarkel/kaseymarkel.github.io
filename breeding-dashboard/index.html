@@ -740,21 +740,10 @@
             </div>
         </div>
 
-        <!-- Block D: Speed -->
+        <!-- Block D: Speed (Flowering metrics only - cycle time data not available) -->
         <div class="glass-card">
-            <h2 class="section-title">⚡ Block D: Cycle Speed</h2>
-            <div class="speed-grid">
-                <div id="speed-metrics"></div>
-                <div class="chart-container">
-                    <div class="chart-title">Cycle Time History</div>
-                    <div class="chart-bars" id="cycle-chart"></div>
-                    <div class="chart-legend">
-                        <div class="legend-item"><div class="legend-color" style="background: #667eea;"></div> Sampling</div>
-                        <div class="legend-item"><div class="legend-color" style="background: #764ba2;"></div> Genotyping</div>
-                        <div class="legend-item"><div class="legend-color" style="background: #f59e0b;"></div> Planning</div>
-                    </div>
-                </div>
-            </div>
+            <h2 class="section-title">⚡ Block D: Flowering & Timing</h2>
+            <div id="speed-metrics"></div>
         </div>
 
         <!-- Top Issues -->
@@ -1721,7 +1710,7 @@
                 renderRates(currentData.rateMetrics);
                 renderCoverage(currentData.coverageMetrics);
                 renderSpeed(currentData.speedMetrics);
-                renderCycleChart(currentData.cycleTimeHistory);
+                // Cycle chart removed - no real data available
                 renderIssues(currentData.topIssues);
                 renderBiofort(currentData.biofortMetrics);
                 renderStack(currentData.stackProgress);
@@ -1756,7 +1745,7 @@
                 renderRates(currentData.rateMetrics);
                 renderCoverage(currentData.coverageMetrics);
                 renderSpeed(currentData.speedMetrics);
-                renderCycleChart(currentData.cycleTimeHistory);
+                // Cycle chart removed - no real data available
                 renderIssues(currentData.topIssues);
                 renderBiofort(currentData.biofortMetrics);
                 renderStack(currentData.stackProgress);
