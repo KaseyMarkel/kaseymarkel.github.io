@@ -456,6 +456,7 @@ def compute_historical_trends(observations):
         'zinc_vals': [], 'tryptophan_vals': [], 'yield_vals': [],
         'virus_vals': [], 'lodging_vals': [], 'dff_vals': [],
         'ear_rot_vals': [], 'poor_husk_vals': [], 'stalk_lodge_vals': [], 'root_lodge_vals': [],
+        'plants_harvested': 0, 'ears_harvested': 0,
         'obs_count': 0, 'studies': set()
     })
 
@@ -499,6 +500,12 @@ def compute_historical_trends(observations):
         elif var_name == 'DFF' and value > 0:
             by_period[period]['dff_vals'].append(value)
 
+        # Track plants and ears harvested
+        if var_name == 'PLANTAS_COSsn' and value > 0:
+            by_period[period]['plants_harvested'] += int(value)
+        elif var_name == 'MAZ_COS_auto' and value > 0:
+            by_period[period]['ears_harvested'] += int(value)
+
     def avg(vals):
         return round(sum(vals) / len(vals), 2) if vals else 0
 
@@ -508,6 +515,7 @@ def compute_historical_trends(observations):
         'zinc': [],
         'tryptophan': [],
         'yield': [],
+        'yieldRaw': [],  # Raw yield values for data table
         'virus': [],
         'lodging': [],
         'stalkLodge': [],
@@ -516,7 +524,9 @@ def compute_historical_trends(observations):
         'poorHusk': [],
         'dff': [],
         'observations': [],
-        'studies': []
+        'studies': [],
+        'plantsHarvested': [],
+        'earsHarvested': [],
     }
 
     for period in sorted(by_period.keys()):
@@ -525,6 +535,12 @@ def compute_historical_trends(observations):
         trends['zinc'].append(avg(data['zinc_vals']))
         trends['tryptophan'].append(avg(data['tryptophan_vals']))
         trends['yield'].append(avg(data['yield_vals']))
+        trends['yieldRaw'].append({
+            'avg': avg(data['yield_vals']),
+            'count': len(data['yield_vals']),
+            'min': round(min(data['yield_vals']), 2) if data['yield_vals'] else 0,
+            'max': round(max(data['yield_vals']), 2) if data['yield_vals'] else 0,
+        })
         trends['virus'].append(avg(data['virus_vals']))
         trends['lodging'].append(avg(data['lodging_vals']))
         trends['stalkLodge'].append(avg(data['stalk_lodge_vals']))
@@ -534,6 +550,8 @@ def compute_historical_trends(observations):
         trends['dff'].append(avg(data['dff_vals']))
         trends['observations'].append(data['obs_count'])
         trends['studies'].append(len(data['studies']))
+        trends['plantsHarvested'].append(data['plants_harvested'])
+        trends['earsHarvested'].append(data['ears_harvested'])
 
     return trends
 
@@ -587,6 +605,51 @@ def compute_distributions(observations):
         'zinc': make_histogram(zinc_vals, 15),
         'tryptophan': make_histogram(trp_vals, 15),
         'yield': make_histogram(yield_vals, 15)
+    }
+
+
+def compute_region_breakdown(study_data, observations):
+    """Compute plants/ears harvested broken down by region"""
+    from collections import defaultdict
+
+    # Get observations by study
+    obs_by_study = defaultdict(list)
+    for obs in observations:
+        study_id = obs.get('studyDbId', '')
+        if study_id:
+            obs_by_study[study_id].append(obs)
+
+    # Map study to region
+    study_region = {s['studyId']: s['region'] for s in study_data}
+
+    # Aggregate by region
+    region_plants = defaultdict(int)
+    region_ears = defaultdict(int)
+    region_yield = defaultdict(list)
+
+    for obs in observations:
+        study_id = obs.get('studyDbId', '')
+        region = study_region.get(study_id, 'Unknown')
+        var_name = obs.get('observationVariableName', '')
+        value = safe_float(obs.get('value'))
+
+        if var_name == 'PLANTAS_COSsn' and value > 0:
+            region_plants[region] += int(value)
+        elif var_name == 'MAZ_COS_auto' and value > 0:
+            region_ears[region] += int(value)
+        elif var_name == 'RendTM_Ha' and value > 0:
+            region_yield[region].append(value)
+
+    # Build output
+    plants_by_region = [{'region': r, 'count': c} for r, c in sorted(region_plants.items(), key=lambda x: -x[1]) if r != 'Unknown']
+    ears_by_region = [{'region': r, 'count': c} for r, c in sorted(region_ears.items(), key=lambda x: -x[1]) if r != 'Unknown']
+    yield_by_region = [{'region': r, 'avg': round(sum(v)/len(v), 2) if v else 0, 'count': len(v)}
+                       for r, v in sorted(region_yield.items(), key=lambda x: -len(x[1])) if r != 'Unknown']
+
+    return {
+        'plantsByRegion': plants_by_region,
+        'earsByRegion': ears_by_region,
+        'yieldByRegion': yield_by_region,
     }
 
 
@@ -659,6 +722,10 @@ def main():
     distributions = compute_distributions(observations)
     print(f"  Found {len(historical_trends['periods'])} time periods: {historical_trends['periods']}")
 
+    # Compute region breakdown for plants/ears/yield
+    print("Computing region breakdown...")
+    region_breakdown = compute_region_breakdown(study_data, observations)
+
     # Compute by region
     print("Computing metrics by region...")
     by_region = {}
@@ -686,6 +753,7 @@ def main():
         **all_metrics,
         'historicalTrends': historical_trends,
         'distributions': distributions,
+        'regionBreakdown': region_breakdown,
         'byRegion': by_region,
         'byTrait': by_trait,
         'studies': [{

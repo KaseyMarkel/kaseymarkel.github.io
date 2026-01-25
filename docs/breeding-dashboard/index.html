@@ -1269,6 +1269,61 @@
             return svg + stats;
         }
 
+        // Render a pie chart as SVG
+        function renderPieChart(data, title) {
+            if (!data || data.length === 0) {
+                return '<p style="color: #6b7280;">No data available.</p>';
+            }
+
+            var width = 300, height = 220;
+            var cx = 120, cy = 100, radius = 80;
+
+            // Calculate total
+            var total = 0;
+            for (var i = 0; i < data.length; i++) {
+                total += data[i].count;
+            }
+
+            // Colors for pie slices
+            var colors = ['#667eea', '#764ba2', '#f59e0b', '#10b981', '#ef4444', '#6366f1', '#8b5cf6', '#ec4899'];
+
+            var svg = '<svg width="' + width + '" height="' + height + '" style="font-family: Inter, sans-serif;">';
+
+            var startAngle = 0;
+            for (var i = 0; i < data.length; i++) {
+                var slice = data[i];
+                var sliceAngle = (slice.count / total) * 2 * Math.PI;
+                var endAngle = startAngle + sliceAngle;
+
+                // Calculate arc path
+                var x1 = cx + radius * Math.cos(startAngle);
+                var y1 = cy + radius * Math.sin(startAngle);
+                var x2 = cx + radius * Math.cos(endAngle);
+                var y2 = cy + radius * Math.sin(endAngle);
+                var largeArc = sliceAngle > Math.PI ? 1 : 0;
+
+                var path = 'M ' + cx + ' ' + cy + ' L ' + x1 + ' ' + y1 + ' A ' + radius + ' ' + radius + ' 0 ' + largeArc + ' 1 ' + x2 + ' ' + y2 + ' Z';
+                svg += '<path d="' + path + '" fill="' + colors[i % colors.length] + '" stroke="white" stroke-width="2" />';
+
+                startAngle = endAngle;
+            }
+
+            svg += '</svg>';
+
+            // Legend
+            var legend = '<div style="display: flex; flex-direction: column; gap: 6px; margin-left: 16px;">';
+            for (var i = 0; i < data.length; i++) {
+                var pct = Math.round((data[i].count / total) * 100);
+                legend += '<div style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem;">';
+                legend += '<div style="width: 12px; height: 12px; border-radius: 2px; background: ' + colors[i % colors.length] + ';"></div>';
+                legend += '<span>' + data[i].region + ': ' + data[i].count.toLocaleString() + ' (' + pct + '%)</span>';
+                legend += '</div>';
+            }
+            legend += '</div>';
+
+            return '<div style="display: flex; align-items: center;">' + svg + legend + '</div>';
+        }
+
         // Show summary stat details
         function showSummaryDetails(key, type, label) {
             var html = '<div style="padding: 20px;">';
@@ -1278,6 +1333,36 @@
                 var unit = key === 'zinc' ? 'ppm' : (key === 'tryptophan' ? '%' : 't/ha');
                 html += '<h3 style="margin-bottom: 16px;">' + label + ' Distribution</h3>';
                 html += renderHistogram(dist, label, unit);
+
+                // For yield, also show yield over time with raw data
+                if (key === 'yield' && cachedData.historicalTrends) {
+                    var trends = cachedData.historicalTrends;
+                    html += '<h3 style="margin: 24px 0 16px 0;">📈 Yield Over Time</h3>';
+                    html += renderTrendChart(trends.periods, trends.yield, 'Yield', 't/ha');
+
+                    // Raw data table
+                    html += '<h4 style="margin: 20px 0 12px 0;">Raw Data by Quarter</h4>';
+                    html += '<div style="max-height: 200px; overflow-y: auto;">';
+                    html += '<table style="width: 100%; font-size: 0.8rem;"><thead><tr><th>Period</th><th style="text-align:right;">Avg (t/ha)</th><th style="text-align:right;">Min</th><th style="text-align:right;">Max</th><th style="text-align:right;">Samples</th></tr></thead><tbody>';
+                    for (var i = trends.periods.length - 1; i >= 0; i--) {
+                        var raw = trends.yieldRaw[i];
+                        if (raw && raw.count > 0) {
+                            html += '<tr><td>' + trends.periods[i] + '</td><td style="text-align:right;">' + raw.avg.toFixed(2) + '</td><td style="text-align:right;">' + raw.min + '</td><td style="text-align:right;">' + raw.max + '</td><td style="text-align:right;">' + raw.count + '</td></tr>';
+                        }
+                    }
+                    html += '</tbody></table></div>';
+
+                    // Region breakdown
+                    if (cachedData.regionBreakdown && cachedData.regionBreakdown.yieldByRegion) {
+                        html += '<h4 style="margin: 20px 0 12px 0;">Yield by Region</h4>';
+                        var yieldByRegion = cachedData.regionBreakdown.yieldByRegion;
+                        html += '<table style="width: 100%; font-size: 0.85rem;"><thead><tr><th>Region</th><th style="text-align:right;">Avg Yield (t/ha)</th><th style="text-align:right;">Samples</th></tr></thead><tbody>';
+                        for (var i = 0; i < yieldByRegion.length; i++) {
+                            html += '<tr><td>' + yieldByRegion[i].region + '</td><td style="text-align:right;">' + yieldByRegion[i].avg + '</td><td style="text-align:right;">' + yieldByRegion[i].count + '</td></tr>';
+                        }
+                        html += '</tbody></table>';
+                    }
+                }
             } else if (type === 'timeseries' && cachedData.historicalTrends) {
                 var trends = cachedData.historicalTrends;
                 html += '<h3 style="margin-bottom: 16px;">' + label + ' Over Time</h3>';
@@ -1294,6 +1379,34 @@
                     html += '<tr><td>' + trends.periods[i] + '</td><td style="text-align:right;">' + trends[dataKey][i].toLocaleString() + '</td></tr>';
                 }
                 html += '</tbody></table></div>';
+            } else if ((key === 'plants' || key === 'ears') && cachedData.historicalTrends) {
+                // Time series for plants/ears harvested
+                var trends = cachedData.historicalTrends;
+                var dataKey = key === 'plants' ? 'plantsHarvested' : 'earsHarvested';
+
+                html += '<h3 style="margin-bottom: 16px;">' + label + ' Harvested Over Time</h3>';
+                html += renderTrendChart(trends.periods, trends[dataKey], label, 'count');
+
+                // Data table
+                html += '<h4 style="margin: 20px 0 12px 0;">Data by Quarter</h4>';
+                html += '<div style="max-height: 150px; overflow-y: auto;">';
+                html += '<table style="width: 100%; font-size: 0.8rem;"><thead><tr><th>Period</th><th style="text-align:right;">Count</th></tr></thead><tbody>';
+                for (var i = trends.periods.length - 1; i >= 0; i--) {
+                    var val = trends[dataKey][i];
+                    if (val > 0) {
+                        html += '<tr><td>' + trends.periods[i] + '</td><td style="text-align:right;">' + val.toLocaleString() + '</td></tr>';
+                    }
+                }
+                html += '</tbody></table></div>';
+
+                // Pie chart for region breakdown
+                if (cachedData.regionBreakdown) {
+                    var regionData = key === 'plants' ? cachedData.regionBreakdown.plantsByRegion : cachedData.regionBreakdown.earsByRegion;
+                    if (regionData && regionData.length > 0) {
+                        html += '<h4 style="margin: 24px 0 12px 0;">🥧 Breakdown by Region</h4>';
+                        html += renderPieChart(regionData, label + ' by Region');
+                    }
+                }
             } else {
                 html += '<p>Detailed breakdown for ' + label + '</p>';
             }

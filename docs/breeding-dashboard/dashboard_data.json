@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-01-25T23:47:42.165668",
+  "lastUpdated": "2026-01-25T23:53:41.826511",
   "filters": {
     "regions": [
       "All",
@@ -422,6 +422,80 @@
       6.05,
       6.33
     ],
+    "yieldRaw": [
+      {
+        "avg": 0,
+        "count": 0,
+        "min": 0,
+        "max": 0
+      },
+      {
+        "avg": 0,
+        "count": 0,
+        "min": 0,
+        "max": 0
+      },
+      {
+        "avg": 0,
+        "count": 0,
+        "min": 0,
+        "max": 0
+      },
+      {
+        "avg": 0,
+        "count": 0,
+        "min": 0,
+        "max": 0
+      },
+      {
+        "avg": 5.11,
+        "count": 1272,
+        "min": 1.24,
+        "max": 9.91
+      },
+      {
+        "avg": 5.17,
+        "count": 658,
+        "min": 0.58,
+        "max": 25.16
+      },
+      {
+        "avg": 6.38,
+        "count": 1191,
+        "min": 0.23,
+        "max": 12.12
+      },
+      {
+        "avg": 4.77,
+        "count": 180,
+        "min": 1.16,
+        "max": 9.43
+      },
+      {
+        "avg": 5.95,
+        "count": 2864,
+        "min": 0.12,
+        "max": 12.21
+      },
+      {
+        "avg": 5.69,
+        "count": 504,
+        "min": 0.29,
+        "max": 10.76
+      },
+      {
+        "avg": 6.05,
+        "count": 743,
+        "min": 0.12,
+        "max": 10.68
+      },
+      {
+        "avg": 6.33,
+        "count": 138,
+        "min": 0.22,
+        "max": 9.6
+      }
+    ],
     "virus": [
       0,
       0,
@@ -547,6 +621,34 @@
       50,
       59,
       27
+    ],
+    "plantsHarvested": [
+      0,
+      0,
+      0,
+      5906,
+      74958,
+      36263,
+      61022,
+      25708,
+      105210,
+      31133,
+      48240,
+      201
+    ],
+    "earsHarvested": [
+      0,
+      0,
+      0,
+      9152,
+      77847,
+      33856,
+      64164,
+      29734,
+      108688,
+      32622,
+      47895,
+      205
     ]
   },
   "distributions": {
@@ -721,6 +823,92 @@
       "mean": 5.78,
       "n": 7549
     }
+  },
+  "regionBreakdown": {
+    "plantsByRegion": [
+      {
+        "region": "Station BC",
+        "count": 221840
+      },
+      {
+        "region": "Other",
+        "count": 63342
+      },
+      {
+        "region": "Peten/AV",
+        "count": 34321
+      },
+      {
+        "region": "Oriente",
+        "count": 27923
+      },
+      {
+        "region": "Altiplano",
+        "count": 22555
+      },
+      {
+        "region": "Centro Exp",
+        "count": 18660
+      }
+    ],
+    "earsByRegion": [
+      {
+        "region": "Station BC",
+        "count": 223894
+      },
+      {
+        "region": "Other",
+        "count": 60745
+      },
+      {
+        "region": "Peten/AV",
+        "count": 34766
+      },
+      {
+        "region": "Centro Exp",
+        "count": 33341
+      },
+      {
+        "region": "Oriente",
+        "count": 28003
+      },
+      {
+        "region": "Altiplano",
+        "count": 23414
+      }
+    ],
+    "yieldByRegion": [
+      {
+        "region": "Station BC",
+        "avg": 5.58,
+        "count": 4132
+      },
+      {
+        "region": "Other",
+        "avg": 5.8,
+        "count": 1217
+      },
+      {
+        "region": "Peten/AV",
+        "avg": 5.99,
+        "count": 860
+      },
+      {
+        "region": "Oriente",
+        "avg": 5.6,
+        "count": 597
+      },
+      {
+        "region": "Altiplano",
+        "avg": 6.8,
+        "count": 454
+      },
+      {
+        "region": "Centro Exp",
+        "avg": 6.63,
+        "count": 290
+      }
+    ]
   },
   "byRegion": {
     "Altiplano": {
