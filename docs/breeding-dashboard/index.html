@@ -248,6 +248,7 @@
         .metric-card.green { background: #d1fae5; }
         .metric-card.yellow { background: #fef3c7; }
         .metric-card.red { background: #fee2e2; }
+        .metric-card.neutral { background: #f3f4f6; }
 
         .metric-header {
             display: flex;
@@ -959,21 +960,25 @@
         // Render rate metrics
         function renderRates(data) {
             var container = document.getElementById('rates-container');
-            var icons = { green: '✓', yellow: '⚠', red: '✗' };
+            var icons = { green: '✓', yellow: '⚠', red: '✗', neutral: '○' };
             var html = '';
 
             for (var i = 0; i < data.length; i++) {
                 var m = data[i];
                 var displayValue = m.name.includes('%') ? m.value.toFixed(3) : m.value.toFixed(1);
-                var unit = m.name.includes('ppm') ? ' ppm' : (m.name.includes('t/ha') ? ' t/ha' : '%');
+                var unit = m.unit || (m.name.includes('ppm') ? 'ppm' : (m.name.includes('t/ha') ? 't/ha' : '%'));
+                var statusClass = m.status || 'neutral';
+                var hasThreshold = m.threshold !== null && m.threshold !== undefined;
+                var tooltipText = hasThreshold ? 'Threshold: ' + m.threshold + ' ' + unit + ' | Status: ' + statusClass : unit;
+                var thresholdText = hasThreshold ? 'Threshold: ' + m.threshold : unit;
 
-                html += '<div class="metric-card ' + m.status + '" onclick="showMetricDetails(\'' + m.name + '\')" onmouseenter="showTooltip(event, \'' + m.name + '\', \'Threshold: ' + m.threshold + unit + ' | Status: ' + m.status + '\')" onmouseleave="hideTooltip()">' +
+                html += '<div class="metric-card ' + statusClass + '" onclick="showMetricDetails(\'' + m.name + '\')" onmouseenter="showTooltip(event, \'' + m.name + '\', \'' + tooltipText + '\')" onmouseleave="hideTooltip()">' +
                     '<div class="metric-header">' +
                         '<span class="metric-name">' + m.name + '</span>' +
-                        '<span class="metric-icon ' + m.status + '">' + icons[m.status] + '</span>' +
+                        (statusClass !== 'neutral' ? '<span class="metric-icon ' + statusClass + '">' + icons[statusClass] + '</span>' : '') +
                     '</div>' +
                     '<div class="metric-value">' + displayValue + (m.name.includes('%') || m.name.includes('Rate') ? '%' : '') + '</div>' +
-                    '<div class="metric-threshold">Threshold: ' + m.threshold + '</div>' +
+                    '<div class="metric-threshold">' + thresholdText + '</div>' +
                 '</div>';
             }
             container.innerHTML = html;
@@ -1118,7 +1123,7 @@
                 return;
             }
 
-            var icons = { green: '✓', yellow: '⚠', red: '✗' };
+            var icons = { green: '✓', yellow: '⚠', red: '✗', neutral: '○' };
             var html = '';
 
             for (var i = 0; i < data.length; i++) {
@@ -1132,13 +1137,16 @@
                     displayValue = m.value.toFixed(2);
                 }
 
-                html += '<div class="metric-card ' + m.status + '" onclick="showBiofortDetails(\'' + m.name + '\')">' +
+                var statusClass = m.status || 'neutral';
+                var thresholdText = m.target ? 'Target: ' + m.target + ' ' + m.unit : m.unit;
+
+                html += '<div class="metric-card ' + statusClass + '" onclick="showBiofortDetails(\'' + m.name + '\')">' +
                     '<div class="metric-header">' +
                         '<span class="metric-name">' + m.name + '</span>' +
-                        '<span class="metric-icon ' + m.status + '">' + icons[m.status] + '</span>' +
+                        (statusClass !== 'neutral' ? '<span class="metric-icon ' + statusClass + '">' + icons[statusClass] + '</span>' : '') +
                     '</div>' +
                     '<div class="metric-value">' + displayValue + '</div>' +
-                    '<div class="metric-threshold">Target: ' + m.target + ' ' + m.unit + '</div>' +
+                    '<div class="metric-threshold">' + thresholdText + '</div>' +
                 '</div>';
             }
             container.innerHTML = html;

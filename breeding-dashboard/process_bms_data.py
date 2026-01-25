@@ -265,11 +265,9 @@ def compute_comprehensive_metrics(study_data, all_observations, all_obs_units):
         {'name': 'Poor Husk Cover', 'value': avg(metrics['poor_husk_vals']), 'threshold': 5,
          'status': status(avg(metrics['poor_husk_vals']), 5), 'category': 'Quality', 'unit': '%'},
 
-        # Yield
-        {'name': 'Avg Yield', 'value': avg(metrics['yield_vals'], 2), 'threshold': 5,
-         'status': status(avg(metrics['yield_vals'], 2), 5, higher_is_better=True), 'category': 'Yield', 'unit': 't/ha'},
-        {'name': 'Avg Grain Weight', 'value': avg(metrics['grain_weight_vals']), 'threshold': 250,
-         'status': status(avg(metrics['grain_weight_vals']), 250, higher_is_better=True), 'category': 'Yield', 'unit': 'g'},
+        # Yield - no threshold, just display value
+        {'name': 'Avg Yield', 'value': avg(metrics['yield_vals'], 2), 'threshold': None,
+         'status': 'neutral', 'category': 'Yield', 'unit': 't/ha'},
     ]
 
     # ===============================
@@ -307,18 +305,21 @@ def compute_comprehensive_metrics(study_data, all_observations, all_obs_units):
 
     # ===============================
     # BLOCK E: Biofortification Metrics
+    # Note: Only Lys/Trp thresholds come from spec (F2-F4 pyramiding criteria)
+    # Zn, Fe, Protein are displayed without thresholds since spec doesn't define them
     # ===============================
     biofort_metrics = [
-        {'name': 'Avg Zinc (ppm)', 'value': avg(metrics['zinc_vals']), 'threshold': 30,
-         'status': status(avg(metrics['zinc_vals']), 30, higher_is_better=True), 'target': 35, 'unit': 'ppm'},
-        {'name': 'Avg Iron (ppm)', 'value': avg(metrics['iron_vals']), 'threshold': 40,
-         'status': status(avg(metrics['iron_vals']), 40, higher_is_better=True), 'target': 50, 'unit': 'ppm'},
-        {'name': 'Avg Protein (%)', 'value': avg(metrics['protein_vals'], 2), 'threshold': 10,
-         'status': status(avg(metrics['protein_vals'], 2), 10, higher_is_better=True), 'target': 12, 'unit': '%'},
-        {'name': 'Avg Lysine (%)', 'value': avg(metrics['lysine_vals'], 2), 'threshold': 0.3,
-         'status': status(avg(metrics['lysine_vals'], 2), 0.3, higher_is_better=True), 'target': 0.4, 'unit': '%'},
+        {'name': 'Avg Zinc (ppm)', 'value': avg(metrics['zinc_vals']), 'threshold': None,
+         'status': 'neutral', 'target': None, 'unit': 'ppm'},
+        {'name': 'Avg Iron (ppm)', 'value': avg(metrics['iron_vals']), 'threshold': None,
+         'status': 'neutral', 'target': None, 'unit': 'ppm'},
+        {'name': 'Avg Protein (%)', 'value': avg(metrics['protein_vals'], 2), 'threshold': None,
+         'status': 'neutral', 'target': None, 'unit': '%'},
+        # Lys/Trp thresholds from spec F4: Lys>=0.40, Trp>=0.07
+        {'name': 'Avg Lysine (%)', 'value': avg(metrics['lysine_vals'], 2), 'threshold': 0.40,
+         'status': status(avg(metrics['lysine_vals'], 2), 0.40, higher_is_better=True), 'target': 0.40, 'unit': '%'},
         {'name': 'Avg Tryptophan (%)', 'value': avg(metrics['tryptophan_vals'], 3), 'threshold': 0.07,
-         'status': status(avg(metrics['tryptophan_vals'], 3), 0.07, higher_is_better=True), 'target': 0.08, 'unit': '%'},
+         'status': status(avg(metrics['tryptophan_vals'], 3), 0.07, higher_is_better=True), 'target': 0.07, 'unit': '%'},
     ]
 
     # ===============================

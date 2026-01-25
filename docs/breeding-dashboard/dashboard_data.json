@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-01-25T20:15:18.748412",
+  "lastUpdated": "2026-01-25T22:08:35.858002",
   "filters": {
     "regions": [
       "All",
@@ -120,18 +120,10 @@
     {
       "name": "Avg Yield",
       "value": 5.78,
-      "threshold": 5,
-      "status": "green",
+      "threshold": null,
+      "status": "neutral",
       "category": "Yield",
       "unit": "t/ha"
-    },
-    {
-      "name": "Avg Grain Weight",
-      "value": 4.7,
-      "threshold": 250,
-      "status": "red",
-      "category": "Yield",
-      "unit": "g"
     }
   ],
   "coverageMetrics": [
@@ -208,32 +200,32 @@
     {
       "name": "Avg Zinc (ppm)",
       "value": 29.5,
-      "threshold": 30,
-      "status": "yellow",
-      "target": 35,
+      "threshold": null,
+      "status": "neutral",
+      "target": null,
       "unit": "ppm"
     },
     {
       "name": "Avg Iron (ppm)",
       "value": 20.1,
-      "threshold": 40,
-      "status": "red",
-      "target": 50,
+      "threshold": null,
+      "status": "neutral",
+      "target": null,
       "unit": "ppm"
     },
     {
       "name": "Avg Protein (%)",
       "value": 10.35,
-      "threshold": 10,
-      "status": "green",
-      "target": 12,
+      "threshold": null,
+      "status": "neutral",
+      "target": null,
       "unit": "%"
     },
     {
       "name": "Avg Lysine (%)",
       "value": 0.35,
-      "threshold": 0.3,
-      "status": "green",
+      "threshold": 0.4,
+      "status": "yellow",
       "target": 0.4,
       "unit": "%"
     },
@@ -242,7 +234,7 @@
       "value": 0.052,
       "threshold": 0.07,
       "status": "red",
-      "target": 0.08,
+      "target": 0.07,
       "unit": "%"
     }
   ],
@@ -680,18 +672,10 @@
         {
           "name": "Avg Yield",
           "value": 6.8,
-          "threshold": 5,
-          "status": "green",
+          "threshold": null,
+          "status": "neutral",
           "category": "Yield",
           "unit": "t/ha"
-        },
-        {
-          "name": "Avg Grain Weight",
-          "value": 5.7,
-          "threshold": 250,
-          "status": "red",
-          "category": "Yield",
-          "unit": "g"
         }
       ],
       "coverageMetrics": [
@@ -740,32 +724,32 @@
         {
           "name": "Avg Zinc (ppm)",
           "value": 21.2,
-          "threshold": 30,
-          "status": "red",
-          "target": 35,
+          "threshold": null,
+          "status": "neutral",
+          "target": null,
           "unit": "ppm"
         },
         {
           "name": "Avg Iron (ppm)",
           "value": 16.3,
-          "threshold": 40,
-          "status": "red",
-          "target": 50,
+          "threshold": null,
+          "status": "neutral",
+          "target": null,
           "unit": "ppm"
         },
         {
           "name": "Avg Protein (%)",
           "value": 9.72,
-          "threshold": 10,
-          "status": "yellow",
-          "target": 12,
+          "threshold": null,
+          "status": "neutral",
+          "target": null,
           "unit": "%"
         },
         {
           "name": "Avg Lysine (%)",
           "value": 0.27,
-          "threshold": 0.3,
-          "status": "yellow",
+          "threshold": 0.4,
+          "status": "red",
           "target": 0.4,
           "unit": "%"
         },
@@ -774,7 +758,7 @@
           "value": 0.057,
           "threshold": 0.07,
           "status": "yellow",
-          "target": 0.08,
+          "target": 0.07,
           "unit": "%"
         }
       ],
@@ -1028,18 +1012,10 @@
         {
           "name": "Avg Yield",
           "value": 6.63,
-          "threshold": 5,
-          "status": "green",
+          "threshold": null,
+          "status": "neutral",
           "category": "Yield",
           "unit": "t/ha"
-        },
-        {
-          "name": "Avg Grain Weight",
-          "value": 4.4,
-          "threshold": 250,
-          "status": "red",
-          "category": "Yield",
-          "unit": "g"
         }
       ],
       "coverageMetrics": [
@@ -1102,32 +1078,32 @@
         {
           "name": "Avg Zinc (ppm)",
           "value": 25.9,
-          "threshold": 30,
-          "status": "yellow",
-          "target": 35,
+          "threshold": null,
+          "status": "neutral",
+          "target": null,
           "unit": "ppm"
         },
         {
           "name": "Avg Iron (ppm)",
           "value": 20.0,
-          "threshold": 40,
-          "status": "red",
-          "target": 50,
+          "threshold": null,
+          "status": "neutral",
+          "target": null,
           "unit": "ppm"
         },
         {
           "name": "Avg Protein (%)",
           "value": 9.73,
-          "threshold": 10,
-          "status": "yellow",
-          "target": 12,
+          "threshold": null,
+          "status": "neutral",
+          "target": null,
           "unit": "%"
         },
         {
           "name": "Avg Lysine (%)",
           "value": 0.35,
-          "threshold": 0.3,
-          "status": "green",
+          "threshold": 0.4,
+          "status": "yellow",
           "target": 0.4,
           "unit": "%"
         },
@@ -1136,7 +1112,7 @@
           "value": 0.049,
           "threshold": 0.07,
           "status": "red",
-          "target": 0.08,
+          "target": 0.07,
           "unit": "%"
         }
       ],
@@ -1390,18 +1366,10 @@
         {
           "name": "Avg Yield",
           "value": 0,
-          "threshold": 5,
-          "status": "red",
+          "threshold": null,
+          "status": "neutral",
           "category": "Yield",
           "unit": "t/ha"
-        },
-        {
-          "name": "Avg Grain Weight",
-          "value": 0,
-          "threshold": 250,
-          "status": "red",
-          "category": "Yield",
-          "unit": "g"
         }
       ],
       "coverageMetrics": [
@@ -1443,32 +1411,32 @@
         {
           "name": "Avg Zinc (ppm)",
           "value": 26.9,
-          "threshold": 30,
-          "status": "yellow",
-          "target": 35,
+          "threshold": null,
+          "status": "neutral",
+          "target": null,
           "unit": "ppm"
         },
         {
           "name": "Avg Iron (ppm)",
           "value": 19.2,
-          "threshold": 40,
-          "status": "red",
-          "target": 50,
+          "threshold": null,
+          "status": "neutral",
+          "target": null,
           "unit": "ppm"
         },
         {
           "name": "Avg Protein (%)",
           "value": 9.59,
-          "threshold": 10,
-          "status": "yellow",
-          "target": 12,
+          "threshold": null,
+          "status": "neutral",
+          "target": null,
           "unit": "%"
         },
         {
           "name": "Avg Lysine (%)",
           "value": 0.36,
-          "threshold": 0.3,
-          "status": "green",
+          "threshold": 0.4,
+          "status": "yellow",
           "target": 0.4,
           "unit": "%"
         },
@@ -1477,7 +1445,7 @@
           "value": 0.053,
           "threshold": 0.07,
           "status": "red",
-          "target": 0.08,
+          "target": 0.07,
           "unit": "%"
         }
       ],
@@ -1675,18 +1643,10 @@
         {
           "name": "Avg Yield",
           "value": 5.6,
-          "threshold": 5,
-          "status": "green",
+          "threshold": null,
+          "status": "neutral",
           "category": "Yield",
           "unit": "t/ha"
-        },
-        {
-          "name": "Avg Grain Weight",
-          "value": 4.6,
-          "threshold": 250,
-          "status": "red",
-          "category": "Yield",
-          "unit": "g"
         }
       ],
       "coverageMetrics": [
@@ -1742,32 +1702,32 @@
         {
           "name": "Avg Zinc (ppm)",
           "value": 27.0,
-          "threshold": 30,
-          "status": "yellow",
-          "target": 35,
+          "threshold": null,
+          "status": "neutral",
+          "target": null,
           "unit": "ppm"
         },
         {
           "name": "Avg Iron (ppm)",
           "value": 20.7,
-          "threshold": 40,
-          "status": "red",
-          "target": 50,
+          "threshold": null,
+          "status": "neutral",
+          "target": null,
           "unit": "ppm"
         },
         {
           "name": "Avg Protein (%)",
           "value": 10.76,
-          "threshold": 10,
-          "status": "green",
-          "target": 12,
+          "threshold": null,
+          "status": "neutral",
+          "target": null,
           "unit": "%"
         },
         {
           "name": "Avg Lysine (%)",
           "value": 0.36,
-          "threshold": 0.3,
-          "status": "green",
+          "threshold": 0.4,
+          "status": "yellow",
           "target": 0.4,
           "unit": "%"
         },
@@ -1776,7 +1736,7 @@
           "value": 0.053,
           "threshold": 0.07,
           "status": "red",
-          "target": 0.08,
+          "target": 0.07,
           "unit": "%"
         }
       ],
@@ -2030,18 +1990,10 @@
         {
           "name": "Avg Yield",
           "value": 5.8,
-          "threshold": 5,
-          "status": "green",
+          "threshold": null,
+          "status": "neutral",
           "category": "Yield",
           "unit": "t/ha"
-        },
-        {
-          "name": "Avg Grain Weight",
-          "value": 4.7,
-          "threshold": 250,
-          "status": "red",
-          "category": "Yield",
-          "unit": "g"
         }
       ],
       "coverageMetrics": [
@@ -2111,32 +2063,32 @@
         {
           "name": "Avg Zinc (ppm)",
           "value": 53.4,
-          "threshold": 30,
-          "status": "green",
-          "target": 35,
+          "threshold": null,
+          "status": "neutral",
+          "target": null,
           "unit": "ppm"
         },
         {
           "name": "Avg Iron (ppm)",
           "value": 19.4,
-          "threshold": 40,
-          "status": "red",
-          "target": 50,
+          "threshold": null,
+          "status": "neutral",
+          "target": null,
           "unit": "ppm"
         },
         {
           "name": "Avg Protein (%)",
           "value": 9.91,
-          "threshold": 10,
-          "status": "yellow",
-          "target": 12,
+          "threshold": null,
+          "status": "neutral",
+          "target": null,
           "unit": "%"
         },
         {
           "name": "Avg Lysine (%)",
           "value": 0.35,
-          "threshold": 0.3,
-          "status": "green",
+          "threshold": 0.4,
+          "status": "yellow",
           "target": 0.4,
           "unit": "%"
         },
@@ -2145,7 +2097,7 @@
           "value": 0.051,
           "threshold": 0.07,
           "status": "red",
-          "target": 0.08,
+          "target": 0.07,
           "unit": "%"
         }
       ],
@@ -2399,18 +2351,10 @@
         {
           "name": "Avg Yield",
           "value": 5.99,
-          "threshold": 5,
-          "status": "green",
+          "threshold": null,
+          "status": "neutral",
           "category": "Yield",
           "unit": "t/ha"
-        },
-        {
-          "name": "Avg Grain Weight",
-          "value": 5.1,
-          "threshold": 250,
-          "status": "red",
-          "category": "Yield",
-          "unit": "g"
         }
       ],
       "coverageMetrics": [
@@ -2452,32 +2396,32 @@
         {
           "name": "Avg Zinc (ppm)",
           "value": 25.5,
-          "threshold": 30,
-          "status": "yellow",
-          "target": 35,
+          "threshold": null,
+          "status": "neutral",
+          "target": null,
           "unit": "ppm"
         },
         {
           "name": "Avg Iron (ppm)",
           "value": 17.9,
-          "threshold": 40,
-          "status": "red",
-          "target": 50,
+          "threshold": null,
+          "status": "neutral",
+          "target": null,
           "unit": "ppm"
         },
         {
           "name": "Avg Protein (%)",
           "value": 9.95,
-          "threshold": 10,
-          "status": "yellow",
-          "target": 12,
+          "threshold": null,
+          "status": "neutral",
+          "target": null,
           "unit": "%"
         },
         {
           "name": "Avg Lysine (%)",
           "value": 0.34,
-          "threshold": 0.3,
-          "status": "green",
+          "threshold": 0.4,
+          "status": "yellow",
           "target": 0.4,
           "unit": "%"
         },
@@ -2486,7 +2430,7 @@
           "value": 0.049,
           "threshold": 0.07,
           "status": "red",
-          "target": 0.08,
+          "target": 0.07,
           "unit": "%"
         }
       ],
@@ -2740,18 +2684,10 @@
         {
           "name": "Avg Yield",
           "value": 5.58,
-          "threshold": 5,
-          "status": "green",
+          "threshold": null,
+          "status": "neutral",
           "category": "Yield",
           "unit": "t/ha"
-        },
-        {
-          "name": "Avg Grain Weight",
-          "value": 4.6,
-          "threshold": 250,
-          "status": "red",
-          "category": "Yield",
-          "unit": "g"
         }
       ],
       "coverageMetrics": [
@@ -2807,32 +2743,32 @@
         {
           "name": "Avg Zinc (ppm)",
           "value": 24.8,
-          "threshold": 30,
-          "status": "yellow",
-          "target": 35,
+          "threshold": null,
+          "status": "neutral",
+          "target": null,
           "unit": "ppm"
         },
         {
           "name": "Avg Iron (ppm)",
           "value": 20.9,
-          "threshold": 40,
-          "status": "red",
-          "target": 50,
+          "threshold": null,
+          "status": "neutral",
+          "target": null,
           "unit": "ppm"
         },
         {
           "name": "Avg Protein (%)",
           "value": 10.63,
-          "threshold": 10,
-          "status": "green",
-          "target": 12,
+          "threshold": null,
+          "status": "neutral",
+          "target": null,
           "unit": "%"
         },
         {
           "name": "Avg Lysine (%)",
           "value": 0.36,
-          "threshold": 0.3,
-          "status": "green",
+          "threshold": 0.4,
+          "status": "yellow",
           "target": 0.4,
           "unit": "%"
         },
@@ -2841,7 +2777,7 @@
           "value": 0.053,
           "threshold": 0.07,
           "status": "red",
-          "target": 0.08,
+          "target": 0.07,
           "unit": "%"
         }
       ],
@@ -3097,18 +3033,10 @@
         {
           "name": "Avg Yield",
           "value": 5.38,
-          "threshold": 5,
-          "status": "green",
+          "threshold": null,
+          "status": "neutral",
           "category": "Yield",
           "unit": "t/ha"
-        },
-        {
-          "name": "Avg Grain Weight",
-          "value": 4.4,
-          "threshold": 250,
-          "status": "red",
-          "category": "Yield",
-          "unit": "g"
         }
       ],
       "coverageMetrics": [
@@ -3185,31 +3113,31 @@
         {
           "name": "Avg Zinc (ppm)",
           "value": 0,
-          "threshold": 30,
-          "status": "red",
-          "target": 35,
+          "threshold": null,
+          "status": "neutral",
+          "target": null,
           "unit": "ppm"
         },
         {
           "name": "Avg Iron (ppm)",
           "value": 0,
-          "threshold": 40,
-          "status": "red",
-          "target": 50,
+          "threshold": null,
+          "status": "neutral",
+          "target": null,
           "unit": "ppm"
         },
         {
           "name": "Avg Protein (%)",
           "value": 0,
-          "threshold": 10,
-          "status": "red",
-          "target": 12,
+          "threshold": null,
+          "status": "neutral",
+          "target": null,
           "unit": "%"
         },
         {
           "name": "Avg Lysine (%)",
           "value": 0,
-          "threshold": 0.3,
+          "threshold": 0.4,
           "status": "red",
           "target": 0.4,
           "unit": "%"
@@ -3219,7 +3147,7 @@
           "value": 0,
           "threshold": 0.07,
           "status": "red",
-          "target": 0.08,
+          "target": 0.07,
           "unit": "%"
         }
       ],
@@ -3473,18 +3401,10 @@
         {
           "name": "Avg Yield",
           "value": 0,
-          "threshold": 5,
-          "status": "red",
+          "threshold": null,
+          "status": "neutral",
           "category": "Yield",
           "unit": "t/ha"
-        },
-        {
-          "name": "Avg Grain Weight",
-          "value": 4.6,
-          "threshold": 250,
-          "status": "red",
-          "category": "Yield",
-          "unit": "g"
         }
       ],
       "coverageMetrics": [
@@ -3540,31 +3460,31 @@
         {
           "name": "Avg Zinc (ppm)",
           "value": 0,
-          "threshold": 30,
-          "status": "red",
-          "target": 35,
+          "threshold": null,
+          "status": "neutral",
+          "target": null,
           "unit": "ppm"
         },
         {
           "name": "Avg Iron (ppm)",
           "value": 0,
-          "threshold": 40,
-          "status": "red",
-          "target": 50,
+          "threshold": null,
+          "status": "neutral",
+          "target": null,
           "unit": "ppm"
         },
         {
           "name": "Avg Protein (%)",
           "value": 0,
-          "threshold": 10,
-          "status": "red",
-          "target": 12,
+          "threshold": null,
+          "status": "neutral",
+          "target": null,
           "unit": "%"
         },
         {
           "name": "Avg Lysine (%)",
           "value": 0,
-          "threshold": 0.3,
+          "threshold": 0.4,
           "status": "red",
           "target": 0.4,
           "unit": "%"
@@ -3574,7 +3494,7 @@
           "value": 0,
           "threshold": 0.07,
           "status": "red",
-          "target": 0.08,
+          "target": 0.07,
           "unit": "%"
         }
       ],
@@ -3828,18 +3748,10 @@
         {
           "name": "Avg Yield",
           "value": 5.82,
-          "threshold": 5,
-          "status": "green",
+          "threshold": null,
+          "status": "neutral",
           "category": "Yield",
           "unit": "t/ha"
-        },
-        {
-          "name": "Avg Grain Weight",
-          "value": 4.8,
-          "threshold": 250,
-          "status": "red",
-          "category": "Yield",
-          "unit": "g"
         }
       ],
       "coverageMetrics": [
@@ -3895,32 +3807,32 @@
         {
           "name": "Avg Zinc (ppm)",
           "value": 29.5,
-          "threshold": 30,
-          "status": "yellow",
-          "target": 35,
+          "threshold": null,
+          "status": "neutral",
+          "target": null,
           "unit": "ppm"
         },
         {
           "name": "Avg Iron (ppm)",
           "value": 20.1,
-          "threshold": 40,
-          "status": "red",
-          "target": 50,
+          "threshold": null,
+          "status": "neutral",
+          "target": null,
           "unit": "ppm"
         },
         {
           "name": "Avg Protein (%)",
           "value": 10.35,
-          "threshold": 10,
-          "status": "green",
-          "target": 12,
+          "threshold": null,
+          "status": "neutral",
+          "target": null,
           "unit": "%"
         },
         {
           "name": "Avg Lysine (%)",
           "value": 0.35,
-          "threshold": 0.3,
-          "status": "green",
+          "threshold": 0.4,
+          "status": "yellow",
           "target": 0.4,
           "unit": "%"
         },
@@ -3929,7 +3841,7 @@
           "value": 0.052,
           "threshold": 0.07,
           "status": "red",
-          "target": 0.08,
+          "target": 0.07,
           "unit": "%"
         }
       ],
