@@ -88,3 +88,8 @@ pygmentsCodefencesGuessSyntax = true
     url = "page/cv"
     weight = 4
 
+[[menu.main]]
+    name = "Dashboard"
+    url = "page/dashboard"
+    weight = 5
+

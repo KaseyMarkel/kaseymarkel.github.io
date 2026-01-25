@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BC Breeding Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        h2 {
+            color: #764ba2;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .header-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-toggle {
+            background: #e9ecef;
+            color: #495057;
+        }
+
+        .btn-toggle.active {
+            background: #10b981;
+            color: white;
+        }
+
+        .funnel-item {
+            margin-bottom: 15px;
+        }
+
+        .funnel-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #495057;
+        }
+
+        .funnel-bar-container {
+            height: 40px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .funnel-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 15px;
+            color: white;
+            font-weight: 600;
+            transition: width 0.5s ease;
+        }
+
+        .rate-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .rate-card {
+            padding: 20px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .rate-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .rate-card.green {
+            background: #d1fae5;
+            border-left: 4px solid #10b981;
+        }
+
+        .rate-card.yellow {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+        }
+
+        .rate-card.red {
+            background: #fee2e2;
+            border-left: 4px solid #ef4444;
+        }
+
+        .rate-title {
+            font-size: 0.9em;
+            color: #6b7280;
+            margin-bottom: 10px;
+        }
+
+        .rate-value {
+            font-size: 2.5em;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .rate-threshold {
+            font-size: 0.8em;
+            color: #9ca3af;
+        }
+
+        .rate-icon {
+            float: right;
+            font-size: 1.5em;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #f8f9fa;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #495057;
+            border-bottom: 2px solid #667eea;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .status-badge.green {
+            background: #d1fae5;
+            color: #047857;
+        }
+
+        .status-badge.yellow {
+            background: #fef3c7;
+            color: #b45309;
+        }
+
+        .status-badge.red {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .speed-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+        }
+
+        .speed-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .speed-days {
+            font-size: 2em;
+            font-weight: 700;
+        }
+
+        .speed-days.green {
+            color: #10b981;
+        }
+
+        .speed-days.yellow {
+            color: #f59e0b;
+        }
+
+        .issue-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            transition: all 0.2s ease;
+        }
+
+        .issue-item:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .issue-rank {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2em;
+        }
+
+        .issue-content {
+            flex: 1;
+        }
+
+        .issue-title {
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 5px;
+        }
+
+        .issue-stats {
+            font-size: 0.9em;
+            color: #6b7280;
+        }
+
+        .impact-badge {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .impact-high {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .impact-medium {
+            background: #fef3c7;
+            color: #b45309;
+        }
+
+        .impact-low {
+            background: #d1fae5;
+            color: #047857;
+        }
+
+        .stack-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .stack-card {
+            text-align: center;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 12px;
+        }
+
+        .stack-label {
+            font-size: 0.95em;
+            color: #6b7280;
+            margin-bottom: 15px;
+        }
+
+        .stack-value {
+            font-size: 3em;
+            font-weight: 700;
+            color: #764ba2;
+            margin-bottom: 10px;
+        }
+
+        .stack-target {
+            font-size: 0.9em;
+            color: #9ca3af;
+            margin-bottom: 15px;
+        }
+
+        .stack-status {
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+
+        .stack-status.good {
+            color: #10b981;
+        }
+
+        .stack-status.warn {
+            color: #f59e0b;
+        }
+
+        .last-updated {
+            font-size: 0.85em;
+            color: #6b7280;
+        }
+
+        @media (max-width: 768px) {
+            .header-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .rate-grid,
+            .speed-grid,
+            .stack-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="glass-card">
+            <div class="header-controls">
+                <div>
+                    <h1>
+                        <i class="fas fa-seedling"></i>
+                        BC Operational & Agronomic Metrics
+                    </h1>
+                    <p style="color: #6b7280; margin-top: 5px;">Real-time breeding program performance dashboard</p>
+                </div>
+                <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                    <button class="btn btn-primary" onclick="refreshData()">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                    <button class="btn btn-toggle" id="autoRefreshBtn" onclick="toggleAutoRefresh()">
+                        <i class="fas fa-clock"></i> Auto-refresh OFF
+                    </button>
+                    <span class="last-updated" id="lastUpdated"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Block A: Funnel -->
+        <div class="glass-card">
+            <h2><i class="fas fa-filter"></i> Block A: Pipeline Funnel</h2>
+            <div id="funnelBlock"></div>
+        </div>
+
+        <!-- Block B: Rates -->
+        <div class="glass-card">
+            <h2><i class="fas fa-percentage"></i> Block B: Efficiency Rates</h2>
+            <div class="rate-grid" id="ratesBlock"></div>
+        </div>
+
+        <!-- Block C: Coverage -->
+        <div class="glass-card">
+            <h2><i class="fas fa-layer-group"></i> Block C: Coverage Analysis</h2>
+            <div id="coverageBlock"></div>
+        </div>
+
+        <!-- Block D: Speed -->
+        <div class="glass-card">
+            <h2><i class="fas fa-tachometer-alt"></i> Block D: Cycle Speed</h2>
+            <div class="speed-grid" id="speedBlock"></div>
+        </div>
+
+        <!-- Top Issues -->
+        <div class="glass-card">
+            <h2><i class="fas fa-exclamation-triangle"></i> Top Operational Issues</h2>
+            <div id="issuesBlock"></div>
+        </div>
+
+        <!-- Block F: Stack Progress -->
+        <div class="glass-card">
+            <h2><i class="fas fa-chart-bar"></i> Block F: Trait Pyramiding Progress (Zn + QPM)</h2>
+            <div class="stack-grid" id="stackBlock"></div>
+        </div>
+
+        <!-- Footer -->
+        <div class="glass-card" style="text-align: center; font-size: 0.9em; color: #6b7280;">
+            <p>
+                <i class="fas fa-database"></i> Ready for BMS API integration ·
+                <i class="fas fa-shield-alt"></i> View-only access
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // BMS API Configuration
+        const BMS_API_CONFIG = {
+            baseUrl: 'https://bmspro.io/api',
+            apiKey: 'YOUR_BMS_API_KEY',
+            programId: 'YOUR_PROGRAM_ID'
+        };
+
+        // Mock data generator (will be replaced with real BMS API calls)
+        function generateMockData() {
+            return {
+                funnel: [
+                    { name: 'Seeds Planted', value: 12500, target: 12000 },
+                    { name: 'Plants at V4-V6', value: 10800, target: 10200 },
+                    { name: 'Plants Sampled', value: 10500, target: 10200 },
+                    { name: 'Valid Genotypes', value: 9850, target: 9800 },
+                    { name: 'Plants Selected', value: 3200, target: 3000 },
+                    { name: 'Plants Pollinated', value: 3050, target: 3000 },
+                    { name: 'Successful Ears (>30k)', value: 2850, target: 2700 },
+                    { name: 'Ears Harvested', value: 2780, target: 2700 }
+                ],
+                rates: [
+                    { name: 'Emergence Rate', value: 86.4, threshold: 80, status: 'green' },
+                    { name: 'V4-V6 Survival', value: 86.4, threshold: 85, status: 'green' },
+                    { name: 'Sampling Rate', value: 97.2, threshold: 95, status: 'green' },
+                    { name: 'Valid Genotype Rate', value: 93.8, threshold: 90, status: 'green' },
+                    { name: 'Pollination Success', value: 93.4, threshold: 85, status: 'green' },
+                    { name: 'Rot Loss Rate', value: 2.4, threshold: 5, status: 'green' },
+                    { name: 'Lab Eval Rate', value: 98.2, threshold: 95, status: 'green' },
+                    { name: 'Lab Pass Rate', value: 96.5, threshold: 90, status: 'green' }
+                ],
+                coverage: [
+                    { scheme: 'QPM BC1F1', required: 800, available: 920, ratio: 1.15, status: 'green' },
+                    { scheme: 'QPM BC2F1', required: 650, available: 720, ratio: 1.11, status: 'green' },
+                    { scheme: 'Zn BC1F1', required: 600, available: 680, ratio: 1.13, status: 'green' },
+                    { scheme: 'Zn BC2F1', required: 550, available: 540, ratio: 0.98, status: 'red' },
+                    { scheme: 'Zn+QPM BC1F1', required: 450, available: 520, ratio: 1.16, status: 'green' },
+                    { scheme: 'Zn+QPM BC2F1', required: 350, available: 360, ratio: 1.03, status: 'yellow' }
+                ],
+                speed: [
+                    { stage: 'Planting → Sampling', days: 35, target: 40, status: 'green' },
+                    { stage: 'Sampling → Genotyping', days: 12, target: 14, status: 'green' },
+                    { stage: 'Genotyping → Next Planting', days: 18, target: 21, status: 'green' },
+                    { stage: 'Total Cycle Time', days: 65, target: 75, status: 'green' }
+                ],
+                issues: [
+                    { rank: 1, issue: 'Spiroplasma (Virus)', plants: 450, pct: 4.2, impact: 'High' },
+                    { rank: 2, issue: 'Climate/Temperature Stress', plants: 380, pct: 3.5, impact: 'High' },
+                    { rank: 3, issue: 'Pollination Effectiveness', plants: 200, pct: 6.6, impact: 'Medium' },
+                    { rank: 4, issue: 'Ear Mold Diseases', plants: 168, pct: 6.0, impact: 'Medium' },
+                    { rank: 5, issue: 'Germination Issues', plants: 160, pct: 1.3, impact: 'Low' }
+                ],
+                stack: [
+                    { level: 'Zn+QPM ≥60%', count: 245, target: 200 },
+                    { level: 'Zn+QPM ≥70%', count: 156, target: 120 },
+                    { level: 'Zn+QPM ≥80% + o2', count: 42, target: 40 }
+                ]
+            };
+        }
+
+        // Render functions
+        function renderFunnel(data) {
+            const maxValue = data[0].value;
+            const html = data.map(item => {
+                const width = (item.value / maxValue) * 100;
+                const efficiency = ((item.value / item.target) * 100).toFixed(0);
+                return `
+                    <div class="funnel-item">
+                        <div class="funnel-label">
+                            <span>${item.name}</span>
+                            <span style="color: #9ca3af;">Target: ${item.target.toLocaleString()}</span>
+                        </div>
+                        <div class="funnel-bar-container">
+                            <div class="funnel-bar" style="width: ${width}%">
+                                <span>${item.value.toLocaleString()}</span>
+                                <span>${efficiency}%</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            document.getElementById('funnelBlock').innerHTML = html;
+        }
+
+        function renderRates(data) {
+            const html = data.map(item => {
+                const icon = item.status === 'green' ? 'fa-check-circle' :
+                            item.status === 'yellow' ? 'fa-exclamation-circle' : 'fa-times-circle';
+                const iconColor = item.status === 'green' ? '#10b981' :
+                                 item.status === 'yellow' ? '#f59e0b' : '#ef4444';
+                return `
+                    <div class="rate-card ${item.status}">
+                        <div class="rate-title">
+                            ${item.name}
+                            <i class="fas ${icon} rate-icon" style="color: ${iconColor}"></i>
+                        </div>
+                        <div class="rate-value">${item.value.toFixed(1)}%</div>
+                        <div class="rate-threshold">Threshold: ${item.threshold}%</div>
+                    </div>
+                `;
+            }).join('');
+            document.getElementById('ratesBlock').innerHTML = html;
+        }
+
+        function renderCoverage(data) {
+            const rows = data.map(item => {
+                const ratioColor = item.status === 'green' ? '#10b981' :
+                                  item.status === 'yellow' ? '#f59e0b' : '#ef4444';
+                const statusText = item.status === 'green' ? 'Good' :
+                                  item.status === 'yellow' ? 'Watch' : 'Critical';
+                return `
+                    <tr>
+                        <td style="font-weight: 600;">${item.scheme}</td>
+                        <td style="text-align: right;">${item.required}</td>
+                        <td style="text-align: right; font-weight: 600;">${item.available}</td>
+                        <td style="text-align: right;">
+                            <span style="font-weight: 700; color: ${ratioColor}">${item.ratio.toFixed(2)}x</span>
+                        </td>
+                        <td style="text-align: center;">
+                            <span class="status-badge ${item.status}">${statusText}</span>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+
+            const html = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Scheme/Stage</th>
+                            <th style="text-align: right;">Required</th>
+                            <th style="text-align: right;">Available</th>
+                            <th style="text-align: right;">Coverage</th>
+                            <th style="text-align: center;">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>${rows}</tbody>
+                </table>
+            `;
+            document.getElementById('coverageBlock').innerHTML = html;
+        }
+
+        function renderSpeed(data) {
+            const html = data.map(item => {
+                const statusClass = item.days <= item.target ? 'green' : 'yellow';
+                const statusText = item.days <= item.target ? '✓ On track' : '⚠ Delayed';
+                return `
+                    <div class="speed-card">
+                        <div>
+                            <div style="font-weight: 600; color: #1f2937; margin-bottom: 5px;">${item.stage}</div>
+                            <div style="font-size: 0.85em; color: #9ca3af;">Target: ${item.target} days</div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div class="speed-days ${statusClass}">${item.days}d</div>
+                            <div style="font-size: 0.85em; color: #6b7280;">${statusText}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            document.getElementById('speedBlock').innerHTML = html;
+        }
+
+        function renderIssues(data) {
+            const html = data.map(item => {
+                const impactClass = item.impact === 'High' ? 'impact-high' :
+                                   item.impact === 'Medium' ? 'impact-medium' : 'impact-low';
+                return `
+                    <div class="issue-item">
+                        <div class="issue-rank">${item.rank}</div>
+                        <div class="issue-content">
+                            <div class="issue-title">${item.issue}</div>
+                            <div class="issue-stats">${item.plants} plants affected · ${item.pct}% of population</div>
+                        </div>
+                        <div>
+                            <span class="impact-badge ${impactClass}">${item.impact} Impact</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            document.getElementById('issuesBlock').innerHTML = html;
+        }
+
+        function renderStack(data) {
+            const html = data.map(item => {
+                const achieved = item.count >= item.target;
+                const statusClass = achieved ? 'good' : 'warn';
+                const statusText = achieved ? '✓ Target achieved' : `${item.target - item.count} more needed`;
+                return `
+                    <div class="stack-card">
+                        <div class="stack-label">${item.level}</div>
+                        <div class="stack-value">${item.count}</div>
+                        <div class="stack-target">Target: ${item.target}</div>
+                        <div class="stack-status ${statusClass}">${statusText}</div>
+                    </div>
+                `;
+            }).join('');
+            document.getElementById('stackBlock').innerHTML = html;
+        }
+
+        // App state
+        let autoRefresh = false;
+        let autoRefreshInterval = null;
+
+        function refreshData() {
+            console.log('Refreshing data...');
+            const data = generateMockData();
+            renderFunnel(data.funnel);
+            renderRates(data.rates);
+            renderCoverage(data.coverage);
+            renderSpeed(data.speed);
+            renderIssues(data.issues);
+            renderStack(data.stack);
+
+            const now = new Date().toLocaleTimeString();
+            document.getElementById('lastUpdated').textContent = `Updated: ${now}`;
+        }
+
+        function toggleAutoRefresh() {
+            autoRefresh = !autoRefresh;
+            const btn = document.getElementById('autoRefreshBtn');
+
+            if (autoRefresh) {
+                btn.classList.add('active');
+                btn.innerHTML = '<i class="fas fa-clock"></i> Auto-refresh ON';
+                autoRefreshInterval = setInterval(refreshData, 300000); // 5 minutes
+            } else {
+                btn.classList.remove('active');
+                btn.innerHTML = '<i class="fas fa-clock"></i> Auto-refresh OFF';
+                if (autoRefreshInterval) {
+                    clearInterval(autoRefreshInterval);
+                }
+            }
+        }
+
+        // Initialize dashboard
+        refreshData();
+        console.log('✅ Dashboard loaded successfully!');
+        console.log('📊 All 6 blocks rendered with demo data');
+        console.log('🔄 Ready for BMS API integration');
+    </script>
+</body>
+</html>
+
+<!-- BMS API Integration -->
+<script>
+// BMS API Configuration
+const BMS = {
+    baseUrl: 'https://semillanueva.bmspro.io/bmsapi',
+    programUUID: 'febb4f0f-b4af-4399-bdec-73e88a5d2223',
+    cropName: 'maize',
+    authToken: '', // Will be set from cookies or manual input
+    
+    async getAuthToken() {
+        // Try to get from cookie
+        const cookies = document.cookie.split(';');
+        for (let cookie of cookies) {
+            const [name, value] = cookie.trim().split('=');
+            if (name === 'X-Auth-Token' || name === 'XSRF-TOKEN') {
+                this.authToken = value;
+                return value;
+            }
+        }
+        return null;
+    },
+    
+    async request(endpoint) {
+        const url = `${this.baseUrl}${endpoint}`;
+        console.log('🌐 Fetching:', url);
+        
+        try {
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'x-auth-token': this.authToken,
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include'
+            });
+            
+            if (!response.ok) {
+                throw new Error(`API Error: ${response.status}`);
+            }
+            
+            return await response.json();
+        } catch (error) {
+            console.error('❌ BMS API Error:', error);
+            return null;
+        }
+    },
+    
+    async getStudies() {
+        return await this.request(`/crops/${this.cropName}/programs/${this.programUUID}/studies`);
+    },
+    
+    async getObservations(studyId) {
+        return await this.request(`/crops/${this.cropName}/programs/${this.programUUID}/studies/${studyId}/observations`);
+    }
+};
+
+// Function to fetch real BMS data
+async function fetchRealBMSData() {
+    console.log('🔄 Fetching real BMS data...');
+    
+    // Get auth token
+    await BMS.getAuthToken();
+    
+    if (!BMS.authToken) {
+        console.warn('⚠️ No auth token found. Using demo data.');
+        return null;
+    }
+    
+    try {
+        // Fetch studies
+        const studies = await BMS.getStudies();
+        console.log('📊 BMS Studies:', studies);
+        
+        // TODO: Transform BMS data to dashboard format
+        // For now, return null to use demo data
+        return null;
+        
+    } catch (error) {
+        console.error('❌ Error fetching BMS data:', error);
+        return null;
+    }
+}
+
+// Update the refreshData function to try real data first
+const originalRefreshData = refreshData;
+refreshData = async function() {
+    const realData = await fetchRealBMSData();
+    
+    if (realData) {
+        console.log('✅ Using real BMS data!');
+        // Render real data
+        renderFunnel(realData.funnel);
+        renderRates(realData.rates);
+        renderCoverage(realData.coverage);
+        renderSpeed(realData.speed);
+        renderIssues(realData.issues);
+        renderStack(realData.stack);
+    } else {
+        console.log('📝 Using demo data');
+        originalRefreshData();
+    }
+    
+    const now = new Date().toLocaleTimeString();
+    document.getElementById('lastUpdated').textContent = `Updated: ${now}`;
+};
+</script>

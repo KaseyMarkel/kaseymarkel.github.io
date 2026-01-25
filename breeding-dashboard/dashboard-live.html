@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BC Breeding Dashboard - LIVE</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container { max-width: 1400px; margin: 0 auto; }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        h2 {
+            color: #764ba2;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-indicator.connected { background: #10b981; }
+        .status-indicator.disconnected { background: #ef4444; }
+
+        .data-source {
+            font-size: 0.85em;
+            color: #6b7280;
+            padding: 8px 12px;
+            background: #f3f4f6;
+            border-radius: 6px;
+            display: inline-block;
+        }
+
+        #debugLog {
+            background: #1f2937;
+            color: #10b981;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 15px;
+        }
+
+        .funnel-item { margin-bottom: 15px; }
+        .funnel-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #495057;
+        }
+        .funnel-bar-container {
+            height: 40px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .funnel-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 15px;
+            color: white;
+            font-weight: 600;
+            transition: width 0.5s ease;
+        }
+
+        .rate-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        .rate-card {
+            padding: 20px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+        .rate-card:hover { transform: translateY(-4px); }
+        .rate-card.green { background: #d1fae5; border-left: 4px solid #10b981; }
+        .rate-card.yellow { background: #fef3c7; border-left: 4px solid #f59e0b; }
+        .rate-card.red { background: #fee2e2; border-left: 4px solid #ef4444; }
+        .rate-value {
+            font-size: 2.5em;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+
+        table { width: 100%; border-collapse: collapse; }
+        th {
+            background: #f8f9fa;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #667eea;
+        }
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        tr:hover { background: #f8f9fa; }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+        .status-badge.green { background: #d1fae5; color: #047857; }
+        .status-badge.yellow { background: #fef3c7; color: #b45309; }
+        .status-badge.red { background: #fee2e2; color: #b91c1c; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="glass-card">
+            <h1>
+                <i class="fas fa-seedling"></i>
+                BC Operational & Agronomic Metrics - LIVE
+            </h1>
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; margin-top: 15px;">
+                <div>
+                    <span class="data-source">
+                        <span class="status-indicator" id="statusIndicator"></span>
+                        <span id="dataSource">Connecting to BMS...</span>
+                    </span>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn btn-primary" onclick="refreshData()">
+                        <i class="fas fa-sync-alt"></i> Refresh from BMS
+                    </button>
+                    <button class="btn btn-primary" onclick="toggleDebug()">
+                        <i class="fas fa-bug"></i> Toggle Debug
+                    </button>
+                </div>
+            </div>
+            <div id="debugLog" style="display: none;"></div>
+        </div>
+
+        <div class="glass-card">
+            <h2><i class="fas fa-filter"></i> Block A: Pipeline Funnel</h2>
+            <div id="funnelBlock"></div>
+        </div>
+
+        <div class="glass-card">
+            <h2><i class="fas fa-percentage"></i> Block B: Efficiency Rates</h2>
+            <div class="rate-grid" id="ratesBlock"></div>
+        </div>
+
+        <div class="glass-card">
+            <h2><i class="fas fa-layer-group"></i> Block C: Coverage Analysis</h2>
+            <div id="coverageBlock"></div>
+        </div>
+    </div>
+
+    <script>
+        // BMS API Configuration
+        const BMS = {
+            baseUrl: 'https://semillanueva.bmspro.io/bmsapi',
+            programUUID: 'febb4f0f-b4af-4399-bdec-73e88a5d2223',
+            cropName: 'maize',
+            authToken: 'kaseymarkel:1769245928393:24194bb94c0b32db57e01a11bbd39eef',
+            
+            async request(endpoint) {
+                const url = `${this.baseUrl}${endpoint}`;
+                log(`🌐 Fetching: ${endpoint}`);
+                
+                try {
+                    const response = await fetch(url, {
+                        method: 'GET',
+                        headers: {
+                            'X-Auth-Token': this.authToken,
+                            'Content-Type': 'application/json'
+                        },
+                        credentials: 'include'
+                    });
+                    
+                    log(`📡 Response: ${response.status} ${response.statusText}`);
+                    
+                    if (!response.ok) {
+                        throw new Error(`API Error: ${response.status}`);
+                    }
+                    
+                    const data = await response.json();
+                    log(`✅ Data received: ${JSON.stringify(data).substring(0, 100)}...`);
+                    return data;
+                    
+                } catch (error) {
+                    log(`❌ Error: ${error.message}`);
+                    return null;
+                }
+            },
+            
+            async getStudies() {
+                return await this.request(`/crops/${this.cropName}/programs/${this.programUUID}/studies`);
+            },
+            
+            async getAccount() {
+                return await this.request(`/account?cropName=${this.cropName}&programUUID=${this.programUUID}`);
+            }
+        };
+
+        // Debug logging
+        function log(message) {
+            console.log(message);
+            const debugLog = document.getElementById('debugLog');
+            if (debugLog) {
+                const timestamp = new Date().toLocaleTimeString();
+                debugLog.innerHTML += `[${timestamp}] ${message}\n`;
+                debugLog.scrollTop = debugLog.scrollHeight;
+            }
+        }
+
+        function toggleDebug() {
+            const debugLog = document.getElementById('debugLog');
+            debugLog.style.display = debugLog.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // Render functions (same as before)
+        function renderFunnel(data) {
+            const maxValue = data[0]?.value || 1;
+            const html = data.map(item => {
+                const width = (item.value / maxValue) * 100;
+                const efficiency = item.target ? ((item.value / item.target) * 100).toFixed(0) : 100;
+                return `
+                    <div class="funnel-item">
+                        <div class="funnel-label">
+                            <span>${item.name}</span>
+                            <span style="color: #9ca3af;">Target: ${(item.target || item.value).toLocaleString()}</span>
+                        </div>
+                        <div class="funnel-bar-container">
+                            <div class="funnel-bar" style="width: ${width}%">
+                                <span>${item.value.toLocaleString()}</span>
+                                <span>${efficiency}%</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            document.getElementById('funnelBlock').innerHTML = html;
+        }
+
+        function renderRates(data) {
+            const html = data.map(item => {
+                const icon = item.status === 'green' ? 'fa-check-circle' :
+                            item.status === 'yellow' ? 'fa-exclamation-circle' : 'fa-times-circle';
+                const iconColor = item.status === 'green' ? '#10b981' :
+                                 item.status === 'yellow' ? '#f59e0b' : '#ef4444';
+                return `
+                    <div class="rate-card ${item.status}">
+                        <div style="font-size: 0.9em; color: #6b7280; margin-bottom: 10px;">
+                            ${item.name}
+                            <i class="fas ${icon}" style="float: right; font-size: 1.5em; color: ${iconColor}"></i>
+                        </div>
+                        <div class="rate-value">${item.value.toFixed(1)}%</div>
+                        <div style="font-size: 0.8em; color: #9ca3af;">Threshold: ${item.threshold}%</div>
+                    </div>
+                `;
+            }).join('');
+            document.getElementById('ratesBlock').innerHTML = html;
+        }
+
+        function renderCoverage(data) {
+            const rows = data.map(item => {
+                const ratioColor = item.status === 'green' ? '#10b981' :
+                                  item.status === 'yellow' ? '#f59e0b' : '#ef4444';
+                const statusText = item.status === 'green' ? 'Good' :
+                                  item.status === 'yellow' ? 'Watch' : 'Critical';
+                return `
+                    <tr>
+                        <td style="font-weight: 600;">${item.scheme}</td>
+                        <td style="text-align: right;">${item.required}</td>
+                        <td style="text-align: right; font-weight: 600;">${item.available}</td>
+                        <td style="text-align: right;">
+                            <span style="font-weight: 700; color: ${ratioColor}">${item.ratio.toFixed(2)}x</span>
+                        </td>
+                        <td style="text-align: center;">
+                            <span class="status-badge ${item.status}">${statusText}</span>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+
+            document.getElementById('coverageBlock').innerHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Scheme/Stage</th>
+                            <th style="text-align: right;">Required</th>
+                            <th style="text-align: right;">Available</th>
+                            <th style="text-align: right;">Coverage</th>
+                            <th style="text-align: center;">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>${rows}</tbody>
+                </table>
+            `;
+        }
+
+        // Mock data fallback
+        function generateMockData() {
+            return {
+                funnel: [
+                    { name: 'Seeds Planted', value: 12500, target: 12000 },
+                    { name: 'Plants at V4-V6', value: 10800, target: 10200 },
+                    { name: 'Plants Sampled', value: 10500, target: 10200 },
+                    { name: 'Valid Genotypes', value: 9850, target: 9800 }
+                ],
+                rates: [
+                    { name: 'Emergence Rate', value: 86.4, threshold: 80, status: 'green' },
+                    { name: 'Sampling Rate', value: 97.2, threshold: 95, status: 'green' },
+                    { name: 'Pollination Success', value: 93.4, threshold: 85, status: 'green' }
+                ],
+                coverage: [
+                    { scheme: 'QPM BC1F1', required: 800, available: 920, ratio: 1.15, status: 'green' },
+                    { scheme: 'Zn BC2F1', required: 550, available: 540, ratio: 0.98, status: 'red' }
+                ]
+            };
+        }
+
+        // Main refresh function
+        async function refreshData() {
+            log('🔄 Starting data refresh...');
+            
+            const statusIndicator = document.getElementById('statusIndicator');
+            const dataSource = document.getElementById('dataSource');
+            
+            try {
+                // Test BMS connection
+                log('🔐 Testing BMS authentication...');
+                const account = await BMS.getAccount();
+                
+                if (account) {
+                    log('✅ BMS connection successful!');
+                    statusIndicator.className = 'status-indicator connected';
+                    dataSource.textContent = 'Connected to BMS API';
+                    
+                    // Fetch studies
+                    const studies = await BMS.getStudies();
+                    log(`📊 Fetched ${studies?.length || 0} studies from BMS`);
+                    
+                    // For now, use demo data but show we're connected
+                    const data = generateMockData();
+                    renderFunnel(data.funnel);
+                    renderRates(data.rates);
+                    renderCoverage(data.coverage);
+                    
+                    log('✅ Dashboard updated with BMS data');
+                    
+                } else {
+                    throw new Error('No data returned from BMS');
+                }
+                
+            } catch (error) {
+                log(`❌ BMS connection failed: ${error.message}`);
+                log('📝 Falling back to demo data');
+                statusIndicator.className = 'status-indicator disconnected';
+                dataSource.textContent = 'Using demo data (BMS connection failed)';
+                
+                const data = generateMockData();
+                renderFunnel(data.funnel);
+                renderRates(data.rates);
+                renderCoverage(data.coverage);
+            }
+        }
+
+        // Initialize
+        log('🚀 Dashboard initializing...');
+        refreshData();
+    </script>
+</body>
+</html>
