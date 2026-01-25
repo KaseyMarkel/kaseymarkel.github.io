@@ -453,6 +453,7 @@ def compute_historical_trends(observations):
     by_period = defaultdict(lambda: {
         'zinc_vals': [], 'tryptophan_vals': [], 'yield_vals': [],
         'virus_vals': [], 'lodging_vals': [], 'dff_vals': [],
+        'ear_rot_vals': [], 'poor_husk_vals': [], 'stalk_lodge_vals': [], 'root_lodge_vals': [],
         'obs_count': 0, 'studies': set()
     })
 
@@ -484,6 +485,14 @@ def compute_historical_trends(observations):
             by_period[period]['virus_vals'].append(value)
         elif var_name in ['ACAME_TALLOsn', 'ACAME_RAIZsn'] and value >= 0:
             by_period[period]['lodging_vals'].append(value)
+        elif var_name in ['ACAME_TALLOsn', 'VuelcoTallo_pct'] and value >= 0:
+            by_period[period]['stalk_lodge_vals'].append(value)
+        elif var_name in ['ACAME_RAIZsn', 'VuelcoRaiz_pct'] and value >= 0:
+            by_period[period]['root_lodge_vals'].append(value)
+        elif var_name in ['MAZ_PUDsn', 'PUD_pct'] and value >= 0:
+            by_period[period]['ear_rot_vals'].append(value)
+        elif var_name in ['MALA_COBsn'] and value >= 0:
+            by_period[period]['poor_husk_vals'].append(value)
         elif var_name == 'DFF' and value > 0:
             by_period[period]['dff_vals'].append(value)
 
@@ -498,6 +507,10 @@ def compute_historical_trends(observations):
         'yield': [],
         'virus': [],
         'lodging': [],
+        'stalkLodge': [],
+        'rootLodge': [],
+        'earRot': [],
+        'poorHusk': [],
         'dff': [],
         'observations': [],
         'studies': []
@@ -511,6 +524,10 @@ def compute_historical_trends(observations):
         trends['yield'].append(avg(data['yield_vals']))
         trends['virus'].append(avg(data['virus_vals']))
         trends['lodging'].append(avg(data['lodging_vals']))
+        trends['stalkLodge'].append(avg(data['stalk_lodge_vals']))
+        trends['rootLodge'].append(avg(data['root_lodge_vals']))
+        trends['earRot'].append(avg(data['ear_rot_vals']))
+        trends['poorHusk'].append(avg(data['poor_husk_vals']))
         trends['dff'].append(avg(data['dff_vals']))
         trends['observations'].append(data['obs_count'])
         trends['studies'].append(len(data['studies']))

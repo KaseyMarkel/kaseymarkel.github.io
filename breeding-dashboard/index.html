@@ -1469,15 +1469,66 @@
             var item = currentData.topIssues.find(function(i) { return i.issue === issue; });
             if (!item) return;
 
+            var trends = cachedData.historicalTrends;
+
+            // Map issue to trend key
+            var dataKey = null;
+            if (issue.includes('Virus') || issue.includes('Spiroplasma')) dataKey = 'virus';
+            else if (issue.includes('Stalk')) dataKey = 'stalkLodge';
+            else if (issue.includes('Root')) dataKey = 'rootLodge';
+            else if (issue.includes('Ear Rot') || issue.includes('Mold')) dataKey = 'earRot';
+            else if (issue.includes('Husk')) dataKey = 'poorHusk';
+            else if (issue.includes('Lodging')) dataKey = 'lodging';
+
             var html = '<div style="padding: 20px;">';
-            html += '<p><strong>Issue:</strong> ' + item.issue + '</p>';
-            html += '<p><strong>Observations Affected:</strong> ' + item.plants + '</p>';
-            html += '<p><strong>Percentage Above Threshold:</strong> ' + item.pct + '%</p>';
-            html += '<p><strong>Impact Level:</strong> ' + item.impact + '</p>';
-            html += '<p><strong>Trend:</strong> ' + item.trend + '</p>';
+
+            // Stats row
+            html += '<div style="display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 20px;">';
+            html += '<div style="flex: 1; min-width: 100px; text-align: center; padding: 16px; background: #fef2f2; border-radius: 8px;">';
+            html += '<div style="font-size: 1.5rem; font-weight: 700; color: #ef4444;">' + (item.affected || 0).toLocaleString() + '</div>';
+            html += '<div style="font-size: 0.8rem; color: #6b7280;">Affected</div></div>';
+            html += '<div style="flex: 1; min-width: 100px; text-align: center; padding: 16px; background: #fef2f2; border-radius: 8px;">';
+            html += '<div style="font-size: 1.5rem; font-weight: 700; color: #dc2626;">' + (item.severe || 0).toLocaleString() + '</div>';
+            html += '<div style="font-size: 0.8rem; color: #6b7280;">Severe (>10%)</div></div>';
+            html += '<div style="flex: 1; min-width: 100px; text-align: center; padding: 16px; background: #f3f4f6; border-radius: 8px;">';
+            html += '<div style="font-size: 1.5rem; font-weight: 700; color: #374151;">' + (item.total || 0).toLocaleString() + '</div>';
+            html += '<div style="font-size: 0.8rem; color: #6b7280;">Total Obs</div></div>';
             html += '</div>';
 
-            showModal(issue + ' Issue Details', html);
+            // Percentage bar
+            html += '<div style="margin-bottom: 20px;">';
+            html += '<div style="display: flex; justify-content: space-between; margin-bottom: 4px;">';
+            html += '<span style="font-weight: 500;">Incidence Rate</span>';
+            html += '<span style="font-weight: 700; color: ' + (item.pct > 50 ? '#ef4444' : item.pct > 20 ? '#f59e0b' : '#10b981') + ';">' + item.pct + '%</span></div>';
+            html += '<div style="height: 12px; background: #e5e7eb; border-radius: 6px; overflow: hidden;">';
+            html += '<div style="height: 100%; width: ' + Math.min(item.pct, 100) + '%; background: ' + (item.pct > 50 ? '#ef4444' : item.pct > 20 ? '#f59e0b' : '#10b981') + ';"></div>';
+            html += '</div></div>';
+
+            // Impact badge
+            html += '<p style="margin-bottom: 16px;"><strong>Impact Level:</strong> ';
+            html += '<span style="padding: 4px 12px; border-radius: 12px; font-size: 0.85rem; background: ' + (item.impact === 'High' ? '#fef2f2; color: #dc2626' : item.impact === 'Medium' ? '#fffbeb; color: #d97706' : '#f0fdf4; color: #16a34a') + ';">' + item.impact + '</span></p>';
+
+            // Trend chart
+            if (trends && trends.periods && dataKey && trends[dataKey]) {
+                html += '<div style="margin-top: 20px;">';
+                html += '<h4 style="margin-bottom: 12px;">📈 Historical Trend</h4>';
+                html += renderTrendChart(trends.periods, trends[dataKey], issue, '%');
+
+                // Mini data table
+                html += '<div style="margin-top: 16px; max-height: 150px; overflow-y: auto;">';
+                html += '<table style="width: 100%; font-size: 0.8rem;"><thead><tr><th>Period</th><th style="text-align:right;">Avg %</th></tr></thead><tbody>';
+                for (var i = trends.periods.length - 1; i >= 0; i--) {
+                    var val = trends[dataKey][i];
+                    if (val > 0) {
+                        html += '<tr><td>' + trends.periods[i] + '</td><td style="text-align:right;">' + val.toFixed(1) + '%</td></tr>';
+                    }
+                }
+                html += '</tbody></table></div>';
+                html += '</div>';
+            }
+
+            html += '</div>';
+            showModal(issue + ' - Issue Analysis', html);
         }
 
         function showStackDetails(level) {
