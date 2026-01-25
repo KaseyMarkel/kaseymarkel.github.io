@@ -103,6 +103,14 @@
             gap: 8px;
             flex-wrap: wrap;
             margin-top: 20px;
+            align-items: center;
+        }
+
+        .filter-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #6b7280;
+            margin-right: 4px;
         }
 
         .filter-chip {
@@ -118,6 +126,7 @@
 
         .filter-chip:hover {
             transform: scale(1.05);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
 
         .filter-chip.active {
@@ -127,9 +136,9 @@
 
         .filter-divider {
             width: 1px;
+            height: 24px;
             background: #d1d5db;
-            margin: 0 8px;
-            align-self: stretch;
+            margin: 0 12px;
         }
 
         .section-title {
@@ -142,12 +151,32 @@
             gap: 8px;
         }
 
+        .active-filters {
+            background: #f3f4f6;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            color: #6b7280;
+            margin-bottom: 16px;
+            display: none;
+        }
+
+        .active-filters.show {
+            display: block;
+        }
+
         /* Funnel styles */
         .funnel-item {
             display: flex;
             align-items: center;
             gap: 16px;
             margin-bottom: 12px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .funnel-item:hover {
+            transform: translateX(4px);
         }
 
         .funnel-label {
@@ -207,11 +236,13 @@
             padding: 20px;
             border-radius: 12px;
             transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
         }
 
         .metric-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
         }
 
         .metric-card.green { background: #d1fae5; }
@@ -248,6 +279,36 @@
             color: #6b7280;
         }
 
+        /* Tooltip */
+        .tooltip {
+            position: fixed;
+            background: #1f2937;
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            max-width: 300px;
+            z-index: 1000;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .tooltip.show {
+            opacity: 1;
+        }
+
+        .tooltip-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .tooltip-content {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+
         /* Table styles */
         .table-container { overflow-x: auto; }
 
@@ -266,10 +327,16 @@
             font-weight: 600;
             color: #374151;
             background: #f9fafb;
+            cursor: pointer;
+        }
+
+        th:hover {
+            background: #f3f4f6;
         }
 
         td { color: #4b5563; }
         tr:hover { background: #f9fafb; }
+        tr { cursor: pointer; transition: background 0.2s; }
 
         .status-badge {
             display: inline-block;
@@ -308,6 +375,13 @@
             background: #f9fafb;
             border-radius: 8px;
             margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .speed-item:hover {
+            background: #f3f4f6;
+            transform: translateX(4px);
         }
 
         .speed-stage { font-weight: 600; color: #1f2937; }
@@ -343,10 +417,16 @@
             flex-direction: column;
             align-items: center;
             gap: 8px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .chart-bar-group:hover {
+            transform: scale(1.05);
         }
 
         .chart-bar { width: 60px; display: flex; flex-direction: column; }
-        .chart-segment { width: 100%; }
+        .chart-segment { width: 100%; transition: height 0.3s; }
         .chart-segment.sampling { background: #667eea; }
         .chart-segment.genotyping { background: #764ba2; }
         .chart-segment.planning { background: #f59e0b; }
@@ -379,10 +459,14 @@
             background: #f9fafb;
             border-radius: 8px;
             margin-bottom: 12px;
-            transition: background 0.2s;
+            transition: all 0.2s;
+            cursor: pointer;
         }
 
-        .issue-item:hover { background: #f3f4f6; }
+        .issue-item:hover {
+            background: #f3f4f6;
+            transform: translateX(4px);
+        }
 
         .issue-rank {
             width: 32px;
@@ -429,6 +513,13 @@
             border-radius: 12px;
             background: rgba(255, 255, 255, 0.5);
             border: 1px solid #e5e7eb;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .stack-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
         }
 
         .stack-level { font-size: 0.9rem; font-weight: 500; color: #6b7280; margin-bottom: 8px; }
@@ -437,6 +528,118 @@
         .stack-status { margin-top: 12px; font-size: 0.9rem; font-weight: 600; }
         .stack-status.achieved { color: #10b981; }
         .stack-status.pending { color: #f59e0b; }
+
+        /* Progress bar for stack */
+        .stack-progress {
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            margin-top: 12px;
+            overflow: hidden;
+        }
+
+        .stack-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        /* Summary grid */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+        }
+
+        .summary-item {
+            text-align: center;
+            padding: 16px;
+            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+            border-radius: 12px;
+        }
+
+        .summary-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #764ba2;
+        }
+
+        .summary-label {
+            font-size: 0.8rem;
+            color: #6b7280;
+            margin-top: 4px;
+        }
+
+        /* Two column layout for side by side sections */
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 900px) {
+            .two-column { grid-template-columns: 1fr; }
+        }
+
+        /* Modal for drill-down */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: #f3f4f6;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close:hover {
+            background: #e5e7eb;
+        }
 
         /* Footer */
         .footer {
@@ -454,6 +657,16 @@
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
         }
+
+        /* Transition for filter changes */
+        .fade-update {
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0.5; }
+            to { opacity: 1; }
+        }
     </style>
 </head>
 <body>
@@ -463,30 +676,26 @@
             <div class="header">
                 <div>
                     <h1>🌱 BC Operational & Agronomic Metrics</h1>
-                    <p>Real-time breeding program performance dashboard</p>
+                    <p>Interactive breeding program performance dashboard</p>
                 </div>
                 <div class="header-actions">
                     <button class="btn btn-primary" onclick="refreshData()">
                         <span id="refresh-icon">↻</span> Refresh
                     </button>
-                    <button class="btn btn-secondary" id="auto-refresh-btn" onclick="toggleAutoRefresh()">
-                        ⏱ Auto-refresh OFF
-                    </button>
                     <span class="last-updated">Last updated: <span id="last-updated-time">-</span></span>
                 </div>
             </div>
             <div class="filters" id="filters-container">
-                <button class="filter-chip active" data-group="location" data-value="All">All</button>
-                <button class="filter-chip" data-group="location" data-value="Station BC">Station BC</button>
-                <button class="filter-chip" data-group="location" data-value="Oriente">Oriente</button>
-                <button class="filter-chip" data-group="location" data-value="Estación">Estación</button>
+                <span class="filter-label">Region:</span>
+                <div id="region-filters"></div>
                 <div class="filter-divider"></div>
-                <button class="filter-chip active" data-group="scheme" data-value="All">All</button>
-                <button class="filter-chip" data-group="scheme" data-value="QPM">QPM</button>
-                <button class="filter-chip" data-group="scheme" data-value="Zn">Zn</button>
-                <button class="filter-chip" data-group="scheme" data-value="Zn+QPM">Zn+QPM</button>
+                <span class="filter-label">Trait:</span>
+                <div id="trait-filters"></div>
             </div>
         </div>
+
+        <!-- Active filter indicator -->
+        <div class="active-filters" id="active-filters"></div>
 
         <!-- Block A: Funnel -->
         <div class="glass-card">
@@ -507,10 +716,10 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>Scheme/Stage</th>
-                            <th style="text-align: right;">Required</th>
-                            <th style="text-align: right;">Available</th>
-                            <th style="text-align: right;">Coverage</th>
+                            <th onclick="sortTable('scheme')">Scheme/Stage ↕</th>
+                            <th style="text-align: right;" onclick="sortTable('required')">Required ↕</th>
+                            <th style="text-align: right;" onclick="sortTable('available')">Available ↕</th>
+                            <th style="text-align: right;" onclick="sortTable('ratio')">Coverage ↕</th>
                             <th style="text-align: center;">Status</th>
                         </tr>
                     </thead>
@@ -542,93 +751,196 @@
             <div id="issues-container"></div>
         </div>
 
+        <!-- Block E: Biofortification Metrics -->
+        <div class="glass-card">
+            <h2 class="section-title">🌾 Block E: Biofortification Quality</h2>
+            <div class="metrics-grid" id="biofort-container"></div>
+        </div>
+
         <!-- Block F: Stack Progress -->
         <div class="glass-card">
-            <h2 class="section-title">🧬 Block F: Trait Pyramiding Progress (Zn + QPM)</h2>
+            <h2 class="section-title">🧬 Block F: Trait Pyramiding Progress</h2>
             <div class="stack-grid" id="stack-container"></div>
+        </div>
+
+        <!-- Block G: Plant Characteristics -->
+        <div class="glass-card">
+            <h2 class="section-title">🌿 Block G: Plant Characteristics</h2>
+            <div class="metrics-grid" id="plant-container"></div>
+        </div>
+
+        <!-- Summary Stats Row -->
+        <div class="glass-card">
+            <h2 class="section-title">📈 Summary Statistics</h2>
+            <div class="summary-grid" id="summary-container"></div>
         </div>
 
         <!-- Footer -->
         <div class="glass-card footer">
-            <p>📡 Connected to BMS API · Auto-refresh every 5 minutes when enabled</p>
-            <p>🔒 View-only access · Contact admin for edit permissions</p>
+            <p>📊 Data from BMS export · Click any element for details</p>
+            <p>🔄 Refresh data by re-running the BMS export script</p>
+        </div>
+    </div>
+
+    <!-- Tooltip -->
+    <div class="tooltip" id="tooltip">
+        <div class="tooltip-title" id="tooltip-title"></div>
+        <div class="tooltip-content" id="tooltip-content"></div>
+    </div>
+
+    <!-- Modal for drill-down -->
+    <div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+        <div class="modal" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <div class="modal-title" id="modal-title">Details</div>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div id="modal-content"></div>
         </div>
     </div>
 
     <script>
         // State
-        var autoRefresh = false;
-        var autoRefreshInterval = null;
-        var filters = { location: 'All', scheme: 'All' };
+        var filters = { region: 'All', trait: 'All' };
+        var cachedData = null;
+        var currentData = null;
+        var sortState = { column: null, direction: 1 };
 
-        // Mock data
-        function generateMockData() {
+        // Load data from JSON file
+        function loadDashboardData(callback) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', 'dashboard_data.json?t=' + Date.now(), true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        try {
+                            cachedData = JSON.parse(xhr.responseText);
+                            callback(cachedData);
+                        } catch (e) {
+                            console.log('Error parsing JSON:', e);
+                            callback(generateFallbackData());
+                        }
+                    } else {
+                        console.log('Could not load dashboard_data.json');
+                        callback(generateFallbackData());
+                    }
+                }
+            };
+            xhr.send();
+        }
+
+        // Fallback data
+        function generateFallbackData() {
             return {
+                filters: { regions: ['All'], traits: ['All'] },
                 funnelData: [
-                    { name: 'Seeds Planted', value: 12500, target: 12000, efficiency: 104 },
-                    { name: 'Plants at V4-V6', value: 10800, target: 10200, efficiency: 106 },
-                    { name: 'Plants Sampled', value: 10500, target: 10200, efficiency: 103 },
-                    { name: 'Valid Genotypes', value: 9850, target: 9800, efficiency: 101 },
-                    { name: 'Plants Selected', value: 3200, target: 3000, efficiency: 107 },
-                    { name: 'Plants Pollinated', value: 3050, target: 3000, efficiency: 102 },
-                    { name: 'Successful Ears (>30k)', value: 2850, target: 2700, efficiency: 106 },
-                    { name: 'Ears Harvested', value: 2780, target: 2700, efficiency: 103 }
+                    { name: 'Total Studies', value: 402, target: 400, efficiency: 100 }
                 ],
                 rateMetrics: [
-                    { name: 'Emergence Rate', value: 86.4, threshold: 80, status: 'green' },
-                    { name: 'V4-V6 Survival', value: 86.4, threshold: 85, status: 'green' },
-                    { name: 'Sampling Rate', value: 97.2, threshold: 95, status: 'green' },
-                    { name: 'Valid Genotype Rate', value: 93.8, threshold: 90, status: 'green' },
-                    { name: 'Pollination Success', value: 93.4, threshold: 85, status: 'green' },
-                    { name: 'Rot Loss Rate', value: 2.4, threshold: 5, status: 'green' },
-                    { name: 'Lab Eval Rate', value: 98.2, threshold: 95, status: 'green' },
-                    { name: 'Lab Pass Rate', value: 96.5, threshold: 90, status: 'green' }
+                    { name: 'Virus Rate', value: 4.2, threshold: 5, status: 'green' }
                 ],
-                coverageMetrics: [
-                    { scheme: 'QPM BC1F1', required: 800, available: 920, ratio: 1.15, status: 'green' },
-                    { scheme: 'QPM BC2F1', required: 650, available: 720, ratio: 1.11, status: 'green' },
-                    { scheme: 'Zn BC1F1', required: 600, available: 680, ratio: 1.13, status: 'green' },
-                    { scheme: 'Zn BC2F1', required: 550, available: 540, ratio: 0.98, status: 'red' },
-                    { scheme: 'Zn+QPM BC1F1', required: 450, available: 520, ratio: 1.16, status: 'green' },
-                    { scheme: 'Zn+QPM BC2F1', required: 350, available: 360, ratio: 1.03, status: 'yellow' }
-                ],
-                speedMetrics: [
-                    { stage: 'Planting → Sampling', days: 35, target: 40, status: 'green' },
-                    { stage: 'Sampling → Genotyping', days: 12, target: 14, status: 'green' },
-                    { stage: 'Genotyping → Next Planting', days: 18, target: 21, status: 'green' },
-                    { stage: 'Total Cycle Time', days: 65, target: 75, status: 'green' }
-                ],
-                topIssues: [
-                    { rank: 1, issue: 'Spiroplasma (Virus)', impact: 'High', plants: 450, pct: 4.2, trend: 'stable' },
-                    { rank: 2, issue: 'Climate/Temperature Stress', impact: 'High', plants: 380, pct: 3.5, trend: 'increasing' },
-                    { rank: 3, issue: 'Pollination Effectiveness', impact: 'Medium', plants: 200, pct: 6.6, trend: 'stable' },
-                    { rank: 4, issue: 'Ear Mold Diseases', impact: 'Medium', plants: 168, pct: 6.0, trend: 'decreasing' },
-                    { rank: 5, issue: 'Germination Issues', impact: 'Low', plants: 160, pct: 1.3, trend: 'stable' }
-                ],
-                stackProgress: [
-                    { level: 'Zn+QPM ≥60%', count: 245, target: 200 },
-                    { level: 'Zn+QPM ≥70%', count: 156, target: 120 },
-                    { level: 'Zn+QPM ≥80% + o2', count: 42, target: 40 }
-                ],
-                cycleTimeHistory: [
-                    { cycle: 'C1', sampling: 38, genotyping: 14, planning: 20 },
-                    { cycle: 'C2', sampling: 36, genotyping: 13, planning: 19 },
-                    { cycle: 'C3', sampling: 35, genotyping: 12, planning: 18 },
-                    { cycle: 'Current', sampling: 35, genotyping: 12, planning: 18 }
-                ]
+                coverageMetrics: [],
+                speedMetrics: [],
+                topIssues: [],
+                stackProgress: [],
+                cycleTimeHistory: [],
+                byRegion: {},
+                byTrait: {},
+                studies: []
             };
         }
 
-        // Render functions
+        // Get filtered data
+        function getFilteredData(data) {
+            // Start with all data
+            var result = {
+                funnelData: data.funnelData,
+                rateMetrics: data.rateMetrics,
+                coverageMetrics: data.coverageMetrics,
+                speedMetrics: data.speedMetrics,
+                topIssues: data.topIssues,
+                stackProgress: data.stackProgress,
+                cycleTimeHistory: data.cycleTimeHistory,
+                biofortMetrics: data.biofortMetrics,
+                plantMetrics: data.plantMetrics,
+                summary: data.summary
+            };
+
+            // Apply region filter
+            if (filters.region !== 'All' && data.byRegion && data.byRegion[filters.region]) {
+                var regionData = data.byRegion[filters.region];
+                result.funnelData = regionData.funnelData || result.funnelData;
+                result.rateMetrics = regionData.rateMetrics || result.rateMetrics;
+                result.coverageMetrics = regionData.coverageMetrics || result.coverageMetrics;
+                result.topIssues = regionData.topIssues || result.topIssues;
+                result.stackProgress = regionData.stackProgress || result.stackProgress;
+                result.biofortMetrics = regionData.biofortMetrics || result.biofortMetrics;
+                result.plantMetrics = regionData.plantMetrics || result.plantMetrics;
+                result.summary = regionData.summary || result.summary;
+            }
+
+            // Apply trait filter
+            if (filters.trait !== 'All' && data.byTrait && data.byTrait[filters.trait]) {
+                var traitData = data.byTrait[filters.trait];
+                result.funnelData = traitData.funnelData || result.funnelData;
+                result.rateMetrics = traitData.rateMetrics || result.rateMetrics;
+                result.coverageMetrics = traitData.coverageMetrics || result.coverageMetrics;
+                result.topIssues = traitData.topIssues || result.topIssues;
+                result.stackProgress = traitData.stackProgress || result.stackProgress;
+                result.biofortMetrics = traitData.biofortMetrics || result.biofortMetrics;
+                result.plantMetrics = traitData.plantMetrics || result.plantMetrics;
+                result.summary = traitData.summary || result.summary;
+            }
+
+            return result;
+        }
+
+        // Render filter chips
+        function renderFilters(data) {
+            var regionContainer = document.getElementById('region-filters');
+            var traitContainer = document.getElementById('trait-filters');
+
+            var regions = data.filters ? data.filters.regions : ['All'];
+            var traits = data.filters ? data.filters.traits : ['All'];
+
+            var regionHtml = '';
+            for (var i = 0; i < regions.length; i++) {
+                var active = filters.region === regions[i] ? 'active' : '';
+                regionHtml += '<button class="filter-chip ' + active + '" data-group="region" data-value="' + regions[i] + '">' + regions[i] + '</button> ';
+            }
+            regionContainer.innerHTML = regionHtml;
+
+            var traitHtml = '';
+            for (var i = 0; i < traits.length; i++) {
+                var active = filters.trait === traits[i] ? 'active' : '';
+                traitHtml += '<button class="filter-chip ' + active + '" data-group="trait" data-value="' + traits[i] + '">' + traits[i] + '</button> ';
+            }
+            traitContainer.innerHTML = traitHtml;
+
+            // Update active filters display
+            var activeFiltersEl = document.getElementById('active-filters');
+            if (filters.region !== 'All' || filters.trait !== 'All') {
+                var filterText = 'Showing: ';
+                if (filters.region !== 'All') filterText += 'Region: ' + filters.region;
+                if (filters.region !== 'All' && filters.trait !== 'All') filterText += ' | ';
+                if (filters.trait !== 'All') filterText += 'Trait: ' + filters.trait;
+                activeFiltersEl.textContent = filterText;
+                activeFiltersEl.classList.add('show');
+            } else {
+                activeFiltersEl.classList.remove('show');
+            }
+        }
+
+        // Render funnel
         function renderFunnel(data) {
             var container = document.getElementById('funnel-container');
-            var maxValue = data[0].value;
+            var maxValue = data[0] ? data[0].value : 1;
             var html = '';
 
             for (var i = 0; i < data.length; i++) {
                 var item = data[i];
-                var width = (item.value / maxValue) * 100;
-                html += '<div class="funnel-item">' +
+                var width = Math.max(20, (item.value / maxValue) * 100);
+                html += '<div class="funnel-item" onclick="showFunnelDetails(\'' + item.name + '\')" onmouseenter="showTooltip(event, \'' + item.name + '\', \'Click to see detailed breakdown\')" onmouseleave="hideTooltip()">' +
                     '<div class="funnel-label">' + item.name + '</div>' +
                     '<div class="funnel-bar-container">' +
                         '<div class="funnel-bar" style="width: ' + width + '%;">' +
@@ -640,8 +952,11 @@
                 '</div>';
             }
             container.innerHTML = html;
+            container.classList.add('fade-update');
+            setTimeout(function() { container.classList.remove('fade-update'); }, 300);
         }
 
+        // Render rate metrics
         function renderRates(data) {
             var container = document.getElementById('rates-container');
             var icons = { green: '✓', yellow: '⚠', red: '✗' };
@@ -649,18 +964,24 @@
 
             for (var i = 0; i < data.length; i++) {
                 var m = data[i];
-                html += '<div class="metric-card ' + m.status + '">' +
+                var displayValue = m.name.includes('%') ? m.value.toFixed(3) : m.value.toFixed(1);
+                var unit = m.name.includes('ppm') ? ' ppm' : (m.name.includes('t/ha') ? ' t/ha' : '%');
+
+                html += '<div class="metric-card ' + m.status + '" onclick="showMetricDetails(\'' + m.name + '\')" onmouseenter="showTooltip(event, \'' + m.name + '\', \'Threshold: ' + m.threshold + unit + ' | Status: ' + m.status + '\')" onmouseleave="hideTooltip()">' +
                     '<div class="metric-header">' +
                         '<span class="metric-name">' + m.name + '</span>' +
                         '<span class="metric-icon ' + m.status + '">' + icons[m.status] + '</span>' +
                     '</div>' +
-                    '<div class="metric-value">' + m.value.toFixed(1) + '%</div>' +
-                    '<div class="metric-threshold">Threshold: ' + m.threshold + '%</div>' +
+                    '<div class="metric-value">' + displayValue + (m.name.includes('%') || m.name.includes('Rate') ? '%' : '') + '</div>' +
+                    '<div class="metric-threshold">Threshold: ' + m.threshold + '</div>' +
                 '</div>';
             }
             container.innerHTML = html;
+            container.classList.add('fade-update');
+            setTimeout(function() { container.classList.remove('fade-update'); }, 300);
         }
 
+        // Render coverage table
         function renderCoverage(data) {
             var tbody = document.getElementById('coverage-body');
             var statusLabels = { green: 'Good', yellow: 'Watch', red: 'Critical' };
@@ -668,7 +989,7 @@
 
             for (var i = 0; i < data.length; i++) {
                 var item = data[i];
-                html += '<tr>' +
+                html += '<tr onclick="showCoverageDetails(\'' + item.scheme + '\')">' +
                     '<td style="font-weight: 500;">' + item.scheme + '</td>' +
                     '<td style="text-align: right;">' + item.required + '</td>' +
                     '<td style="text-align: right; font-weight: 600;">' + item.available + '</td>' +
@@ -679,6 +1000,7 @@
             tbody.innerHTML = html;
         }
 
+        // Render speed metrics
         function renderSpeed(data) {
             var container = document.getElementById('speed-metrics');
             var html = '';
@@ -686,7 +1008,7 @@
             for (var i = 0; i < data.length; i++) {
                 var item = data[i];
                 var statusText = item.days <= item.target ? '✓ On track' : '⚠ Delayed';
-                html += '<div class="speed-item">' +
+                html += '<div class="speed-item" onclick="showSpeedDetails(\'' + item.stage + '\')" onmouseenter="showTooltip(event, \'' + item.stage + '\', \'Target: ' + item.target + ' days\')" onmouseleave="hideTooltip()">' +
                     '<div>' +
                         '<div class="speed-stage">' + item.stage + '</div>' +
                         '<div class="speed-target">Target: ' + item.target + ' days</div>' +
@@ -700,8 +1022,14 @@
             container.innerHTML = html;
         }
 
+        // Render cycle chart
         function renderCycleChart(data) {
             var container = document.getElementById('cycle-chart');
+            if (!data || data.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #6b7280;">No cycle data available</p>';
+                return;
+            }
+
             var maxTotal = 0;
             for (var i = 0; i < data.length; i++) {
                 var total = data[i].sampling + data[i].genotyping + data[i].planning;
@@ -712,7 +1040,8 @@
 
             for (var i = 0; i < data.length; i++) {
                 var item = data[i];
-                html += '<div class="chart-bar-group">' +
+                var total = item.sampling + item.genotyping + item.planning;
+                html += '<div class="chart-bar-group" onclick="showCycleDetails(\'' + item.cycle + '\')" onmouseenter="showTooltip(event, \'Cycle ' + item.cycle + '\', \'Total: ' + total + ' days<br>Sampling: ' + item.sampling + 'd<br>Genotyping: ' + item.genotyping + 'd<br>Planning: ' + item.planning + 'd\')" onmouseleave="hideTooltip()">' +
                     '<div class="chart-bar">' +
                         '<div class="chart-segment planning" style="height: ' + (item.planning * scale) + 'px;"></div>' +
                         '<div class="chart-segment genotyping" style="height: ' + (item.genotyping * scale) + 'px;"></div>' +
@@ -724,84 +1053,348 @@
             container.innerHTML = html;
         }
 
+        // Render issues
         function renderIssues(data) {
             var container = document.getElementById('issues-container');
             var trendIcons = { increasing: '📈', decreasing: '📉', stable: '➡️' };
             var html = '';
 
+            if (!data || data.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #6b7280; padding: 20px;">No issues recorded for current filter selection</p>';
+                return;
+            }
+
             for (var i = 0; i < data.length; i++) {
                 var item = data[i];
-                html += '<div class="issue-item">' +
+                html += '<div class="issue-item" onclick="showIssueDetails(\'' + item.issue + '\')" onmouseenter="showTooltip(event, \'' + item.issue + '\', \'Affected: ' + item.plants + ' observations (' + item.pct + '%)\')" onmouseleave="hideTooltip()">' +
                     '<div class="issue-rank">' + item.rank + '</div>' +
                     '<div class="issue-content">' +
                         '<div class="issue-name">' + item.issue + '</div>' +
-                        '<div class="issue-details">' + item.plants + ' plants affected · ' + item.pct + '% of population</div>' +
+                        '<div class="issue-details">' + item.plants + ' observations affected · ' + item.pct + '% above threshold</div>' +
                     '</div>' +
                     '<div class="issue-meta">' +
                         '<span class="issue-impact ' + item.impact.toLowerCase() + '">' + item.impact + ' Impact</span>' +
-                        '<div class="issue-trend">Trend: ' + trendIcons[item.trend] + ' ' + item.trend + '</div>' +
+                        '<div class="issue-trend">Trend: ' + (trendIcons[item.trend] || '➡️') + ' ' + item.trend + '</div>' +
                     '</div>' +
                 '</div>';
             }
             container.innerHTML = html;
         }
 
+        // Render stack progress
         function renderStack(data) {
             var container = document.getElementById('stack-container');
             var html = '';
+
+            if (!data || data.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #6b7280; padding: 20px;">No biofortification data for current filter selection</p>';
+                return;
+            }
 
             for (var i = 0; i < data.length; i++) {
                 var item = data[i];
                 var achieved = item.count >= item.target;
                 var statusClass = achieved ? 'achieved' : 'pending';
                 var statusText = achieved ? '✓ Target achieved' : (item.target - item.count) + ' more needed';
+                var progress = Math.min(100, Math.round((item.count / item.target) * 100));
 
-                html += '<div class="stack-card">' +
+                html += '<div class="stack-card" onclick="showStackDetails(\'' + item.level + '\')">' +
                     '<div class="stack-level">' + item.level + '</div>' +
-                    '<div class="stack-count">' + item.count + '</div>' +
-                    '<div class="stack-target">Target: ' + item.target + '</div>' +
+                    '<div class="stack-count">' + item.count.toLocaleString() + '</div>' +
+                    '<div class="stack-target">Target: ' + item.target.toLocaleString() + '</div>' +
+                    '<div class="stack-progress"><div class="stack-progress-fill" style="width: ' + progress + '%;"></div></div>' +
                     '<div class="stack-status ' + statusClass + '">' + statusText + '</div>' +
                 '</div>';
             }
             container.innerHTML = html;
         }
 
-        function updateLastUpdated() {
-            document.getElementById('last-updated-time').textContent = new Date().toLocaleTimeString();
+        // Render biofortification metrics
+        function renderBiofort(data) {
+            var container = document.getElementById('biofort-container');
+            if (!container) return;
+            if (!data || data.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #6b7280; padding: 20px;">No biofortification data available</p>';
+                return;
+            }
+
+            var icons = { green: '✓', yellow: '⚠', red: '✗' };
+            var html = '';
+
+            for (var i = 0; i < data.length; i++) {
+                var m = data[i];
+                var displayValue = m.value;
+                if (m.unit === '%' && m.value < 1) {
+                    displayValue = m.value.toFixed(3);
+                } else if (m.unit === 'ppm') {
+                    displayValue = m.value.toFixed(1);
+                } else {
+                    displayValue = m.value.toFixed(2);
+                }
+
+                html += '<div class="metric-card ' + m.status + '" onclick="showBiofortDetails(\'' + m.name + '\')">' +
+                    '<div class="metric-header">' +
+                        '<span class="metric-name">' + m.name + '</span>' +
+                        '<span class="metric-icon ' + m.status + '">' + icons[m.status] + '</span>' +
+                    '</div>' +
+                    '<div class="metric-value">' + displayValue + '</div>' +
+                    '<div class="metric-threshold">Target: ' + m.target + ' ' + m.unit + '</div>' +
+                '</div>';
+            }
+            container.innerHTML = html;
         }
 
-        // Actions
+        // Render plant metrics
+        function renderPlantMetrics(data) {
+            var container = document.getElementById('plant-container');
+            if (!container) return;
+            if (!data || data.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #6b7280; padding: 20px;">No plant data available</p>';
+                return;
+            }
+
+            var html = '';
+            for (var i = 0; i < data.length; i++) {
+                var m = data[i];
+                var pct = m.target > 0 ? Math.round((m.value / m.target) * 100) : 0;
+                var status = pct >= 90 ? 'green' : (pct >= 70 ? 'yellow' : 'red');
+
+                html += '<div class="metric-card ' + status + '">' +
+                    '<div class="metric-header">' +
+                        '<span class="metric-name">' + m.name + '</span>' +
+                    '</div>' +
+                    '<div class="metric-value">' + m.value.toFixed(1) + '</div>' +
+                    '<div class="metric-threshold">Target: ' + m.target + ' ' + m.unit + '</div>' +
+                '</div>';
+            }
+            container.innerHTML = html;
+        }
+
+        // Render summary stats
+        function renderSummary(data) {
+            var container = document.getElementById('summary-container');
+            if (!container || !data) return;
+
+            var items = [
+                { label: 'Studies', value: data.totalStudies || 0 },
+                { label: 'Active', value: data.activeStudies || 0 },
+                { label: 'Obs Units', value: data.totalObsUnits || 0 },
+                { label: 'Plants', value: data.plantsHarvested || 0 },
+                { label: 'Ears', value: data.earsHarvested || 0 },
+                { label: 'Yield (t/ha)', value: data.avgYield || 0 },
+                { label: 'Zinc (ppm)', value: data.avgZinc || 0 },
+                { label: 'Trp (%)', value: data.avgTryptophan || 0 },
+            ];
+
+            var html = '';
+            for (var i = 0; i < items.length; i++) {
+                var item = items[i];
+                var val = typeof item.value === 'number' ?
+                    (item.value > 1000 ? item.value.toLocaleString() :
+                     item.value < 1 ? item.value.toFixed(3) : item.value.toFixed(1)) : item.value;
+                html += '<div class="summary-item">' +
+                    '<div class="summary-value">' + val + '</div>' +
+                    '<div class="summary-label">' + item.label + '</div>' +
+                '</div>';
+            }
+            container.innerHTML = html;
+        }
+
+        // Drill-down for biofort
+        function showBiofortDetails(name) {
+            showModal(name, '<p>Detailed analysis for ' + name + ' will show distribution and trends when historical data is available.</p>');
+        }
+
+        function updateLastUpdated(timestamp) {
+            if (timestamp) {
+                var date = new Date(timestamp);
+                document.getElementById('last-updated-time').textContent = date.toLocaleString();
+            } else {
+                document.getElementById('last-updated-time').textContent = new Date().toLocaleTimeString();
+            }
+        }
+
+        // Tooltip functions
+        function showTooltip(event, title, content) {
+            var tooltip = document.getElementById('tooltip');
+            document.getElementById('tooltip-title').textContent = title;
+            document.getElementById('tooltip-content').innerHTML = content;
+
+            tooltip.style.left = (event.pageX + 10) + 'px';
+            tooltip.style.top = (event.pageY + 10) + 'px';
+            tooltip.classList.add('show');
+        }
+
+        function hideTooltip() {
+            document.getElementById('tooltip').classList.remove('show');
+        }
+
+        // Modal functions
+        function showModal(title, content) {
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-content').innerHTML = content;
+            document.getElementById('modal-overlay').classList.add('show');
+        }
+
+        function closeModal(event) {
+            if (!event || event.target === document.getElementById('modal-overlay')) {
+                document.getElementById('modal-overlay').classList.remove('show');
+            }
+        }
+
+        // Drill-down functions
+        function showFunnelDetails(name) {
+            var studies = cachedData.studies || [];
+            var filtered = studies;
+
+            if (filters.region !== 'All') {
+                filtered = filtered.filter(function(s) { return s.region === filters.region; });
+            }
+            if (filters.trait !== 'All') {
+                filtered = filtered.filter(function(s) { return s.trait === filters.trait; });
+            }
+
+            var html = '<p style="margin-bottom: 16px;"><strong>' + filtered.length + '</strong> studies match current filters</p>';
+            html += '<table style="width: 100%;"><thead><tr><th>Study Name</th><th>Location</th><th>Program</th><th style="text-align: right;">Observations</th></tr></thead><tbody>';
+
+            var shown = filtered.slice(0, 20);
+            for (var i = 0; i < shown.length; i++) {
+                var s = shown[i];
+                html += '<tr><td>' + s.name + '</td><td>' + s.location + '</td><td>' + s.program + '</td><td style="text-align: right;">' + s.observations + '</td></tr>';
+            }
+            html += '</tbody></table>';
+
+            if (filtered.length > 20) {
+                html += '<p style="margin-top: 12px; color: #6b7280;">Showing 20 of ' + filtered.length + ' studies</p>';
+            }
+
+            showModal(name + ' - Study Details', html);
+        }
+
+        function showMetricDetails(name) {
+            var metric = currentData.rateMetrics.find(function(m) { return m.name === name; });
+            if (!metric) return;
+
+            var html = '<div style="text-align: center; padding: 20px;">';
+            html += '<div style="font-size: 3rem; font-weight: 700; color: ' + (metric.status === 'green' ? '#10b981' : metric.status === 'yellow' ? '#f59e0b' : '#ef4444') + ';">' + metric.value + '</div>';
+            html += '<div style="color: #6b7280; margin-top: 8px;">Threshold: ' + metric.threshold + '</div>';
+            html += '<div style="margin-top: 20px; padding: 16px; background: #f9fafb; border-radius: 8px;">';
+            html += '<p><strong>Status:</strong> ' + (metric.status === 'green' ? 'Within acceptable range' : metric.status === 'yellow' ? 'Needs attention' : 'Critical - immediate action needed') + '</p>';
+            html += '</div></div>';
+
+            showModal(name, html);
+        }
+
+        function showCoverageDetails(scheme) {
+            var item = currentData.coverageMetrics.find(function(c) { return c.scheme === scheme; });
+            if (!item) return;
+
+            var studies = (cachedData.studies || []).filter(function(s) { return s.program === scheme; });
+
+            var html = '<div style="padding: 20px;">';
+            html += '<p><strong>Required:</strong> ' + item.required + '</p>';
+            html += '<p><strong>Available:</strong> ' + item.available + '</p>';
+            html += '<p><strong>Coverage Ratio:</strong> ' + item.ratio.toFixed(2) + 'x</p>';
+            html += '<hr style="margin: 16px 0;">';
+            html += '<p><strong>Studies in this program (' + studies.length + '):</strong></p>';
+            html += '<ul style="margin-top: 8px; padding-left: 20px;">';
+
+            var shown = studies.slice(0, 10);
+            for (var i = 0; i < shown.length; i++) {
+                html += '<li>' + shown[i].name + ' (' + shown[i].location + ')</li>';
+            }
+            if (studies.length > 10) {
+                html += '<li>... and ' + (studies.length - 10) + ' more</li>';
+            }
+            html += '</ul></div>';
+
+            showModal(scheme, html);
+        }
+
+        function showSpeedDetails(stage) {
+            showModal(stage + ' Stage', '<p>Detailed timing breakdown for ' + stage + ' will be available when historical data is connected.</p>');
+        }
+
+        function showCycleDetails(cycle) {
+            var item = currentData.cycleTimeHistory.find(function(c) { return c.cycle === cycle; });
+            if (!item) return;
+
+            var total = item.sampling + item.genotyping + item.planning;
+            var html = '<div style="padding: 20px;">';
+            html += '<p><strong>Total Cycle Time:</strong> ' + total + ' days</p>';
+            html += '<hr style="margin: 16px 0;">';
+            html += '<p>🔵 <strong>Sampling:</strong> ' + item.sampling + ' days</p>';
+            html += '<p>🟣 <strong>Genotyping:</strong> ' + item.genotyping + ' days</p>';
+            html += '<p>🟡 <strong>Planning:</strong> ' + item.planning + ' days</p>';
+            html += '</div>';
+
+            showModal('Cycle ' + cycle, html);
+        }
+
+        function showIssueDetails(issue) {
+            var item = currentData.topIssues.find(function(i) { return i.issue === issue; });
+            if (!item) return;
+
+            var html = '<div style="padding: 20px;">';
+            html += '<p><strong>Issue:</strong> ' + item.issue + '</p>';
+            html += '<p><strong>Observations Affected:</strong> ' + item.plants + '</p>';
+            html += '<p><strong>Percentage Above Threshold:</strong> ' + item.pct + '%</p>';
+            html += '<p><strong>Impact Level:</strong> ' + item.impact + '</p>';
+            html += '<p><strong>Trend:</strong> ' + item.trend + '</p>';
+            html += '</div>';
+
+            showModal(issue + ' Issue Details', html);
+        }
+
+        function showStackDetails(level) {
+            var item = currentData.stackProgress.find(function(s) { return s.level === level; });
+            if (!item) return;
+
+            var progress = Math.round((item.count / item.target) * 100);
+            var html = '<div style="padding: 20px; text-align: center;">';
+            html += '<div style="font-size: 3rem; font-weight: 700; color: #764ba2;">' + item.count + '</div>';
+            html += '<div style="color: #6b7280;">out of ' + item.target + ' target</div>';
+            html += '<div style="margin-top: 20px;">';
+            html += '<div style="height: 20px; background: #e5e7eb; border-radius: 10px; overflow: hidden;">';
+            html += '<div style="height: 100%; width: ' + progress + '%; background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);"></div>';
+            html += '</div>';
+            html += '<div style="margin-top: 8px; color: #6b7280;">' + progress + '% of target</div>';
+            html += '</div></div>';
+
+            showModal(level, html);
+        }
+
+        // Table sorting
+        function sortTable(column) {
+            // This is a placeholder - would need to implement proper sorting
+            console.log('Sort by:', column);
+        }
+
+        // Refresh and render
         function refreshData() {
             var icon = document.getElementById('refresh-icon');
             icon.classList.add('loading');
 
-            setTimeout(function() {
-                var data = generateMockData();
-                renderFunnel(data.funnelData);
-                renderRates(data.rateMetrics);
-                renderCoverage(data.coverageMetrics);
-                renderSpeed(data.speedMetrics);
-                renderCycleChart(data.cycleTimeHistory);
-                renderIssues(data.topIssues);
-                renderStack(data.stackProgress);
-                updateLastUpdated();
+            loadDashboardData(function(data) {
+                cachedData = data;
+                renderFilters(data);
+
+                currentData = getFilteredData(data);
+
+                renderFunnel(currentData.funnelData);
+                renderRates(currentData.rateMetrics);
+                renderCoverage(currentData.coverageMetrics);
+                renderSpeed(currentData.speedMetrics);
+                renderCycleChart(currentData.cycleTimeHistory);
+                renderIssues(currentData.topIssues);
+                renderBiofort(currentData.biofortMetrics);
+                renderStack(currentData.stackProgress);
+                renderPlantMetrics(currentData.plantMetrics);
+                renderSummary(currentData.summary);
+                updateLastUpdated(data.lastUpdated);
+
                 icon.classList.remove('loading');
-            }, 300);
-        }
-
-        function toggleAutoRefresh() {
-            autoRefresh = !autoRefresh;
-            var btn = document.getElementById('auto-refresh-btn');
-
-            if (autoRefresh) {
-                btn.textContent = '⏱ Auto-refresh ON';
-                btn.classList.add('active');
-                autoRefreshInterval = setInterval(refreshData, 300000);
-            } else {
-                btn.textContent = '⏱ Auto-refresh OFF';
-                btn.classList.remove('active');
-                if (autoRefreshInterval) clearInterval(autoRefreshInterval);
-            }
+            });
         }
 
         // Filter handling
@@ -810,15 +1403,36 @@
                 var group = e.target.getAttribute('data-group');
                 var value = e.target.getAttribute('data-value');
 
-                // Remove active from same group
+                // Update filter state
+                filters[group] = value;
+
+                // Update UI
                 var chips = document.querySelectorAll('.filter-chip[data-group="' + group + '"]');
                 for (var i = 0; i < chips.length; i++) {
                     chips[i].classList.remove('active');
                 }
                 e.target.classList.add('active');
 
-                filters[group] = value;
-                refreshData();
+                // Re-render with new filter
+                currentData = getFilteredData(cachedData);
+                renderFilters(cachedData);
+                renderFunnel(currentData.funnelData);
+                renderRates(currentData.rateMetrics);
+                renderCoverage(currentData.coverageMetrics);
+                renderSpeed(currentData.speedMetrics);
+                renderCycleChart(currentData.cycleTimeHistory);
+                renderIssues(currentData.topIssues);
+                renderBiofort(currentData.biofortMetrics);
+                renderStack(currentData.stackProgress);
+                renderPlantMetrics(currentData.plantMetrics);
+                renderSummary(currentData.summary);
+            }
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
             }
         });
 

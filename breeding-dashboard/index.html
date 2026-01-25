@@ -4,20 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BC Operational & Agronomic Metrics Dashboard</title>
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="https://unpkg.com/recharts@2.12.7/dist/Recharts.js"></script>
-    <script src="https://unpkg.com/prop-types@15.8.1/prop-types.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
         }
 
         .glass-card {
@@ -26,469 +31,1417 @@
             border-radius: 16px;
             border: 1px solid rgba(255, 255, 255, 0.3);
             box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+            padding: 24px;
+            margin-bottom: 20px;
         }
 
-        .metric-card {
-            transition: all 0.3s ease;
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
         }
 
-        .metric-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.25);
+        .header h1 {
+            font-size: 1.75rem;
+            color: #1f2937;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
-        .status-green { color: #10b981; }
-        .status-yellow { color: #f59e0b; }
-        .status-red { color: #ef4444; }
+        .header p {
+            color: #6b7280;
+            margin-top: 4px;
+        }
 
-        .bg-status-green { background-color: #d1fae5; }
-        .bg-status-yellow { background-color: #fef3c7; }
-        .bg-status-red { background-color: #fee2e2; }
+        .header-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
 
-        .funnel-bar {
-            height: 40px;
-            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+        .btn {
+            padding: 10px 20px;
             border-radius: 8px;
-            transition: all 0.3s ease;
+            border: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
         }
 
-        .refresh-btn {
-            animation: spin 2s linear infinite;
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
         }
 
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .btn-secondary.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .last-updated {
+            font-size: 0.85rem;
+            color: #6b7280;
+        }
+
+        .filters {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+            align-items: center;
+        }
+
+        .filter-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #6b7280;
+            margin-right: 4px;
         }
 
         .filter-chip {
-            transition: all 0.2s ease;
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: none;
+            font-size: 0.85rem;
+            cursor: pointer;
+            background: #e5e7eb;
+            color: #374151;
+            transition: all 0.2s;
         }
 
         .filter-chip:hover {
             transform: scale(1.05);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
 
         .filter-chip.active {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
         }
+
+        .filter-divider {
+            width: 1px;
+            height: 24px;
+            background: #d1d5db;
+            margin: 0 12px;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .active-filters {
+            background: #f3f4f6;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            color: #6b7280;
+            margin-bottom: 16px;
+            display: none;
+        }
+
+        .active-filters.show {
+            display: block;
+        }
+
+        /* Funnel styles */
+        .funnel-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .funnel-item:hover {
+            transform: translateX(4px);
+        }
+
+        .funnel-label {
+            width: 180px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .funnel-bar-container {
+            flex: 1;
+            height: 40px;
+            background: #f3f4f6;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .funnel-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            transition: width 0.5s ease;
+            min-width: 100px;
+        }
+
+        .funnel-value {
+            color: white;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .funnel-efficiency {
+            color: white;
+            font-size: 0.8rem;
+        }
+
+        .funnel-target {
+            width: 140px;
+            text-align: right;
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+
+        /* Metric cards grid */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .metric-card {
+            padding: 20px;
+            border-radius: 12px;
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        .metric-card.green { background: #d1fae5; }
+        .metric-card.yellow { background: #fef3c7; }
+        .metric-card.red { background: #fee2e2; }
+
+        .metric-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+        }
+
+        .metric-name {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .metric-icon { font-size: 1.1rem; }
+        .metric-icon.green { color: #10b981; }
+        .metric-icon.yellow { color: #f59e0b; }
+        .metric-icon.red { color: #ef4444; }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 4px;
+        }
+
+        .metric-threshold {
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+
+        /* Tooltip */
+        .tooltip {
+            position: fixed;
+            background: #1f2937;
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            max-width: 300px;
+            z-index: 1000;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .tooltip.show {
+            opacity: 1;
+        }
+
+        .tooltip-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .tooltip-content {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+
+        /* Table styles */
+        .table-container { overflow-x: auto; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        th {
+            font-weight: 600;
+            color: #374151;
+            background: #f9fafb;
+            cursor: pointer;
+        }
+
+        th:hover {
+            background: #f3f4f6;
+        }
+
+        td { color: #4b5563; }
+        tr:hover { background: #f9fafb; }
+        tr { cursor: pointer; transition: background 0.2s; }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-badge.green { background: #d1fae5; color: #059669; }
+        .status-badge.yellow { background: #fef3c7; color: #d97706; }
+        .status-badge.red { background: #fee2e2; color: #dc2626; }
+
+        .ratio.green { color: #10b981; font-weight: 600; }
+        .ratio.yellow { color: #f59e0b; font-weight: 600; }
+        .ratio.red { color: #ef4444; font-weight: 600; }
+
+        /* Speed metrics */
+        .speed-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 768px) {
+            .speed-grid { grid-template-columns: 1fr; }
+            .funnel-label { width: 120px; font-size: 0.8rem; }
+            .funnel-target { width: 100px; }
+        }
+
+        .speed-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            background: #f9fafb;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .speed-item:hover {
+            background: #f3f4f6;
+            transform: translateX(4px);
+        }
+
+        .speed-stage { font-weight: 600; color: #1f2937; }
+        .speed-target { font-size: 0.8rem; color: #6b7280; margin-top: 4px; }
+        .speed-days { font-size: 1.5rem; font-weight: 700; }
+        .speed-days.green { color: #10b981; }
+        .speed-days.yellow { color: #f59e0b; }
+        .speed-days.red { color: #ef4444; }
+        .speed-status { font-size: 0.8rem; color: #6b7280; }
+
+        /* Chart */
+        .chart-container {
+            background: #f9fafb;
+            border-radius: 8px;
+            padding: 20px;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chart-title { font-weight: 600; color: #374151; margin-bottom: 16px; }
+
+        .chart-bars {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            flex: 1;
+            padding-top: 20px;
+        }
+
+        .chart-bar-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .chart-bar-group:hover {
+            transform: scale(1.05);
+        }
+
+        .chart-bar { width: 60px; display: flex; flex-direction: column; }
+        .chart-segment { width: 100%; transition: height 0.3s; }
+        .chart-segment.sampling { background: #667eea; }
+        .chart-segment.genotyping { background: #764ba2; }
+        .chart-segment.planning { background: #f59e0b; }
+        .chart-label { font-size: 0.8rem; color: #6b7280; margin-top: 8px; }
+
+        .chart-legend {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+
+        .legend-color { width: 12px; height: 12px; border-radius: 2px; }
+
+        /* Issues */
+        .issue-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            background: #f9fafb;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .issue-item:hover {
+            background: #f3f4f6;
+            transform: translateX(4px);
+        }
+
+        .issue-rank {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        .issue-content { flex: 1; }
+        .issue-name { font-weight: 600; color: #1f2937; }
+        .issue-details { font-size: 0.85rem; color: #6b7280; margin-top: 4px; }
+        .issue-meta { text-align: right; }
+
+        .issue-impact {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .issue-impact.high { background: #fee2e2; color: #dc2626; }
+        .issue-impact.medium { background: #fef3c7; color: #d97706; }
+        .issue-impact.low { background: #d1fae5; color: #059669; }
+        .issue-trend { font-size: 0.8rem; color: #6b7280; margin-top: 4px; }
+
+        /* Stack */
+        .stack-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+        }
+
+        .stack-card {
+            text-align: center;
+            padding: 24px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid #e5e7eb;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .stack-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+        }
+
+        .stack-level { font-size: 0.9rem; font-weight: 500; color: #6b7280; margin-bottom: 8px; }
+        .stack-count { font-size: 2.5rem; font-weight: 700; color: #764ba2; margin-bottom: 8px; }
+        .stack-target { font-size: 0.8rem; color: #6b7280; }
+        .stack-status { margin-top: 12px; font-size: 0.9rem; font-weight: 600; }
+        .stack-status.achieved { color: #10b981; }
+        .stack-status.pending { color: #f59e0b; }
+
+        /* Progress bar for stack */
+        .stack-progress {
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            margin-top: 12px;
+            overflow: hidden;
+        }
+
+        .stack-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        /* Summary grid */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+        }
+
+        .summary-item {
+            text-align: center;
+            padding: 16px;
+            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+            border-radius: 12px;
+        }
+
+        .summary-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #764ba2;
+        }
+
+        .summary-label {
+            font-size: 0.8rem;
+            color: #6b7280;
+            margin-top: 4px;
+        }
+
+        /* Two column layout for side by side sections */
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 900px) {
+            .two-column { grid-template-columns: 1fr; }
+        }
+
+        /* Modal for drill-down */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: #f3f4f6;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close:hover {
+            background: #e5e7eb;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 16px;
+            color: #6b7280;
+            font-size: 0.85rem;
+        }
+
+        .footer p { margin: 4px 0; }
+
+        .loading { display: inline-block; animation: spin 1s linear infinite; }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Transition for filter changes */
+        .fade-update {
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0.5; }
+            to { opacity: 1; }
+        }
     </style>
 </head>
 <body>
-    <div id="root"></div>
+    <div class="container" id="app">
+        <!-- Header -->
+        <div class="glass-card">
+            <div class="header">
+                <div>
+                    <h1>🌱 BC Operational & Agronomic Metrics</h1>
+                    <p>Interactive breeding program performance dashboard</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-primary" onclick="refreshData()">
+                        <span id="refresh-icon">↻</span> Refresh
+                    </button>
+                    <span class="last-updated">Last updated: <span id="last-updated-time">-</span></span>
+                </div>
+            </div>
+            <div class="filters" id="filters-container">
+                <span class="filter-label">Region:</span>
+                <div id="region-filters"></div>
+                <div class="filter-divider"></div>
+                <span class="filter-label">Trait:</span>
+                <div id="trait-filters"></div>
+            </div>
+        </div>
 
-    <script type="text/babel">
-        const { useState, useEffect, useMemo } = React;
-        const { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, FunnelChart, Funnel, LabelList } = Recharts;
+        <!-- Active filter indicator -->
+        <div class="active-filters" id="active-filters"></div>
 
-        // BMS API Configuration
-        const BMS_API_CONFIG = {
-            baseUrl: 'https://bmspro.io/api',
-            // Add your BMS API credentials here
-            apiKey: 'YOUR_BMS_API_KEY',
-            programId: 'YOUR_PROGRAM_ID'
-        };
+        <!-- Block A: Funnel -->
+        <div class="glass-card">
+            <h2 class="section-title">📊 Block A: Pipeline Funnel</h2>
+            <div id="funnel-container"></div>
+        </div>
 
-        // Mock data structure matching BMS schema
-        const generateMockData = () => {
-            const locations = ['Station BC', 'Oriente', 'Estación'];
-            const schemes = ['QPM', 'Zn', 'Zn+QPM'];
-            const stages = ['BC1F1', 'BC2F1', 'BC3F1'];
+        <!-- Block B: Rates -->
+        <div class="glass-card">
+            <h2 class="section-title">📈 Block B: Efficiency Rates</h2>
+            <div class="metrics-grid" id="rates-container"></div>
+        </div>
 
-            return {
-                funnelData: [
-                    { name: 'Seeds Planted', value: 12500, target: 12000, efficiency: 104 },
-                    { name: 'Plants at V4-V6', value: 10800, target: 10200, efficiency: 106 },
-                    { name: 'Plants Sampled', value: 10500, target: 10200, efficiency: 103 },
-                    { name: 'Valid Genotypes', value: 9850, target: 9800, efficiency: 101 },
-                    { name: 'Plants Selected', value: 3200, target: 3000, efficiency: 107 },
-                    { name: 'Plants Pollinated', value: 3050, target: 3000, efficiency: 102 },
-                    { name: 'Successful Ears (>30k)', value: 2850, target: 2700, efficiency: 106 },
-                    { name: 'Ears Harvested', value: 2780, target: 2700, efficiency: 103 },
-                ],
-                rateMetrics: [
-                    { name: 'Emergence Rate', value: 86.4, threshold: 80, status: 'green' },
-                    { name: 'V4-V6 Survival', value: 86.4, threshold: 85, status: 'green' },
-                    { name: 'Sampling Rate', value: 97.2, threshold: 95, status: 'green' },
-                    { name: 'Valid Genotype Rate', value: 93.8, threshold: 90, status: 'green' },
-                    { name: 'Pollination Success', value: 93.4, threshold: 85, status: 'green' },
-                    { name: 'Rot Loss Rate', value: 2.4, threshold: 5, status: 'green', inverse: true },
-                    { name: 'Lab Eval Rate', value: 98.2, threshold: 95, status: 'green' },
-                    { name: 'Lab Pass Rate', value: 96.5, threshold: 90, status: 'green' },
-                ],
-                coverageMetrics: [
-                    { scheme: 'QPM BC1F1', required: 800, available: 920, ratio: 1.15, status: 'green' },
-                    { scheme: 'QPM BC2F1', required: 650, available: 720, ratio: 1.11, status: 'green' },
-                    { scheme: 'Zn BC1F1', required: 600, available: 680, ratio: 1.13, status: 'green' },
-                    { scheme: 'Zn BC2F1', required: 550, available: 540, ratio: 0.98, status: 'red' },
-                    { scheme: 'Zn+QPM BC1F1', required: 450, available: 520, ratio: 1.16, status: 'green' },
-                    { scheme: 'Zn+QPM BC2F1', required: 350, available: 360, ratio: 1.03, status: 'yellow' },
-                ],
-                speedMetrics: [
-                    { stage: 'Planting → Sampling', days: 35, target: 40, status: 'green' },
-                    { stage: 'Sampling → Genotyping', days: 12, target: 14, status: 'green' },
-                    { stage: 'Genotyping → Next Planting', days: 18, target: 21, status: 'green' },
-                    { stage: 'Total Cycle Time', days: 65, target: 75, status: 'green' },
-                ],
-                topIssues: [
-                    { rank: 1, issue: 'Spiroplasma (Virus)', impact: 'High', plants: 450, pct: 4.2, trend: 'stable' },
-                    { rank: 2, issue: 'Climate/Temperature Stress', impact: 'High', plants: 380, pct: 3.5, trend: 'increasing' },
-                    { rank: 3, issue: 'Pollination Effectiveness', impact: 'Medium', plants: 200, pct: 6.6, trend: 'stable' },
-                    { rank: 4, issue: 'Ear Mold Diseases', impact: 'Medium', plants: 168, pct: 6.0, trend: 'decreasing' },
-                    { rank: 5, issue: 'Germination Issues', impact: 'Low', plants: 160, pct: 1.3, trend: 'stable' },
-                ],
-                stackProgress: [
-                    { level: 'Zn+QPM ≥60%', count: 245, target: 200 },
-                    { level: 'Zn+QPM ≥70%', count: 156, target: 120 },
-                    { level: 'Zn+QPM ≥80% + o2', count: 42, target: 40 },
-                ],
-                cycleTimeHistory: [
-                    { cycle: 'C1', total: 72, sampling: 38, genotyping: 14, planning: 20 },
-                    { cycle: 'C2', total: 68, sampling: 36, genotyping: 13, planning: 19 },
-                    { cycle: 'C3', total: 65, sampling: 35, genotyping: 12, planning: 18 },
-                    { cycle: 'Current', total: 65, sampling: 35, genotyping: 12, planning: 18 },
-                ],
-                lastUpdated: new Date().toISOString()
-            };
-        };
+        <!-- Block C: Coverage -->
+        <div class="glass-card">
+            <h2 class="section-title">📋 Block C: Coverage Analysis</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th onclick="sortTable('scheme')">Scheme/Stage ↕</th>
+                            <th style="text-align: right;" onclick="sortTable('required')">Required ↕</th>
+                            <th style="text-align: right;" onclick="sortTable('available')">Available ↕</th>
+                            <th style="text-align: right;" onclick="sortTable('ratio')">Coverage ↕</th>
+                            <th style="text-align: center;">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="coverage-body"></tbody>
+                </table>
+            </div>
+        </div>
 
-        // Main Dashboard Component
-        const Dashboard = () => {
-            const [data, setData] = useState(generateMockData());
-            const [loading, setLoading] = useState(false);
-            const [filters, setFilters] = useState({
-                location: 'All',
-                scheme: 'All',
-                stage: 'All',
-                dateRange: '30d'
-            });
-            const [autoRefresh, setAutoRefresh] = useState(false);
-
-            // BMS API Integration
-            const fetchBMSData = async () => {
-                setLoading(true);
-                try {
-                    // Real BMS API calls would go here
-                    // const response = await fetch(`${BMS_API_CONFIG.baseUrl}/trials`, {
-                    //     headers: { 'Authorization': `Bearer ${BMS_API_CONFIG.apiKey}` }
-                    // });
-                    // const bmsData = await response.json();
-
-                    // For now, using mock data
-                    setTimeout(() => {
-                        setData(generateMockData());
-                        setLoading(false);
-                    }, 1000);
-                } catch (error) {
-                    console.error('Error fetching BMS data:', error);
-                    setLoading(false);
-                }
-            };
-
-            useEffect(() => {
-                fetchBMSData();
-            }, [filters]);
-
-            useEffect(() => {
-                if (autoRefresh) {
-                    const interval = setInterval(fetchBMSData, 300000); // 5 minutes
-                    return () => clearInterval(interval);
-                }
-            }, [autoRefresh]);
-
-            const getStatusColor = (status) => {
-                return status === 'green' ? 'status-green' :
-                       status === 'yellow' ? 'status-yellow' : 'status-red';
-            };
-
-            const getStatusBg = (status) => {
-                return status === 'green' ? 'bg-status-green' :
-                       status === 'yellow' ? 'bg-status-yellow' : 'bg-status-red';
-            };
-
-            const COLORS = ['#10b981', '#f59e0b', '#ef4444', '#667eea', '#764ba2'];
-
-            return (
-                <div className="min-h-screen p-6">
-                    <div className="max-w-7xl mx-auto space-y-6">
-                        {/* Header */}
-                        <div className="glass-card p-6">
-                            <div className="flex justify-between items-center flex-wrap gap-4">
-                                <div>
-                                    <h1 className="text-3xl font-bold text-gray-800 mb-2">
-                                        <i className="fas fa-seedling mr-3 text-purple-600"></i>
-                                        BC Operational & Agronomic Metrics
-                                    </h1>
-                                    <p className="text-gray-600">Real-time breeding program performance dashboard</p>
-                                </div>
-                                <div className="flex gap-3 items-center">
-                                    <button
-                                        onClick={fetchBMSData}
-                                        className="px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-lg hover:shadow-lg transition-all"
-                                        disabled={loading}
-                                    >
-                                        <i className={`fas fa-sync-alt mr-2 ${loading ? 'refresh-btn' : ''}`}></i>
-                                        Refresh
-                                    </button>
-                                    <button
-                                        onClick={() => setAutoRefresh(!autoRefresh)}
-                                        className={`px-4 py-2 rounded-lg transition-all ${
-                                            autoRefresh
-                                                ? 'bg-green-500 text-white'
-                                                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                                        }`}
-                                    >
-                                        <i className="fas fa-clock mr-2"></i>
-                                        Auto-refresh {autoRefresh ? 'ON' : 'OFF'}
-                                    </button>
-                                    <div className="text-sm text-gray-600">
-                                        Last updated: {new Date(data.lastUpdated).toLocaleTimeString()}
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Filters */}
-                            <div className="mt-6 flex gap-3 flex-wrap">
-                                {['All', 'Station BC', 'Oriente', 'Estación'].map(loc => (
-                                    <button
-                                        key={loc}
-                                        onClick={() => setFilters({...filters, location: loc})}
-                                        className={`filter-chip px-4 py-2 rounded-full ${
-                                            filters.location === loc ? 'active' : 'bg-gray-200 text-gray-700'
-                                        }`}
-                                    >
-                                        {loc}
-                                    </button>
-                                ))}
-                                <div className="border-l border-gray-300 mx-2"></div>
-                                {['All', 'QPM', 'Zn', 'Zn+QPM'].map(scheme => (
-                                    <button
-                                        key={scheme}
-                                        onClick={() => setFilters({...filters, scheme: scheme})}
-                                        className={`filter-chip px-4 py-2 rounded-full ${
-                                            filters.scheme === scheme ? 'active' : 'bg-gray-200 text-gray-700'
-                                        }`}
-                                    >
-                                        {scheme}
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Block A: Funnel Metrics */}
-                        <div className="glass-card p-6">
-                            <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-                                <i className="fas fa-filter mr-2 text-purple-600"></i>
-                                Block A: Pipeline Funnel
-                            </h2>
-                            <div className="space-y-3">
-                                {data.funnelData.map((item, idx) => (
-                                    <div key={idx} className="flex items-center gap-4">
-                                        <div className="w-48 text-sm font-medium text-gray-700">{item.name}</div>
-                                        <div className="flex-1">
-                                            <div className="relative h-10 bg-gray-100 rounded-lg overflow-hidden">
-                                                <div
-                                                    className="funnel-bar absolute top-0 left-0 h-full flex items-center justify-between px-4"
-                                                    style={{width: `${(item.value / data.funnelData[0].value) * 100}%`}}
-                                                >
-                                                    <span className="text-white font-semibold text-sm">{item.value.toLocaleString()}</span>
-                                                    <span className="text-white text-xs">{item.efficiency}%</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="w-32 text-right">
-                                            <span className="text-xs text-gray-500">Target: {item.target.toLocaleString()}</span>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Block B: Rate Metrics */}
-                        <div className="glass-card p-6">
-                            <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-                                <i className="fas fa-percentage mr-2 text-purple-600"></i>
-                                Block B: Efficiency Rates
-                            </h2>
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                                {data.rateMetrics.map((metric, idx) => (
-                                    <div key={idx} className={`metric-card glass-card p-4 ${getStatusBg(metric.status)}`}>
-                                        <div className="flex justify-between items-start mb-2">
-                                            <span className="text-sm font-medium text-gray-700">{metric.name}</span>
-                                            <i className={`fas ${
-                                                metric.status === 'green' ? 'fa-check-circle' :
-                                                metric.status === 'yellow' ? 'fa-exclamation-circle' :
-                                                'fa-times-circle'
-                                            } ${getStatusColor(metric.status)}`}></i>
-                                        </div>
-                                        <div className="text-3xl font-bold text-gray-900 mb-1">
-                                            {metric.value.toFixed(1)}%
-                                        </div>
-                                        <div className="text-xs text-gray-600">
-                                            Threshold: {metric.threshold}%
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Block C: Coverage & Risk */}
-                        <div className="glass-card p-6">
-                            <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-                                <i className="fas fa-layer-group mr-2 text-purple-600"></i>
-                                Block C: Coverage Analysis
-                            </h2>
-                            <div className="overflow-x-auto">
-                                <table className="w-full">
-                                    <thead>
-                                        <tr className="border-b border-gray-200">
-                                            <th className="text-left py-3 px-4 font-semibold text-gray-700">Scheme/Stage</th>
-                                            <th className="text-right py-3 px-4 font-semibold text-gray-700">Required</th>
-                                            <th className="text-right py-3 px-4 font-semibold text-gray-700">Available</th>
-                                            <th className="text-right py-3 px-4 font-semibold text-gray-700">Coverage</th>
-                                            <th className="text-center py-3 px-4 font-semibold text-gray-700">Status</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {data.coverageMetrics.map((item, idx) => (
-                                            <tr key={idx} className="border-b border-gray-100 hover:bg-gray-50">
-                                                <td className="py-3 px-4 font-medium text-gray-800">{item.scheme}</td>
-                                                <td className="text-right py-3 px-4 text-gray-700">{item.required}</td>
-                                                <td className="text-right py-3 px-4 text-gray-700 font-semibold">{item.available}</td>
-                                                <td className="text-right py-3 px-4">
-                                                    <span className={`font-bold ${getStatusColor(item.status)}`}>
-                                                        {item.ratio.toFixed(2)}x
-                                                    </span>
-                                                </td>
-                                                <td className="text-center py-3 px-4">
-                                                    <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${getStatusBg(item.status)}`}>
-                                                        {item.status === 'green' ? 'Good' : item.status === 'yellow' ? 'Watch' : 'Critical'}
-                                                    </span>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                        {/* Block D: Speed Metrics */}
-                        <div className="glass-card p-6">
-                            <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-                                <i className="fas fa-tachometer-alt mr-2 text-purple-600"></i>
-                                Block D: Cycle Speed
-                            </h2>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div className="space-y-4">
-                                    {data.speedMetrics.map((item, idx) => (
-                                        <div key={idx} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                                            <div>
-                                                <div className="font-semibold text-gray-800">{item.stage}</div>
-                                                <div className="text-xs text-gray-600 mt-1">Target: {item.target} days</div>
-                                            </div>
-                                            <div className="text-right">
-                                                <div className={`text-2xl font-bold ${getStatusColor(item.status)}`}>
-                                                    {item.days}d
-                                                </div>
-                                                <div className="text-xs text-gray-600">
-                                                    {item.days <= item.target ? '✓ On track' : '⚠ Delayed'}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                                <div>
-                                    <ResponsiveContainer width="100%" height={300}>
-                                        <BarChart data={data.cycleTimeHistory}>
-                                            <CartesianGrid strokeDasharray="3 3" />
-                                            <XAxis dataKey="cycle" />
-                                            <YAxis />
-                                            <Tooltip />
-                                            <Legend />
-                                            <Bar dataKey="sampling" stackId="a" fill="#667eea" name="Sampling" />
-                                            <Bar dataKey="genotyping" stackId="a" fill="#764ba2" name="Genotyping" />
-                                            <Bar dataKey="planning" stackId="a" fill="#f59e0b" name="Planning" />
-                                        </BarChart>
-                                    </ResponsiveContainer>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Top Operational Issues */}
-                        <div className="glass-card p-6">
-                            <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-                                <i className="fas fa-exclamation-triangle mr-2 text-purple-600"></i>
-                                Top Operational Issues
-                            </h2>
-                            <div className="space-y-3">
-                                {data.topIssues.map((issue, idx) => (
-                                    <div key={idx} className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-600 to-indigo-600 text-white flex items-center justify-center font-bold">
-                                            {issue.rank}
-                                        </div>
-                                        <div className="flex-1">
-                                            <div className="font-semibold text-gray-800">{issue.issue}</div>
-                                            <div className="text-sm text-gray-600 mt-1">
-                                                {issue.plants} plants affected · {issue.pct}% of population
-                                            </div>
-                                        </div>
-                                        <div className="text-right">
-                                            <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
-                                                issue.impact === 'High' ? 'bg-status-red' :
-                                                issue.impact === 'Medium' ? 'bg-status-yellow' : 'bg-status-green'
-                                            }`}>
-                                                {issue.impact} Impact
-                                            </span>
-                                            <div className="text-xs text-gray-600 mt-1">
-                                                Trend: {issue.trend === 'increasing' ? '📈' : issue.trend === 'decreasing' ? '📉' : '➡️'} {issue.trend}
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Block F: Stack Progress */}
-                        <div className="glass-card p-6">
-                            <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-                                <i className="fas fa-layer-group mr-2 text-purple-600"></i>
-                                Block F: Trait Pyramiding Progress (Zn + QPM)
-                            </h2>
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                {data.stackProgress.map((item, idx) => (
-                                    <div key={idx} className="metric-card glass-card p-6 text-center">
-                                        <div className="text-sm font-medium text-gray-600 mb-2">{item.level}</div>
-                                        <div className="text-4xl font-bold text-purple-700 mb-2">{item.count}</div>
-                                        <div className="text-xs text-gray-600">Target: {item.target}</div>
-                                        <div className={`mt-3 text-sm font-semibold ${
-                                            item.count >= item.target ? 'status-green' : 'status-yellow'
-                                        }`}>
-                                            {item.count >= item.target ? '✓ Target achieved' : `${item.target - item.count} more needed`}
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Footer */}
-                        <div className="glass-card p-4 text-center text-sm text-gray-600">
-                            <p>
-                                <i className="fas fa-database mr-2"></i>
-                                Connected to BMS API · Auto-refresh every 5 minutes when enabled
-                            </p>
-                            <p className="mt-2 text-xs">
-                                <i className="fas fa-shield-alt mr-2"></i>
-                                View-only access · Contact admin for edit permissions
-                            </p>
-                        </div>
+        <!-- Block D: Speed -->
+        <div class="glass-card">
+            <h2 class="section-title">⚡ Block D: Cycle Speed</h2>
+            <div class="speed-grid">
+                <div id="speed-metrics"></div>
+                <div class="chart-container">
+                    <div class="chart-title">Cycle Time History</div>
+                    <div class="chart-bars" id="cycle-chart"></div>
+                    <div class="chart-legend">
+                        <div class="legend-item"><div class="legend-color" style="background: #667eea;"></div> Sampling</div>
+                        <div class="legend-item"><div class="legend-color" style="background: #764ba2;"></div> Genotyping</div>
+                        <div class="legend-item"><div class="legend-color" style="background: #f59e0b;"></div> Planning</div>
                     </div>
                 </div>
-            );
-        };
+            </div>
+        </div>
 
-        // Render the app
-        ReactDOM.render(<Dashboard />, document.getElementById('root'));
+        <!-- Top Issues -->
+        <div class="glass-card">
+            <h2 class="section-title">⚠️ Top Operational Issues</h2>
+            <div id="issues-container"></div>
+        </div>
+
+        <!-- Block E: Biofortification Metrics -->
+        <div class="glass-card">
+            <h2 class="section-title">🌾 Block E: Biofortification Quality</h2>
+            <div class="metrics-grid" id="biofort-container"></div>
+        </div>
+
+        <!-- Block F: Stack Progress -->
+        <div class="glass-card">
+            <h2 class="section-title">🧬 Block F: Trait Pyramiding Progress</h2>
+            <div class="stack-grid" id="stack-container"></div>
+        </div>
+
+        <!-- Block G: Plant Characteristics -->
+        <div class="glass-card">
+            <h2 class="section-title">🌿 Block G: Plant Characteristics</h2>
+            <div class="metrics-grid" id="plant-container"></div>
+        </div>
+
+        <!-- Summary Stats Row -->
+        <div class="glass-card">
+            <h2 class="section-title">📈 Summary Statistics</h2>
+            <div class="summary-grid" id="summary-container"></div>
+        </div>
+
+        <!-- Footer -->
+        <div class="glass-card footer">
+            <p>📊 Data from BMS export · Click any element for details</p>
+            <p>🔄 Refresh data by re-running the BMS export script</p>
+        </div>
+    </div>
+
+    <!-- Tooltip -->
+    <div class="tooltip" id="tooltip">
+        <div class="tooltip-title" id="tooltip-title"></div>
+        <div class="tooltip-content" id="tooltip-content"></div>
+    </div>
+
+    <!-- Modal for drill-down -->
+    <div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+        <div class="modal" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <div class="modal-title" id="modal-title">Details</div>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div id="modal-content"></div>
+        </div>
+    </div>
+
+    <script>
+        // State
+        var filters = { region: 'All', trait: 'All' };
+        var cachedData = null;
+        var currentData = null;
+        var sortState = { column: null, direction: 1 };
+
+        // Load data from JSON file
+        function loadDashboardData(callback) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', 'dashboard_data.json?t=' + Date.now(), true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        try {
+                            cachedData = JSON.parse(xhr.responseText);
+                            callback(cachedData);
+                        } catch (e) {
+                            console.log('Error parsing JSON:', e);
+                            callback(generateFallbackData());
+                        }
+                    } else {
+                        console.log('Could not load dashboard_data.json');
+                        callback(generateFallbackData());
+                    }
+                }
+            };
+            xhr.send();
+        }
+
+        // Fallback data
+        function generateFallbackData() {
+            return {
+                filters: { regions: ['All'], traits: ['All'] },
+                funnelData: [
+                    { name: 'Total Studies', value: 402, target: 400, efficiency: 100 }
+                ],
+                rateMetrics: [
+                    { name: 'Virus Rate', value: 4.2, threshold: 5, status: 'green' }
+                ],
+                coverageMetrics: [],
+                speedMetrics: [],
+                topIssues: [],
+                stackProgress: [],
+                cycleTimeHistory: [],
+                byRegion: {},
+                byTrait: {},
+                studies: []
+            };
+        }
+
+        // Get filtered data
+        function getFilteredData(data) {
+            // Start with all data
+            var result = {
+                funnelData: data.funnelData,
+                rateMetrics: data.rateMetrics,
+                coverageMetrics: data.coverageMetrics,
+                speedMetrics: data.speedMetrics,
+                topIssues: data.topIssues,
+                stackProgress: data.stackProgress,
+                cycleTimeHistory: data.cycleTimeHistory,
+                biofortMetrics: data.biofortMetrics,
+                plantMetrics: data.plantMetrics,
+                summary: data.summary
+            };
+
+            // Apply region filter
+            if (filters.region !== 'All' && data.byRegion && data.byRegion[filters.region]) {
+                var regionData = data.byRegion[filters.region];
+                result.funnelData = regionData.funnelData || result.funnelData;
+                result.rateMetrics = regionData.rateMetrics || result.rateMetrics;
+                result.coverageMetrics = regionData.coverageMetrics || result.coverageMetrics;
+                result.topIssues = regionData.topIssues || result.topIssues;
+                result.stackProgress = regionData.stackProgress || result.stackProgress;
+                result.biofortMetrics = regionData.biofortMetrics || result.biofortMetrics;
+                result.plantMetrics = regionData.plantMetrics || result.plantMetrics;
+                result.summary = regionData.summary || result.summary;
+            }
+
+            // Apply trait filter
+            if (filters.trait !== 'All' && data.byTrait && data.byTrait[filters.trait]) {
+                var traitData = data.byTrait[filters.trait];
+                result.funnelData = traitData.funnelData || result.funnelData;
+                result.rateMetrics = traitData.rateMetrics || result.rateMetrics;
+                result.coverageMetrics = traitData.coverageMetrics || result.coverageMetrics;
+                result.topIssues = traitData.topIssues || result.topIssues;
+                result.stackProgress = traitData.stackProgress || result.stackProgress;
+                result.biofortMetrics = traitData.biofortMetrics || result.biofortMetrics;
+                result.plantMetrics = traitData.plantMetrics || result.plantMetrics;
+                result.summary = traitData.summary || result.summary;
+            }
+
+            return result;
+        }
+
+        // Render filter chips
+        function renderFilters(data) {
+            var regionContainer = document.getElementById('region-filters');
+            var traitContainer = document.getElementById('trait-filters');
+
+            var regions = data.filters ? data.filters.regions : ['All'];
+            var traits = data.filters ? data.filters.traits : ['All'];
+
+            var regionHtml = '';
+            for (var i = 0; i < regions.length; i++) {
+                var active = filters.region === regions[i] ? 'active' : '';
+                regionHtml += '<button class="filter-chip ' + active + '" data-group="region" data-value="' + regions[i] + '">' + regions[i] + '</button> ';
+            }
+            regionContainer.innerHTML = regionHtml;
+
+            var traitHtml = '';
+            for (var i = 0; i < traits.length; i++) {
+                var active = filters.trait === traits[i] ? 'active' : '';
+                traitHtml += '<button class="filter-chip ' + active + '" data-group="trait" data-value="' + traits[i] + '">' + traits[i] + '</button> ';
+            }
+            traitContainer.innerHTML = traitHtml;
+
+            // Update active filters display
+            var activeFiltersEl = document.getElementById('active-filters');
+            if (filters.region !== 'All' || filters.trait !== 'All') {
+                var filterText = 'Showing: ';
+                if (filters.region !== 'All') filterText += 'Region: ' + filters.region;
+                if (filters.region !== 'All' && filters.trait !== 'All') filterText += ' | ';
+                if (filters.trait !== 'All') filterText += 'Trait: ' + filters.trait;
+                activeFiltersEl.textContent = filterText;
+                activeFiltersEl.classList.add('show');
+            } else {
+                activeFiltersEl.classList.remove('show');
+            }
+        }
+
+        // Render funnel
+        function renderFunnel(data) {
+            var container = document.getElementById('funnel-container');
+            var maxValue = data[0] ? data[0].value : 1;
+            var html = '';
+
+            for (var i = 0; i < data.length; i++) {
+                var item = data[i];
+                var width = Math.max(20, (item.value / maxValue) * 100);
+                html += '<div class="funnel-item" onclick="showFunnelDetails(\'' + item.name + '\')" onmouseenter="showTooltip(event, \'' + item.name + '\', \'Click to see detailed breakdown\')" onmouseleave="hideTooltip()">' +
+                    '<div class="funnel-label">' + item.name + '</div>' +
+                    '<div class="funnel-bar-container">' +
+                        '<div class="funnel-bar" style="width: ' + width + '%;">' +
+                            '<span class="funnel-value">' + item.value.toLocaleString() + '</span>' +
+                            '<span class="funnel-efficiency">' + item.efficiency + '%</span>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="funnel-target">Target: ' + item.target.toLocaleString() + '</div>' +
+                '</div>';
+            }
+            container.innerHTML = html;
+            container.classList.add('fade-update');
+            setTimeout(function() { container.classList.remove('fade-update'); }, 300);
+        }
+
+        // Render rate metrics
+        function renderRates(data) {
+            var container = document.getElementById('rates-container');
+            var icons = { green: '✓', yellow: '⚠', red: '✗' };
+            var html = '';
+
+            for (var i = 0; i < data.length; i++) {
+                var m = data[i];
+                var displayValue = m.name.includes('%') ? m.value.toFixed(3) : m.value.toFixed(1);
+                var unit = m.name.includes('ppm') ? ' ppm' : (m.name.includes('t/ha') ? ' t/ha' : '%');
+
+                html += '<div class="metric-card ' + m.status + '" onclick="showMetricDetails(\'' + m.name + '\')" onmouseenter="showTooltip(event, \'' + m.name + '\', \'Threshold: ' + m.threshold + unit + ' | Status: ' + m.status + '\')" onmouseleave="hideTooltip()">' +
+                    '<div class="metric-header">' +
+                        '<span class="metric-name">' + m.name + '</span>' +
+                        '<span class="metric-icon ' + m.status + '">' + icons[m.status] + '</span>' +
+                    '</div>' +
+                    '<div class="metric-value">' + displayValue + (m.name.includes('%') || m.name.includes('Rate') ? '%' : '') + '</div>' +
+                    '<div class="metric-threshold">Threshold: ' + m.threshold + '</div>' +
+                '</div>';
+            }
+            container.innerHTML = html;
+            container.classList.add('fade-update');
+            setTimeout(function() { container.classList.remove('fade-update'); }, 300);
+        }
+
+        // Render coverage table
+        function renderCoverage(data) {
+            var tbody = document.getElementById('coverage-body');
+            var statusLabels = { green: 'Good', yellow: 'Watch', red: 'Critical' };
+            var html = '';
+
+            for (var i = 0; i < data.length; i++) {
+                var item = data[i];
+                html += '<tr onclick="showCoverageDetails(\'' + item.scheme + '\')">' +
+                    '<td style="font-weight: 500;">' + item.scheme + '</td>' +
+                    '<td style="text-align: right;">' + item.required + '</td>' +
+                    '<td style="text-align: right; font-weight: 600;">' + item.available + '</td>' +
+                    '<td style="text-align: right;"><span class="ratio ' + item.status + '">' + item.ratio.toFixed(2) + 'x</span></td>' +
+                    '<td style="text-align: center;"><span class="status-badge ' + item.status + '">' + statusLabels[item.status] + '</span></td>' +
+                '</tr>';
+            }
+            tbody.innerHTML = html;
+        }
+
+        // Render speed metrics
+        function renderSpeed(data) {
+            var container = document.getElementById('speed-metrics');
+            var html = '';
+
+            for (var i = 0; i < data.length; i++) {
+                var item = data[i];
+                var statusText = item.days <= item.target ? '✓ On track' : '⚠ Delayed';
+                html += '<div class="speed-item" onclick="showSpeedDetails(\'' + item.stage + '\')" onmouseenter="showTooltip(event, \'' + item.stage + '\', \'Target: ' + item.target + ' days\')" onmouseleave="hideTooltip()">' +
+                    '<div>' +
+                        '<div class="speed-stage">' + item.stage + '</div>' +
+                        '<div class="speed-target">Target: ' + item.target + ' days</div>' +
+                    '</div>' +
+                    '<div style="text-align: right;">' +
+                        '<div class="speed-days ' + item.status + '">' + item.days + 'd</div>' +
+                        '<div class="speed-status">' + statusText + '</div>' +
+                    '</div>' +
+                '</div>';
+            }
+            container.innerHTML = html;
+        }
+
+        // Render cycle chart
+        function renderCycleChart(data) {
+            var container = document.getElementById('cycle-chart');
+            if (!data || data.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #6b7280;">No cycle data available</p>';
+                return;
+            }
+
+            var maxTotal = 0;
+            for (var i = 0; i < data.length; i++) {
+                var total = data[i].sampling + data[i].genotyping + data[i].planning;
+                if (total > maxTotal) maxTotal = total;
+            }
+            var scale = 180 / maxTotal;
+            var html = '';
+
+            for (var i = 0; i < data.length; i++) {
+                var item = data[i];
+                var total = item.sampling + item.genotyping + item.planning;
+                html += '<div class="chart-bar-group" onclick="showCycleDetails(\'' + item.cycle + '\')" onmouseenter="showTooltip(event, \'Cycle ' + item.cycle + '\', \'Total: ' + total + ' days<br>Sampling: ' + item.sampling + 'd<br>Genotyping: ' + item.genotyping + 'd<br>Planning: ' + item.planning + 'd\')" onmouseleave="hideTooltip()">' +
+                    '<div class="chart-bar">' +
+                        '<div class="chart-segment planning" style="height: ' + (item.planning * scale) + 'px;"></div>' +
+                        '<div class="chart-segment genotyping" style="height: ' + (item.genotyping * scale) + 'px;"></div>' +
+                        '<div class="chart-segment sampling" style="height: ' + (item.sampling * scale) + 'px;"></div>' +
+                    '</div>' +
+                    '<div class="chart-label">' + item.cycle + '</div>' +
+                '</div>';
+            }
+            container.innerHTML = html;
+        }
+
+        // Render issues
+        function renderIssues(data) {
+            var container = document.getElementById('issues-container');
+            var trendIcons = { increasing: '📈', decreasing: '📉', stable: '➡️' };
+            var html = '';
+
+            if (!data || data.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #6b7280; padding: 20px;">No issues recorded for current filter selection</p>';
+                return;
+            }
+
+            for (var i = 0; i < data.length; i++) {
+                var item = data[i];
+                html += '<div class="issue-item" onclick="showIssueDetails(\'' + item.issue + '\')" onmouseenter="showTooltip(event, \'' + item.issue + '\', \'Affected: ' + item.plants + ' observations (' + item.pct + '%)\')" onmouseleave="hideTooltip()">' +
+                    '<div class="issue-rank">' + item.rank + '</div>' +
+                    '<div class="issue-content">' +
+                        '<div class="issue-name">' + item.issue + '</div>' +
+                        '<div class="issue-details">' + item.plants + ' observations affected · ' + item.pct + '% above threshold</div>' +
+                    '</div>' +
+                    '<div class="issue-meta">' +
+                        '<span class="issue-impact ' + item.impact.toLowerCase() + '">' + item.impact + ' Impact</span>' +
+                        '<div class="issue-trend">Trend: ' + (trendIcons[item.trend] || '➡️') + ' ' + item.trend + '</div>' +
+                    '</div>' +
+                '</div>';
+            }
+            container.innerHTML = html;
+        }
+
+        // Render stack progress
+        function renderStack(data) {
+            var container = document.getElementById('stack-container');
+            var html = '';
+
+            if (!data || data.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #6b7280; padding: 20px;">No biofortification data for current filter selection</p>';
+                return;
+            }
+
+            for (var i = 0; i < data.length; i++) {
+                var item = data[i];
+                var achieved = item.count >= item.target;
+                var statusClass = achieved ? 'achieved' : 'pending';
+                var statusText = achieved ? '✓ Target achieved' : (item.target - item.count) + ' more needed';
+                var progress = Math.min(100, Math.round((item.count / item.target) * 100));
+
+                html += '<div class="stack-card" onclick="showStackDetails(\'' + item.level + '\')">' +
+                    '<div class="stack-level">' + item.level + '</div>' +
+                    '<div class="stack-count">' + item.count.toLocaleString() + '</div>' +
+                    '<div class="stack-target">Target: ' + item.target.toLocaleString() + '</div>' +
+                    '<div class="stack-progress"><div class="stack-progress-fill" style="width: ' + progress + '%;"></div></div>' +
+                    '<div class="stack-status ' + statusClass + '">' + statusText + '</div>' +
+                '</div>';
+            }
+            container.innerHTML = html;
+        }
+
+        // Render biofortification metrics
+        function renderBiofort(data) {
+            var container = document.getElementById('biofort-container');
+            if (!container) return;
+            if (!data || data.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #6b7280; padding: 20px;">No biofortification data available</p>';
+                return;
+            }
+
+            var icons = { green: '✓', yellow: '⚠', red: '✗' };
+            var html = '';
+
+            for (var i = 0; i < data.length; i++) {
+                var m = data[i];
+                var displayValue = m.value;
+                if (m.unit === '%' && m.value < 1) {
+                    displayValue = m.value.toFixed(3);
+                } else if (m.unit === 'ppm') {
+                    displayValue = m.value.toFixed(1);
+                } else {
+                    displayValue = m.value.toFixed(2);
+                }
+
+                html += '<div class="metric-card ' + m.status + '" onclick="showBiofortDetails(\'' + m.name + '\')">' +
+                    '<div class="metric-header">' +
+                        '<span class="metric-name">' + m.name + '</span>' +
+                        '<span class="metric-icon ' + m.status + '">' + icons[m.status] + '</span>' +
+                    '</div>' +
+                    '<div class="metric-value">' + displayValue + '</div>' +
+                    '<div class="metric-threshold">Target: ' + m.target + ' ' + m.unit + '</div>' +
+                '</div>';
+            }
+            container.innerHTML = html;
+        }
+
+        // Render plant metrics
+        function renderPlantMetrics(data) {
+            var container = document.getElementById('plant-container');
+            if (!container) return;
+            if (!data || data.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #6b7280; padding: 20px;">No plant data available</p>';
+                return;
+            }
+
+            var html = '';
+            for (var i = 0; i < data.length; i++) {
+                var m = data[i];
+                var pct = m.target > 0 ? Math.round((m.value / m.target) * 100) : 0;
+                var status = pct >= 90 ? 'green' : (pct >= 70 ? 'yellow' : 'red');
+
+                html += '<div class="metric-card ' + status + '">' +
+                    '<div class="metric-header">' +
+                        '<span class="metric-name">' + m.name + '</span>' +
+                    '</div>' +
+                    '<div class="metric-value">' + m.value.toFixed(1) + '</div>' +
+                    '<div class="metric-threshold">Target: ' + m.target + ' ' + m.unit + '</div>' +
+                '</div>';
+            }
+            container.innerHTML = html;
+        }
+
+        // Render summary stats
+        function renderSummary(data) {
+            var container = document.getElementById('summary-container');
+            if (!container || !data) return;
+
+            var items = [
+                { label: 'Studies', value: data.totalStudies || 0 },
+                { label: 'Active', value: data.activeStudies || 0 },
+                { label: 'Obs Units', value: data.totalObsUnits || 0 },
+                { label: 'Plants', value: data.plantsHarvested || 0 },
+                { label: 'Ears', value: data.earsHarvested || 0 },
+                { label: 'Yield (t/ha)', value: data.avgYield || 0 },
+                { label: 'Zinc (ppm)', value: data.avgZinc || 0 },
+                { label: 'Trp (%)', value: data.avgTryptophan || 0 },
+            ];
+
+            var html = '';
+            for (var i = 0; i < items.length; i++) {
+                var item = items[i];
+                var val = typeof item.value === 'number' ?
+                    (item.value > 1000 ? item.value.toLocaleString() :
+                     item.value < 1 ? item.value.toFixed(3) : item.value.toFixed(1)) : item.value;
+                html += '<div class="summary-item">' +
+                    '<div class="summary-value">' + val + '</div>' +
+                    '<div class="summary-label">' + item.label + '</div>' +
+                '</div>';
+            }
+            container.innerHTML = html;
+        }
+
+        // Drill-down for biofort
+        function showBiofortDetails(name) {
+            showModal(name, '<p>Detailed analysis for ' + name + ' will show distribution and trends when historical data is available.</p>');
+        }
+
+        function updateLastUpdated(timestamp) {
+            if (timestamp) {
+                var date = new Date(timestamp);
+                document.getElementById('last-updated-time').textContent = date.toLocaleString();
+            } else {
+                document.getElementById('last-updated-time').textContent = new Date().toLocaleTimeString();
+            }
+        }
+
+        // Tooltip functions
+        function showTooltip(event, title, content) {
+            var tooltip = document.getElementById('tooltip');
+            document.getElementById('tooltip-title').textContent = title;
+            document.getElementById('tooltip-content').innerHTML = content;
+
+            tooltip.style.left = (event.pageX + 10) + 'px';
+            tooltip.style.top = (event.pageY + 10) + 'px';
+            tooltip.classList.add('show');
+        }
+
+        function hideTooltip() {
+            document.getElementById('tooltip').classList.remove('show');
+        }
+
+        // Modal functions
+        function showModal(title, content) {
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-content').innerHTML = content;
+            document.getElementById('modal-overlay').classList.add('show');
+        }
+
+        function closeModal(event) {
+            if (!event || event.target === document.getElementById('modal-overlay')) {
+                document.getElementById('modal-overlay').classList.remove('show');
+            }
+        }
+
+        // Drill-down functions
+        function showFunnelDetails(name) {
+            var studies = cachedData.studies || [];
+            var filtered = studies;
+
+            if (filters.region !== 'All') {
+                filtered = filtered.filter(function(s) { return s.region === filters.region; });
+            }
+            if (filters.trait !== 'All') {
+                filtered = filtered.filter(function(s) { return s.trait === filters.trait; });
+            }
+
+            var html = '<p style="margin-bottom: 16px;"><strong>' + filtered.length + '</strong> studies match current filters</p>';
+            html += '<table style="width: 100%;"><thead><tr><th>Study Name</th><th>Location</th><th>Program</th><th style="text-align: right;">Observations</th></tr></thead><tbody>';
+
+            var shown = filtered.slice(0, 20);
+            for (var i = 0; i < shown.length; i++) {
+                var s = shown[i];
+                html += '<tr><td>' + s.name + '</td><td>' + s.location + '</td><td>' + s.program + '</td><td style="text-align: right;">' + s.observations + '</td></tr>';
+            }
+            html += '</tbody></table>';
+
+            if (filtered.length > 20) {
+                html += '<p style="margin-top: 12px; color: #6b7280;">Showing 20 of ' + filtered.length + ' studies</p>';
+            }
+
+            showModal(name + ' - Study Details', html);
+        }
+
+        function showMetricDetails(name) {
+            var metric = currentData.rateMetrics.find(function(m) { return m.name === name; });
+            if (!metric) return;
+
+            var html = '<div style="text-align: center; padding: 20px;">';
+            html += '<div style="font-size: 3rem; font-weight: 700; color: ' + (metric.status === 'green' ? '#10b981' : metric.status === 'yellow' ? '#f59e0b' : '#ef4444') + ';">' + metric.value + '</div>';
+            html += '<div style="color: #6b7280; margin-top: 8px;">Threshold: ' + metric.threshold + '</div>';
+            html += '<div style="margin-top: 20px; padding: 16px; background: #f9fafb; border-radius: 8px;">';
+            html += '<p><strong>Status:</strong> ' + (metric.status === 'green' ? 'Within acceptable range' : metric.status === 'yellow' ? 'Needs attention' : 'Critical - immediate action needed') + '</p>';
+            html += '</div></div>';
+
+            showModal(name, html);
+        }
+
+        function showCoverageDetails(scheme) {
+            var item = currentData.coverageMetrics.find(function(c) { return c.scheme === scheme; });
+            if (!item) return;
+
+            var studies = (cachedData.studies || []).filter(function(s) { return s.program === scheme; });
+
+            var html = '<div style="padding: 20px;">';
+            html += '<p><strong>Required:</strong> ' + item.required + '</p>';
+            html += '<p><strong>Available:</strong> ' + item.available + '</p>';
+            html += '<p><strong>Coverage Ratio:</strong> ' + item.ratio.toFixed(2) + 'x</p>';
+            html += '<hr style="margin: 16px 0;">';
+            html += '<p><strong>Studies in this program (' + studies.length + '):</strong></p>';
+            html += '<ul style="margin-top: 8px; padding-left: 20px;">';
+
+            var shown = studies.slice(0, 10);
+            for (var i = 0; i < shown.length; i++) {
+                html += '<li>' + shown[i].name + ' (' + shown[i].location + ')</li>';
+            }
+            if (studies.length > 10) {
+                html += '<li>... and ' + (studies.length - 10) + ' more</li>';
+            }
+            html += '</ul></div>';
+
+            showModal(scheme, html);
+        }
+
+        function showSpeedDetails(stage) {
+            showModal(stage + ' Stage', '<p>Detailed timing breakdown for ' + stage + ' will be available when historical data is connected.</p>');
+        }
+
+        function showCycleDetails(cycle) {
+            var item = currentData.cycleTimeHistory.find(function(c) { return c.cycle === cycle; });
+            if (!item) return;
+
+            var total = item.sampling + item.genotyping + item.planning;
+            var html = '<div style="padding: 20px;">';
+            html += '<p><strong>Total Cycle Time:</strong> ' + total + ' days</p>';
+            html += '<hr style="margin: 16px 0;">';
+            html += '<p>🔵 <strong>Sampling:</strong> ' + item.sampling + ' days</p>';
+            html += '<p>🟣 <strong>Genotyping:</strong> ' + item.genotyping + ' days</p>';
+            html += '<p>🟡 <strong>Planning:</strong> ' + item.planning + ' days</p>';
+            html += '</div>';
+
+            showModal('Cycle ' + cycle, html);
+        }
+
+        function showIssueDetails(issue) {
+            var item = currentData.topIssues.find(function(i) { return i.issue === issue; });
+            if (!item) return;
+
+            var html = '<div style="padding: 20px;">';
+            html += '<p><strong>Issue:</strong> ' + item.issue + '</p>';
+            html += '<p><strong>Observations Affected:</strong> ' + item.plants + '</p>';
+            html += '<p><strong>Percentage Above Threshold:</strong> ' + item.pct + '%</p>';
+            html += '<p><strong>Impact Level:</strong> ' + item.impact + '</p>';
+            html += '<p><strong>Trend:</strong> ' + item.trend + '</p>';
+            html += '</div>';
+
+            showModal(issue + ' Issue Details', html);
+        }
+
+        function showStackDetails(level) {
+            var item = currentData.stackProgress.find(function(s) { return s.level === level; });
+            if (!item) return;
+
+            var progress = Math.round((item.count / item.target) * 100);
+            var html = '<div style="padding: 20px; text-align: center;">';
+            html += '<div style="font-size: 3rem; font-weight: 700; color: #764ba2;">' + item.count + '</div>';
+            html += '<div style="color: #6b7280;">out of ' + item.target + ' target</div>';
+            html += '<div style="margin-top: 20px;">';
+            html += '<div style="height: 20px; background: #e5e7eb; border-radius: 10px; overflow: hidden;">';
+            html += '<div style="height: 100%; width: ' + progress + '%; background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);"></div>';
+            html += '</div>';
+            html += '<div style="margin-top: 8px; color: #6b7280;">' + progress + '% of target</div>';
+            html += '</div></div>';
+
+            showModal(level, html);
+        }
+
+        // Table sorting
+        function sortTable(column) {
+            // This is a placeholder - would need to implement proper sorting
+            console.log('Sort by:', column);
+        }
+
+        // Refresh and render
+        function refreshData() {
+            var icon = document.getElementById('refresh-icon');
+            icon.classList.add('loading');
+
+            loadDashboardData(function(data) {
+                cachedData = data;
+                renderFilters(data);
+
+                currentData = getFilteredData(data);
+
+                renderFunnel(currentData.funnelData);
+                renderRates(currentData.rateMetrics);
+                renderCoverage(currentData.coverageMetrics);
+                renderSpeed(currentData.speedMetrics);
+                renderCycleChart(currentData.cycleTimeHistory);
+                renderIssues(currentData.topIssues);
+                renderBiofort(currentData.biofortMetrics);
+                renderStack(currentData.stackProgress);
+                renderPlantMetrics(currentData.plantMetrics);
+                renderSummary(currentData.summary);
+                updateLastUpdated(data.lastUpdated);
+
+                icon.classList.remove('loading');
+            });
+        }
+
+        // Filter handling
+        document.getElementById('filters-container').addEventListener('click', function(e) {
+            if (e.target.classList.contains('filter-chip')) {
+                var group = e.target.getAttribute('data-group');
+                var value = e.target.getAttribute('data-value');
+
+                // Update filter state
+                filters[group] = value;
+
+                // Update UI
+                var chips = document.querySelectorAll('.filter-chip[data-group="' + group + '"]');
+                for (var i = 0; i < chips.length; i++) {
+                    chips[i].classList.remove('active');
+                }
+                e.target.classList.add('active');
+
+                // Re-render with new filter
+                currentData = getFilteredData(cachedData);
+                renderFilters(cachedData);
+                renderFunnel(currentData.funnelData);
+                renderRates(currentData.rateMetrics);
+                renderCoverage(currentData.coverageMetrics);
+                renderSpeed(currentData.speedMetrics);
+                renderCycleChart(currentData.cycleTimeHistory);
+                renderIssues(currentData.topIssues);
+                renderBiofort(currentData.biofortMetrics);
+                renderStack(currentData.stackProgress);
+                renderPlantMetrics(currentData.plantMetrics);
+                renderSummary(currentData.summary);
+            }
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Initialize on load
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', refreshData);
+        } else {
+            refreshData();
+        }
     </script>
 </body>
 </html>
