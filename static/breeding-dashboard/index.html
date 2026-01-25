@@ -545,6 +545,43 @@
             transition: width 0.5s ease;
         }
 
+        /* Summary grid */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+        }
+
+        .summary-item {
+            text-align: center;
+            padding: 16px;
+            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+            border-radius: 12px;
+        }
+
+        .summary-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #764ba2;
+        }
+
+        .summary-label {
+            font-size: 0.8rem;
+            color: #6b7280;
+            margin-top: 4px;
+        }
+
+        /* Two column layout for side by side sections */
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 900px) {
+            .two-column { grid-template-columns: 1fr; }
+        }
+
         /* Modal for drill-down */
         .modal-overlay {
             position: fixed;
@@ -714,10 +751,28 @@
             <div id="issues-container"></div>
         </div>
 
+        <!-- Block E: Biofortification Metrics -->
+        <div class="glass-card">
+            <h2 class="section-title">🌾 Block E: Biofortification Quality</h2>
+            <div class="metrics-grid" id="biofort-container"></div>
+        </div>
+
         <!-- Block F: Stack Progress -->
         <div class="glass-card">
-            <h2 class="section-title">🧬 Block F: Biofortification Progress</h2>
+            <h2 class="section-title">🧬 Block F: Trait Pyramiding Progress</h2>
             <div class="stack-grid" id="stack-container"></div>
+        </div>
+
+        <!-- Block G: Plant Characteristics -->
+        <div class="glass-card">
+            <h2 class="section-title">🌿 Block G: Plant Characteristics</h2>
+            <div class="metrics-grid" id="plant-container"></div>
+        </div>
+
+        <!-- Summary Stats Row -->
+        <div class="glass-card">
+            <h2 class="section-title">📈 Summary Statistics</h2>
+            <div class="summary-grid" id="summary-container"></div>
         </div>
 
         <!-- Footer -->
@@ -805,7 +860,10 @@
                 speedMetrics: data.speedMetrics,
                 topIssues: data.topIssues,
                 stackProgress: data.stackProgress,
-                cycleTimeHistory: data.cycleTimeHistory
+                cycleTimeHistory: data.cycleTimeHistory,
+                biofortMetrics: data.biofortMetrics,
+                plantMetrics: data.plantMetrics,
+                summary: data.summary
             };
 
             // Apply region filter
@@ -816,6 +874,9 @@
                 result.coverageMetrics = regionData.coverageMetrics || result.coverageMetrics;
                 result.topIssues = regionData.topIssues || result.topIssues;
                 result.stackProgress = regionData.stackProgress || result.stackProgress;
+                result.biofortMetrics = regionData.biofortMetrics || result.biofortMetrics;
+                result.plantMetrics = regionData.plantMetrics || result.plantMetrics;
+                result.summary = regionData.summary || result.summary;
             }
 
             // Apply trait filter
@@ -826,6 +887,9 @@
                 result.coverageMetrics = traitData.coverageMetrics || result.coverageMetrics;
                 result.topIssues = traitData.topIssues || result.topIssues;
                 result.stackProgress = traitData.stackProgress || result.stackProgress;
+                result.biofortMetrics = traitData.biofortMetrics || result.biofortMetrics;
+                result.plantMetrics = traitData.plantMetrics || result.plantMetrics;
+                result.summary = traitData.summary || result.summary;
             }
 
             return result;
@@ -1045,6 +1109,147 @@
             container.innerHTML = html;
         }
 
+        // Render biofortification metrics
+        function renderBiofort(data) {
+            var container = document.getElementById('biofort-container');
+            if (!container) return;
+            if (!data || data.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #6b7280; padding: 20px;">No biofortification data available</p>';
+                return;
+            }
+
+            var icons = { green: '✓', yellow: '⚠', red: '✗' };
+            var html = '';
+
+            for (var i = 0; i < data.length; i++) {
+                var m = data[i];
+                var displayValue = m.value;
+                if (m.unit === '%' && m.value < 1) {
+                    displayValue = m.value.toFixed(3);
+                } else if (m.unit === 'ppm') {
+                    displayValue = m.value.toFixed(1);
+                } else {
+                    displayValue = m.value.toFixed(2);
+                }
+
+                html += '<div class="metric-card ' + m.status + '" onclick="showBiofortDetails(\'' + m.name + '\')">' +
+                    '<div class="metric-header">' +
+                        '<span class="metric-name">' + m.name + '</span>' +
+                        '<span class="metric-icon ' + m.status + '">' + icons[m.status] + '</span>' +
+                    '</div>' +
+                    '<div class="metric-value">' + displayValue + '</div>' +
+                    '<div class="metric-threshold">Target: ' + m.target + ' ' + m.unit + '</div>' +
+                '</div>';
+            }
+            container.innerHTML = html;
+        }
+
+        // Render plant metrics
+        function renderPlantMetrics(data) {
+            var container = document.getElementById('plant-container');
+            if (!container) return;
+            if (!data || data.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #6b7280; padding: 20px;">No plant data available</p>';
+                return;
+            }
+
+            var html = '';
+            for (var i = 0; i < data.length; i++) {
+                var m = data[i];
+                var pct = m.target > 0 ? Math.round((m.value / m.target) * 100) : 0;
+                var status = pct >= 90 ? 'green' : (pct >= 70 ? 'yellow' : 'red');
+
+                html += '<div class="metric-card ' + status + '">' +
+                    '<div class="metric-header">' +
+                        '<span class="metric-name">' + m.name + '</span>' +
+                    '</div>' +
+                    '<div class="metric-value">' + m.value.toFixed(1) + '</div>' +
+                    '<div class="metric-threshold">Target: ' + m.target + ' ' + m.unit + '</div>' +
+                '</div>';
+            }
+            container.innerHTML = html;
+        }
+
+        // Render summary stats
+        function renderSummary(data) {
+            var container = document.getElementById('summary-container');
+            if (!container || !data) return;
+
+            var items = [
+                { label: 'Studies', value: data.totalStudies || 0 },
+                { label: 'Active', value: data.activeStudies || 0 },
+                { label: 'Obs Units', value: data.totalObsUnits || 0 },
+                { label: 'Plants', value: data.plantsHarvested || 0 },
+                { label: 'Ears', value: data.earsHarvested || 0 },
+                { label: 'Yield (t/ha)', value: data.avgYield || 0 },
+                { label: 'Zinc (ppm)', value: data.avgZinc || 0 },
+                { label: 'Trp (%)', value: data.avgTryptophan || 0 },
+            ];
+
+            var html = '';
+            for (var i = 0; i < items.length; i++) {
+                var item = items[i];
+                var val = typeof item.value === 'number' ?
+                    (item.value > 1000 ? item.value.toLocaleString() :
+                     item.value < 1 ? item.value.toFixed(3) : item.value.toFixed(1)) : item.value;
+                html += '<div class="summary-item">' +
+                    '<div class="summary-value">' + val + '</div>' +
+                    '<div class="summary-label">' + item.label + '</div>' +
+                '</div>';
+            }
+            container.innerHTML = html;
+        }
+
+        // Drill-down for biofort
+        function showBiofortDetails(name) {
+            var trends = cachedData.historicalTrends;
+            if (!trends || !trends.periods) {
+                showModal(name, '<p>No historical data available.</p>');
+                return;
+            }
+
+            // Map metric name to trend data key
+            var dataKey = 'zinc';
+            var unit = 'ppm';
+            if (name.includes('Tryptophan')) {
+                dataKey = 'tryptophan';
+                unit = '%';
+            } else if (name.includes('Yield')) {
+                dataKey = 'yield';
+                unit = 't/ha';
+            }
+
+            var html = '<div style="padding: 20px;">';
+            html += '<h3 style="margin-bottom: 16px;">' + name + ' Trend</h3>';
+            html += renderTrendChart(trends.periods, trends[dataKey], name, unit);
+
+            // Find current metric for context
+            var metric = currentData.biofortMetrics ? currentData.biofortMetrics.find(function(m) { return m.name === name; }) : null;
+            if (metric) {
+                html += '<div style="margin-top: 20px; display: flex; gap: 20px; justify-content: center;">';
+                html += '<div style="text-align: center; padding: 16px; background: #f3f4f6; border-radius: 8px;">';
+                html += '<div style="font-size: 1.5rem; font-weight: 700; color: #764ba2;">' + metric.value + '</div>';
+                html += '<div style="font-size: 0.8rem; color: #6b7280;">Current</div></div>';
+                html += '<div style="text-align: center; padding: 16px; background: #f3f4f6; border-radius: 8px;">';
+                html += '<div style="font-size: 1.5rem; font-weight: 700; color: #10b981;">' + metric.target + '</div>';
+                html += '<div style="font-size: 0.8rem; color: #6b7280;">Target</div></div>';
+                html += '</div>';
+            }
+
+            // Data table
+            html += '<div style="margin-top: 20px;">';
+            html += '<table style="width: 100%; font-size: 0.85rem;"><thead><tr><th>Period</th><th style="text-align:right;">Avg ' + unit + '</th><th style="text-align:right;">Observations</th></tr></thead><tbody>';
+            for (var i = 0; i < trends.periods.length; i++) {
+                var val = trends[dataKey][i];
+                if (val > 0) {
+                    html += '<tr><td>' + trends.periods[i] + '</td><td style="text-align:right;">' + val + '</td><td style="text-align:right;">' + trends.observations[i].toLocaleString() + '</td></tr>';
+                }
+            }
+            html += '</tbody></table></div></div>';
+
+            showModal(name + ' - Historical Trend', html);
+        }
+
         function updateLastUpdated(timestamp) {
             if (timestamp) {
                 var date = new Date(timestamp);
@@ -1115,14 +1320,32 @@
             var metric = currentData.rateMetrics.find(function(m) { return m.name === name; });
             if (!metric) return;
 
-            var html = '<div style="text-align: center; padding: 20px;">';
+            var trends = cachedData.historicalTrends;
+
+            // Map metric to trend key
+            var dataKey = null;
+            if (name.includes('Virus') || name.includes('Spiroplasma')) dataKey = 'virus';
+            else if (name.includes('Lodging')) dataKey = 'lodging';
+            else if (name.includes('Yield')) dataKey = 'yield';
+
+            var html = '<div style="padding: 20px;">';
+            html += '<div style="text-align: center;">';
             html += '<div style="font-size: 3rem; font-weight: 700; color: ' + (metric.status === 'green' ? '#10b981' : metric.status === 'yellow' ? '#f59e0b' : '#ef4444') + ';">' + metric.value + '</div>';
             html += '<div style="color: #6b7280; margin-top: 8px;">Threshold: ' + metric.threshold + '</div>';
-            html += '<div style="margin-top: 20px; padding: 16px; background: #f9fafb; border-radius: 8px;">';
-            html += '<p><strong>Status:</strong> ' + (metric.status === 'green' ? 'Within acceptable range' : metric.status === 'yellow' ? 'Needs attention' : 'Critical - immediate action needed') + '</p>';
-            html += '</div></div>';
+            html += '<div style="margin-top: 12px; padding: 12px; background: #f9fafb; border-radius: 8px; display: inline-block;">';
+            html += '<strong>Status:</strong> ' + (metric.status === 'green' ? '✓ Within acceptable range' : metric.status === 'yellow' ? '⚠ Needs attention' : '✗ Critical') + '</div>';
+            html += '</div>';
 
-            showModal(name, html);
+            // Show trend chart if data available
+            if (trends && trends.periods && dataKey) {
+                html += '<div style="margin-top: 24px;">';
+                html += '<h4 style="margin-bottom: 12px;">Historical Trend</h4>';
+                html += renderTrendChart(trends.periods, trends[dataKey], name, metric.unit || '%');
+                html += '</div>';
+            }
+
+            html += '</div>';
+            showModal(name + ' - Details', html);
         }
 
         function showCoverageDetails(scheme) {
@@ -1152,7 +1375,78 @@
         }
 
         function showSpeedDetails(stage) {
-            showModal(stage + ' Stage', '<p>Detailed timing breakdown for ' + stage + ' will be available when historical data is connected.</p>');
+            var trends = cachedData.historicalTrends;
+            if (!trends || !trends.periods) {
+                showModal(stage, '<p>No historical data available.</p>');
+                return;
+            }
+
+            // Map stage to trend data key
+            var dataKey = 'dff';
+            var label = 'Days to Flowering';
+            if (stage.includes('Male')) {
+                label = 'Days to Male Flowering';
+            } else if (stage.includes('ASI')) {
+                label = 'ASI (Anthesis-Silking Interval)';
+            }
+
+            var html = '<div style="padding: 20px;">';
+            html += '<h3 style="margin-bottom: 16px;">' + label + ' Over Time</h3>';
+            html += renderTrendChart(trends.periods, trends[dataKey], label, 'days');
+            html += '<div style="margin-top: 20px;">';
+            html += '<table style="width: 100%; font-size: 0.85rem;"><thead><tr><th>Period</th><th style="text-align:right;">Value</th><th style="text-align:right;">Studies</th></tr></thead><tbody>';
+            for (var i = 0; i < trends.periods.length; i++) {
+                var val = trends[dataKey][i];
+                if (val > 0) {
+                    html += '<tr><td>' + trends.periods[i] + '</td><td style="text-align:right;">' + val + '</td><td style="text-align:right;">' + trends.studies[i] + '</td></tr>';
+                }
+            }
+            html += '</tbody></table></div></div>';
+
+            showModal(stage, html);
+        }
+
+        // Render SVG trend chart
+        function renderTrendChart(labels, values, title, unit) {
+            var width = 400, height = 150, padding = 30;
+            var filteredData = [];
+            for (var i = 0; i < labels.length; i++) {
+                if (values[i] > 0) {
+                    filteredData.push({ label: labels[i], value: values[i] });
+                }
+            }
+            if (filteredData.length < 2) return '<p style="color: #6b7280;">Not enough data points for chart.</p>';
+
+            var maxVal = Math.max.apply(null, filteredData.map(function(d) { return d.value; }));
+            var minVal = Math.min.apply(null, filteredData.map(function(d) { return d.value; }));
+            var range = maxVal - minVal || 1;
+
+            var xStep = (width - padding * 2) / (filteredData.length - 1);
+            var points = [];
+            for (var i = 0; i < filteredData.length; i++) {
+                var x = padding + i * xStep;
+                var y = height - padding - ((filteredData[i].value - minVal) / range) * (height - padding * 2);
+                points.push(x + ',' + y);
+            }
+
+            var svg = '<svg width="' + width + '" height="' + height + '" style="background: #f9fafb; border-radius: 8px;">';
+            // Grid lines
+            svg += '<line x1="' + padding + '" y1="' + padding + '" x2="' + padding + '" y2="' + (height - padding) + '" stroke="#e5e7eb" />';
+            svg += '<line x1="' + padding + '" y1="' + (height - padding) + '" x2="' + (width - padding) + '" y2="' + (height - padding) + '" stroke="#e5e7eb" />';
+            // Line
+            svg += '<polyline points="' + points.join(' ') + '" fill="none" stroke="#667eea" stroke-width="2" />';
+            // Points
+            for (var i = 0; i < filteredData.length; i++) {
+                var x = padding + i * xStep;
+                var y = height - padding - ((filteredData[i].value - minVal) / range) * (height - padding * 2);
+                svg += '<circle cx="' + x + '" cy="' + y + '" r="4" fill="#764ba2" />';
+            }
+            // Labels
+            svg += '<text x="' + padding + '" y="' + (padding - 8) + '" font-size="10" fill="#6b7280">' + maxVal.toFixed(1) + ' ' + unit + '</text>';
+            svg += '<text x="' + padding + '" y="' + (height - 8) + '" font-size="10" fill="#6b7280">' + minVal.toFixed(1) + ' ' + unit + '</text>';
+            svg += '<text x="' + (width / 2) + '" y="' + (height - 5) + '" font-size="9" fill="#9ca3af" text-anchor="middle">' + filteredData[0].label + ' → ' + filteredData[filteredData.length - 1].label + '</text>';
+            svg += '</svg>';
+            return svg;
         }
 
         function showCycleDetails(cycle) {
@@ -1227,7 +1521,10 @@
                 renderSpeed(currentData.speedMetrics);
                 renderCycleChart(currentData.cycleTimeHistory);
                 renderIssues(currentData.topIssues);
+                renderBiofort(currentData.biofortMetrics);
                 renderStack(currentData.stackProgress);
+                renderPlantMetrics(currentData.plantMetrics);
+                renderSummary(currentData.summary);
                 updateLastUpdated(data.lastUpdated);
 
                 icon.classList.remove('loading');
@@ -1259,7 +1556,10 @@
                 renderSpeed(currentData.speedMetrics);
                 renderCycleChart(currentData.cycleTimeHistory);
                 renderIssues(currentData.topIssues);
+                renderBiofort(currentData.biofortMetrics);
                 renderStack(currentData.stackProgress);
+                renderPlantMetrics(currentData.plantMetrics);
+                renderSummary(currentData.summary);
             }
         });
 

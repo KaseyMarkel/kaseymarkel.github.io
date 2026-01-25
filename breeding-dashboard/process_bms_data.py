@@ -445,6 +445,79 @@ def compute_comprehensive_metrics(study_data, all_observations, all_obs_units):
     }
 
 
+def compute_historical_trends(observations):
+    """Compute metrics over time (by year and quarter)"""
+    from collections import defaultdict
+
+    # Group observations by year-quarter
+    by_period = defaultdict(lambda: {
+        'zinc_vals': [], 'tryptophan_vals': [], 'yield_vals': [],
+        'virus_vals': [], 'lodging_vals': [], 'dff_vals': [],
+        'obs_count': 0, 'studies': set()
+    })
+
+    for obs in observations:
+        timestamp = obs.get('observationTimeStamp', '')
+        if not timestamp or len(timestamp) < 7:
+            continue
+
+        year = timestamp[:4]
+        month = int(timestamp[5:7]) if len(timestamp) >= 7 else 1
+        quarter = (month - 1) // 3 + 1
+        period = f"{year}-Q{quarter}"
+
+        var_name = obs.get('observationVariableName', '')
+        value = safe_float(obs.get('value'))
+        study_id = obs.get('studyDbId', '')
+
+        by_period[period]['obs_count'] += 1
+        if study_id:
+            by_period[period]['studies'].add(study_id)
+
+        if var_name in ['Zinc_sn', 'Zn_manual'] and value > 0:
+            by_period[period]['zinc_vals'].append(value)
+        elif var_name in ['Trp_sn', 'Trp_manual'] and value > 0:
+            by_period[period]['tryptophan_vals'].append(value)
+        elif var_name == 'RendTM_Ha' and value > 0:
+            by_period[period]['yield_vals'].append(value)
+        elif var_name in ['PLANTS_VIRUSsn', 'Spiroplasm_pct'] and value >= 0:
+            by_period[period]['virus_vals'].append(value)
+        elif var_name in ['ACAME_TALLOsn', 'ACAME_RAIZsn'] and value >= 0:
+            by_period[period]['lodging_vals'].append(value)
+        elif var_name == 'DFF' and value > 0:
+            by_period[period]['dff_vals'].append(value)
+
+    def avg(vals):
+        return round(sum(vals) / len(vals), 2) if vals else 0
+
+    # Build time series
+    trends = {
+        'periods': [],
+        'zinc': [],
+        'tryptophan': [],
+        'yield': [],
+        'virus': [],
+        'lodging': [],
+        'dff': [],
+        'observations': [],
+        'studies': []
+    }
+
+    for period in sorted(by_period.keys()):
+        data = by_period[period]
+        trends['periods'].append(period)
+        trends['zinc'].append(avg(data['zinc_vals']))
+        trends['tryptophan'].append(avg(data['tryptophan_vals']))
+        trends['yield'].append(avg(data['yield_vals']))
+        trends['virus'].append(avg(data['virus_vals']))
+        trends['lodging'].append(avg(data['lodging_vals']))
+        trends['dff'].append(avg(data['dff_vals']))
+        trends['observations'].append(data['obs_count'])
+        trends['studies'].append(len(data['studies']))
+
+    return trends
+
+
 def main():
     print("Loading BMS data...")
 
@@ -505,6 +578,11 @@ def main():
     print("\nComputing comprehensive metrics...")
     all_metrics = compute_comprehensive_metrics(study_data, observations, obs_units)
 
+    # Compute historical trends
+    print("Computing historical trends...")
+    historical_trends = compute_historical_trends(observations)
+    print(f"  Found {len(historical_trends['periods'])} time periods: {historical_trends['periods']}")
+
     # Compute by region
     print("Computing metrics by region...")
     by_region = {}
@@ -530,6 +608,7 @@ def main():
             'stages': ['All'] + stages
         },
         **all_metrics,
+        'historicalTrends': historical_trends,
         'byRegion': by_region,
         'byTrait': by_trait,
         'studies': [{
