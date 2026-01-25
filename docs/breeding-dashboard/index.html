@@ -1406,9 +1406,13 @@
             showModal(stage, html);
         }
 
-        // Render SVG trend chart
+        // Render SVG trend chart with proper axis labels
         function renderTrendChart(labels, values, title, unit) {
-            var width = 400, height = 150, padding = 30;
+            var width = 450, height = 200;
+            var marginLeft = 55, marginRight = 20, marginTop = 20, marginBottom = 45;
+            var chartWidth = width - marginLeft - marginRight;
+            var chartHeight = height - marginTop - marginBottom;
+
             var filteredData = [];
             for (var i = 0; i < labels.length; i++) {
                 if (values[i] > 0) {
@@ -1419,32 +1423,66 @@
 
             var maxVal = Math.max.apply(null, filteredData.map(function(d) { return d.value; }));
             var minVal = Math.min.apply(null, filteredData.map(function(d) { return d.value; }));
-            var range = maxVal - minVal || 1;
 
-            var xStep = (width - padding * 2) / (filteredData.length - 1);
+            // Add 10% padding to Y range for visual breathing room
+            var yPadding = (maxVal - minVal) * 0.1 || maxVal * 0.1;
+            var yMin = Math.max(0, minVal - yPadding);
+            var yMax = maxVal + yPadding;
+            var yRange = yMax - yMin || 1;
+
+            // Calculate nice tick values for Y axis
+            var yTicks = [];
+            var tickCount = 4;
+            for (var t = 0; t <= tickCount; t++) {
+                yTicks.push(yMin + (yRange * t / tickCount));
+            }
+
+            var xStep = chartWidth / (filteredData.length - 1);
             var points = [];
             for (var i = 0; i < filteredData.length; i++) {
-                var x = padding + i * xStep;
-                var y = height - padding - ((filteredData[i].value - minVal) / range) * (height - padding * 2);
+                var x = marginLeft + i * xStep;
+                var y = marginTop + chartHeight - ((filteredData[i].value - yMin) / yRange) * chartHeight;
                 points.push(x + ',' + y);
             }
 
-            var svg = '<svg width="' + width + '" height="' + height + '" style="background: #f9fafb; border-radius: 8px;">';
-            // Grid lines
-            svg += '<line x1="' + padding + '" y1="' + padding + '" x2="' + padding + '" y2="' + (height - padding) + '" stroke="#e5e7eb" />';
-            svg += '<line x1="' + padding + '" y1="' + (height - padding) + '" x2="' + (width - padding) + '" y2="' + (height - padding) + '" stroke="#e5e7eb" />';
-            // Line
-            svg += '<polyline points="' + points.join(' ') + '" fill="none" stroke="#667eea" stroke-width="2" />';
-            // Points
-            for (var i = 0; i < filteredData.length; i++) {
-                var x = padding + i * xStep;
-                var y = height - padding - ((filteredData[i].value - minVal) / range) * (height - padding * 2);
-                svg += '<circle cx="' + x + '" cy="' + y + '" r="4" fill="#764ba2" />';
+            var svg = '<svg width="' + width + '" height="' + height + '" style="background: #f9fafb; border-radius: 8px; font-family: Inter, sans-serif;">';
+
+            // Horizontal grid lines and Y-axis labels
+            for (var t = 0; t <= tickCount; t++) {
+                var yPos = marginTop + chartHeight - (t / tickCount) * chartHeight;
+                var tickVal = yTicks[t];
+                // Grid line
+                svg += '<line x1="' + marginLeft + '" y1="' + yPos + '" x2="' + (width - marginRight) + '" y2="' + yPos + '" stroke="#e5e7eb" stroke-dasharray="' + (t === 0 ? '0' : '4,4') + '" />';
+                // Y-axis tick label
+                var labelText = tickVal < 1 ? tickVal.toFixed(3) : tickVal.toFixed(1);
+                svg += '<text x="' + (marginLeft - 8) + '" y="' + (yPos + 4) + '" font-size="10" fill="#6b7280" text-anchor="end">' + labelText + '</text>';
             }
-            // Labels
-            svg += '<text x="' + padding + '" y="' + (padding - 8) + '" font-size="10" fill="#6b7280">' + maxVal.toFixed(1) + ' ' + unit + '</text>';
-            svg += '<text x="' + padding + '" y="' + (height - 8) + '" font-size="10" fill="#6b7280">' + minVal.toFixed(1) + ' ' + unit + '</text>';
-            svg += '<text x="' + (width / 2) + '" y="' + (height - 5) + '" font-size="9" fill="#9ca3af" text-anchor="middle">' + filteredData[0].label + ' → ' + filteredData[filteredData.length - 1].label + '</text>';
+
+            // Y-axis title (rotated)
+            svg += '<text x="12" y="' + (marginTop + chartHeight / 2) + '" font-size="11" fill="#374151" text-anchor="middle" transform="rotate(-90, 12, ' + (marginTop + chartHeight / 2) + ')">' + unit + '</text>';
+
+            // Data line
+            svg += '<polyline points="' + points.join(' ') + '" fill="none" stroke="#667eea" stroke-width="2.5" stroke-linejoin="round" />';
+
+            // Data points
+            for (var i = 0; i < filteredData.length; i++) {
+                var x = marginLeft + i * xStep;
+                var y = marginTop + chartHeight - ((filteredData[i].value - yMin) / yRange) * chartHeight;
+                svg += '<circle cx="' + x + '" cy="' + y + '" r="4" fill="#764ba2" stroke="#fff" stroke-width="1.5" />';
+            }
+
+            // X-axis labels (show first, middle, last to avoid crowding)
+            var xLabelsToShow = [0, Math.floor(filteredData.length / 2), filteredData.length - 1];
+            for (var i = 0; i < xLabelsToShow.length; i++) {
+                var idx = xLabelsToShow[i];
+                var x = marginLeft + idx * xStep;
+                var label = filteredData[idx].label;
+                svg += '<text x="' + x + '" y="' + (height - marginBottom + 18) + '" font-size="10" fill="#6b7280" text-anchor="middle">' + label + '</text>';
+            }
+
+            // X-axis title
+            svg += '<text x="' + (marginLeft + chartWidth / 2) + '" y="' + (height - 5) + '" font-size="11" fill="#374151" text-anchor="middle">Quarter</text>';
+
             svg += '</svg>';
             return svg;
         }
