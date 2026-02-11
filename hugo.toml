@@ -89,7 +89,12 @@ pygmentsCodefencesGuessSyntax = true
     weight = 4
 
 [[menu.main]]
+    name = "Essays"
+    url = "page/essays"
+    weight = 5
+
+[[menu.main]]
     name = "Dashboard"
     url = "page/dashboard"
-    weight = 5
+    weight = 6
 

@@ -2,30 +2,36 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>http://localhost:1313/</loc>
+    <loc>https://kaseymarkel.com/</loc>
   </url><url>
-    <loc>http://localhost:1313/page/academia/</loc>
+    <loc>https://kaseymarkel.com/page/academia/</loc>
   </url><url>
-    <loc>http://localhost:1313/categories/</loc>
+    <loc>https://kaseymarkel.com/page/dashboard/</loc>
   </url><url>
-    <loc>http://localhost:1313/page/cv/</loc>
+    <loc>https://kaseymarkel.com/categories/</loc>
   </url><url>
-    <loc>http://localhost:1313/page/gallery/</loc>
+    <loc>https://kaseymarkel.com/page/essays/correlation-and-causation/</loc>
   </url><url>
-    <loc>http://localhost:1313/page/glass/</loc>
+    <loc>https://kaseymarkel.com/page/cv/</loc>
   </url><url>
-    <loc>http://localhost:1313/page/thing-4/</loc>
+    <loc>https://kaseymarkel.com/page/essays/</loc>
   </url><url>
-    <loc>http://localhost:1313/page/living-wall/</loc>
+    <loc>https://kaseymarkel.com/page/gallery/</loc>
   </url><url>
-    <loc>http://localhost:1313/page/origin/</loc>
+    <loc>https://kaseymarkel.com/page/glass/</loc>
   </url><url>
-    <loc>http://localhost:1313/page/</loc>
+    <loc>https://kaseymarkel.com/page/thing-4/</loc>
   </url><url>
-    <loc>http://localhost:1313/page/recreation/</loc>
+    <loc>https://kaseymarkel.com/page/living-wall/</loc>
   </url><url>
-    <loc>http://localhost:1313/tags/</loc>
+    <loc>https://kaseymarkel.com/page/origin/</loc>
   </url><url>
-    <loc>http://localhost:1313/page/wing-watchers-perch/</loc>
+    <loc>https://kaseymarkel.com/page/</loc>
+  </url><url>
+    <loc>https://kaseymarkel.com/page/recreation/</loc>
+  </url><url>
+    <loc>https://kaseymarkel.com/tags/</loc>
+  </url><url>
+    <loc>https://kaseymarkel.com/page/wing-watchers-perch/</loc>
   </url>
 </urlset>

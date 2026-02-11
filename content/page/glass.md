@@ -68,7 +68,6 @@ I love the process of furnace glass, and I love how big you can work - wineglass
 <div class="glass-grid">
   <img src="/img/furnace1.jpg" alt="Furnace glass 1">
   <img src="/img/furnace2.jpg" alt="Furnace glass 2">
-  <img src="/img/furnace3.jpg" alt="Furnace glass 3">
   <img src="/img/furnace4.jpg" alt="Furnace glass 4">
   <img src="/img/furnace5.jpg" alt="Furnace glass 5">
 </div>
