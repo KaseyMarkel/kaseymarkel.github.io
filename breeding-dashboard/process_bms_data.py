@@ -781,25 +781,29 @@ def main():
         if subset:
             by_trait[trait] = compute_comprehensive_metrics(subset, observations, obs_units)
 
-    # Build germplasm summary with GIDs
-    print("Building germplasm summary...")
-    germplasm_summary = []
-    for g in germplasm[:100]:  # Sample for display
+    # Build full germplasm data with GIDs for interactive table
+    print("Building germplasm data...")
+    germplasm_full = []
+    for g in germplasm:
         gid = g.get('GID', '')
         guid = g.get('GUID', '')
         name = g.get('Preferred Name', g.get('ACCNAME', ''))
         heter_group = g.get('HETER_GROUP', '')
         rec_parent = g.get('REC_PARENT', '')
         method = g.get('Breeding Method Name', g.get('Method Code', ''))
+        formed_gen = g.get('FORMED_GEN', '')
+        qpm_zn = g.get('QPM_ZN_DONOR', '')
         if gid:
-            germplasm_summary.append({
-                'gid': gid,
-                'guid': guid,
-                'name': name,
-                'heterGroup': heter_group,
-                'recParent': rec_parent,
-                'method': method,
+            germplasm_full.append({
+                'gid': int(gid) if gid.isdigit() else gid,
+                'name': name or '-',
+                'heterGroup': heter_group or '-',
+                'recParent': rec_parent or '-',
+                'method': method or '-',
+                'generation': formed_gen or '-',
+                'qpmZnDonor': qpm_zn or '-',
             })
+    print(f"  Included {len(germplasm_full)} germplasm entries with GIDs")
 
     # Build output - use California time for lastUpdated
     ca_time = datetime.now(ZoneInfo('America/Los_Angeles'))
@@ -818,7 +822,7 @@ def main():
         'byTrait': by_trait,
         'germplasmCount': len(germplasm),
         'germplasmWithGID': len(guid_to_gid),
-        'germplasmSample': germplasm_summary,
+        'germplasmData': germplasm_full,
         'studies': [{
             'id': s['studyId'],
             'name': s['studyName'],

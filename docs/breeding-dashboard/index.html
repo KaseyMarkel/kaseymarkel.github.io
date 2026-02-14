@@ -1295,37 +1295,168 @@
                     html += '<tr><td>' + trends.periods[i] + '</td><td style="text-align:right;">' + trends[dataKey][i].toLocaleString() + '</td></tr>';
                 }
                 html += '</tbody></table></div>';
-            } else if (type === 'germplasm' && cachedData.germplasmSample) {
-                html += '<h3 style="margin-bottom: 16px;">Germplasm Entries with GIDs</h3>';
-                html += '<div style="margin-bottom: 16px; padding: 12px; background: #f0fdf4; border-radius: 8px; border-left: 4px solid #22c55e;">';
-                html += '<strong style="color: #166534;">' + (cachedData.germplasmWithGID || 0).toLocaleString() + '</strong>';
-                html += '<span style="color: #166534;"> germplasm entries with verified GIDs from BMS</span></div>';
-                html += '<div style="max-height: 300px; overflow-y: auto;">';
-                html += '<table style="width: 100%; font-size: 0.8rem; border-collapse: collapse;"><thead>';
-                html += '<tr style="background: #f3f4f6;"><th style="padding: 8px; text-align: left; border-bottom: 2px solid #e5e7eb;">GID</th>';
-                html += '<th style="padding: 8px; text-align: left; border-bottom: 2px solid #e5e7eb;">Name</th>';
-                html += '<th style="padding: 8px; text-align: left; border-bottom: 2px solid #e5e7eb;">Het. Group</th>';
-                html += '<th style="padding: 8px; text-align: left; border-bottom: 2px solid #e5e7eb;">Rec. Parent</th>';
-                html += '<th style="padding: 8px; text-align: left; border-bottom: 2px solid #e5e7eb;">Method</th></tr></thead><tbody>';
-                var sample = cachedData.germplasmSample;
-                for (var i = 0; i < sample.length; i++) {
-                    var g = sample[i];
-                    html += '<tr style="border-bottom: 1px solid #e5e7eb;">';
-                    html += '<td style="padding: 6px 8px; font-family: monospace; color: #764ba2; font-weight: 600;">' + g.gid + '</td>';
-                    html += '<td style="padding: 6px 8px;">' + (g.name || '-') + '</td>';
-                    html += '<td style="padding: 6px 8px;">' + (g.heterGroup || '-') + '</td>';
-                    html += '<td style="padding: 6px 8px;">' + (g.recParent || '-') + '</td>';
-                    html += '<td style="padding: 6px 8px; font-size: 0.75rem;">' + (g.method || '-') + '</td>';
-                    html += '</tr>';
-                }
-                html += '</tbody></table></div>';
-                html += '<p style="margin-top: 12px; font-size: 0.8rem; color: #6b7280;">Showing first 100 entries. Full dataset exported from BMS.</p>';
+            } else if (type === 'germplasm' && cachedData.germplasmData) {
+                // Show interactive germplasm table
+                showGermplasmTable();
+                return;
             } else {
                 html += '<p>Detailed breakdown for ' + label + '</p>';
             }
 
             html += '</div>';
             showModal(label + ' - Details', html);
+        }
+
+        // Interactive germplasm table with sorting and search
+        var germplasmState = { data: [], filtered: [], sortKey: 'gid', sortAsc: true, search: '', page: 0, perPage: 50 };
+
+        function showGermplasmTable() {
+            germplasmState.data = cachedData.germplasmData || [];
+            germplasmState.filtered = germplasmState.data.slice();
+            germplasmState.page = 0;
+            germplasmState.search = '';
+            germplasmState.sortKey = 'gid';
+            germplasmState.sortAsc = true;
+
+            var html = '<div style="padding: 16px; min-width: 700px;">';
+
+            // Header with count and search
+            html += '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">';
+            html += '<div style="padding: 10px 16px; background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 8px; border-left: 4px solid #22c55e;">';
+            html += '<strong style="color: #166534; font-size: 1.1rem;">' + germplasmState.data.length.toLocaleString() + '</strong>';
+            html += '<span style="color: #166534;"> germplasm entries with verified GIDs</span></div>';
+            html += '<div style="display: flex; gap: 8px; align-items: center;">';
+            html += '<input type="text" id="germplasm-search" placeholder="Search all fields..." oninput="filterGermplasm(this.value)" ';
+            html += 'style="padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; width: 220px; font-size: 0.9rem;">';
+            html += '</div></div>';
+
+            // Table container
+            html += '<div id="germplasm-table-container"></div>';
+
+            // Pagination
+            html += '<div id="germplasm-pagination" style="margin-top: 12px; display: flex; justify-content: space-between; align-items: center;"></div>';
+
+            html += '</div>';
+
+            showModal('Germplasm Database', html);
+            setTimeout(function() { renderGermplasmTable(); }, 50);
+        }
+
+        function filterGermplasm(searchTerm) {
+            germplasmState.search = searchTerm.toLowerCase();
+            germplasmState.page = 0;
+            if (!searchTerm) {
+                germplasmState.filtered = germplasmState.data.slice();
+            } else {
+                germplasmState.filtered = germplasmState.data.filter(function(g) {
+                    return String(g.gid).includes(searchTerm) ||
+                           (g.name && g.name.toLowerCase().includes(germplasmState.search)) ||
+                           (g.heterGroup && g.heterGroup.toLowerCase().includes(germplasmState.search)) ||
+                           (g.recParent && g.recParent.toLowerCase().includes(germplasmState.search)) ||
+                           (g.method && g.method.toLowerCase().includes(germplasmState.search)) ||
+                           (g.generation && g.generation.toLowerCase().includes(germplasmState.search)) ||
+                           (g.qpmZnDonor && g.qpmZnDonor.toLowerCase().includes(germplasmState.search));
+                });
+            }
+            sortGermplasm(germplasmState.sortKey, false);
+        }
+
+        function sortGermplasm(key, toggle) {
+            if (toggle) {
+                if (germplasmState.sortKey === key) {
+                    germplasmState.sortAsc = !germplasmState.sortAsc;
+                } else {
+                    germplasmState.sortKey = key;
+                    germplasmState.sortAsc = true;
+                }
+            }
+            var asc = germplasmState.sortAsc ? 1 : -1;
+            germplasmState.filtered.sort(function(a, b) {
+                var va = a[key] || '';
+                var vb = b[key] || '';
+                if (typeof va === 'number' && typeof vb === 'number') {
+                    return (va - vb) * asc;
+                }
+                return String(va).localeCompare(String(vb)) * asc;
+            });
+            germplasmState.page = 0;
+            renderGermplasmTable();
+        }
+
+        function germplasmPage(delta) {
+            var maxPage = Math.ceil(germplasmState.filtered.length / germplasmState.perPage) - 1;
+            germplasmState.page = Math.max(0, Math.min(maxPage, germplasmState.page + delta));
+            renderGermplasmTable();
+        }
+
+        function renderGermplasmTable() {
+            var container = document.getElementById('germplasm-table-container');
+            var pagination = document.getElementById('germplasm-pagination');
+            if (!container) return;
+
+            var cols = [
+                { key: 'gid', label: 'GID', width: '70px' },
+                { key: 'name', label: 'Name', width: '140px' },
+                { key: 'heterGroup', label: 'Het. Group', width: '90px' },
+                { key: 'recParent', label: 'Rec. Parent', width: '110px' },
+                { key: 'method', label: 'Method', width: '100px' },
+                { key: 'generation', label: 'Generation', width: '90px' },
+                { key: 'qpmZnDonor', label: 'QPM/Zn Donor', width: '100px' }
+            ];
+
+            var html = '<div style="max-height: 400px; overflow-y: auto; border: 1px solid #e5e7eb; border-radius: 8px;">';
+            html += '<table style="width: 100%; font-size: 0.8rem; border-collapse: collapse;">';
+
+            // Header
+            html += '<thead style="position: sticky; top: 0; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); z-index: 1;"><tr>';
+            for (var c = 0; c < cols.length; c++) {
+                var col = cols[c];
+                var sortIcon = germplasmState.sortKey === col.key ? (germplasmState.sortAsc ? ' ▲' : ' ▼') : '';
+                html += '<th onclick="sortGermplasm(\'' + col.key + '\', true)" ';
+                html += 'style="padding: 10px 8px; text-align: left; color: white; cursor: pointer; user-select: none; width: ' + col.width + '; font-weight: 500;">';
+                html += col.label + '<span style="opacity: 0.8; font-size: 0.7rem;">' + sortIcon + '</span></th>';
+            }
+            html += '</tr></thead><tbody>';
+
+            // Rows
+            var start = germplasmState.page * germplasmState.perPage;
+            var end = Math.min(start + germplasmState.perPage, germplasmState.filtered.length);
+            var rows = germplasmState.filtered.slice(start, end);
+
+            for (var i = 0; i < rows.length; i++) {
+                var g = rows[i];
+                var bg = i % 2 === 0 ? '#ffffff' : '#f9fafb';
+                html += '<tr style="background: ' + bg + '; transition: background 0.1s;" onmouseover="this.style.background=\'#f0f9ff\'" onmouseout="this.style.background=\'' + bg + '\'">';
+                html += '<td style="padding: 8px; font-family: monospace; color: #764ba2; font-weight: 600; border-bottom: 1px solid #e5e7eb;">' + g.gid + '</td>';
+                html += '<td style="padding: 8px; border-bottom: 1px solid #e5e7eb; font-weight: 500;">' + g.name + '</td>';
+                html += '<td style="padding: 8px; border-bottom: 1px solid #e5e7eb;">' + g.heterGroup + '</td>';
+                html += '<td style="padding: 8px; border-bottom: 1px solid #e5e7eb;">' + g.recParent + '</td>';
+                html += '<td style="padding: 8px; border-bottom: 1px solid #e5e7eb; font-size: 0.75rem;">' + g.method + '</td>';
+                html += '<td style="padding: 8px; border-bottom: 1px solid #e5e7eb;">' + g.generation + '</td>';
+                html += '<td style="padding: 8px; border-bottom: 1px solid #e5e7eb;">' + g.qpmZnDonor + '</td>';
+                html += '</tr>';
+            }
+
+            if (rows.length === 0) {
+                html += '<tr><td colspan="7" style="padding: 24px; text-align: center; color: #6b7280;">No results found</td></tr>';
+            }
+
+            html += '</tbody></table></div>';
+            container.innerHTML = html;
+
+            // Pagination
+            var totalPages = Math.ceil(germplasmState.filtered.length / germplasmState.perPage);
+            var pHtml = '<span style="font-size: 0.85rem; color: #6b7280;">Showing ' + (start + 1) + '-' + end + ' of ' + germplasmState.filtered.length.toLocaleString();
+            if (germplasmState.search) pHtml += ' (filtered)';
+            pHtml += '</span>';
+            pHtml += '<div style="display: flex; gap: 8px;">';
+            pHtml += '<button onclick="germplasmPage(-1)" ' + (germplasmState.page === 0 ? 'disabled' : '') + ' ';
+            pHtml += 'style="padding: 6px 12px; border: 1px solid #d1d5db; border-radius: 6px; background: white; cursor: pointer; font-size: 0.85rem;">← Prev</button>';
+            pHtml += '<span style="padding: 6px 12px; font-size: 0.85rem; color: #374151;">Page ' + (germplasmState.page + 1) + ' of ' + Math.max(1, totalPages) + '</span>';
+            pHtml += '<button onclick="germplasmPage(1)" ' + (germplasmState.page >= totalPages - 1 ? 'disabled' : '') + ' ';
+            pHtml += 'style="padding: 6px 12px; border: 1px solid #d1d5db; border-radius: 6px; background: white; cursor: pointer; font-size: 0.85rem;">Next →</button>';
+            pHtml += '</div>';
+            pagination.innerHTML = pHtml;
         }
 
         // Drill-down for biofort
