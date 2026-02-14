@@ -190,12 +190,12 @@ class SunsetBot:
     def get_sunset_time(self, date=None):
         """Calculate sunset time for location"""
         if date is None:
-            date = datetime.now(pytz.timezone('America/Mexico_City'))
+            date = datetime.now(pytz.timezone('America/Los_Angeles'))
         
         location = LocationInfo(
             self.location_name, 
             "Mexico", 
-            "America/Mexico_City", 
+            "America/Los_Angeles", 
             self.lat, 
             self.lon
         )
@@ -406,10 +406,10 @@ def main():
         print("Need: TELEGRAM_BOT_TOKEN, OPENWEATHER_API_KEY")
         return
     
-    # Texcoco, Mexico coordinates
-    location_name = "Texcoco"
-    lat = 19.5164
-    lon = -98.8836
+    # Richmond, CA coordinates
+    location_name = "Richmond, CA"
+    lat = 37.9358
+    lon = -122.3478
     
     # Initialize bot
     bot = SunsetBot(telegram_token, weather_api_key, location_name, lat, lon)
