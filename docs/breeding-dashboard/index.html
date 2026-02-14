@@ -1407,8 +1407,8 @@
             var html = '<div style="max-height: 400px; overflow-y: auto; border: 1px solid #e5e7eb; border-radius: 8px;">';
             html += '<table style="width: 100%; font-size: 0.8rem; border-collapse: collapse;">';
 
-            // Header
-            html += '<thead style="position: sticky; top: 0; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); z-index: 1;"><tr>';
+            // Header - solid dark background for legibility
+            html += '<thead style="position: sticky; top: 0; background: #1e293b; z-index: 1;"><tr>';
             for (var c = 0; c < cols.length; c++) {
                 var col = cols[c];
                 var sortIcon = germplasmState.sortKey === col.key ? (germplasmState.sortAsc ? ' ▲' : ' ▼') : '';
