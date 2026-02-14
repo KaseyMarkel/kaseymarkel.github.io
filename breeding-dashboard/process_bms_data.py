@@ -19,6 +19,7 @@ import io
 from pathlib import Path
 from collections import defaultdict
 from datetime import datetime
+from zoneinfo import ZoneInfo
 
 DATA_DIR = Path("bms_data_export")
 OUTPUT_FILE = Path("dashboard_data.json")
@@ -453,9 +454,10 @@ def compute_historical_trends(observations):
 
     # Group observations by year-quarter
     by_period = defaultdict(lambda: {
-        'zinc_vals': [], 'tryptophan_vals': [], 'yield_vals': [],
+        'zinc_vals': [], 'iron_vals': [], 'protein_vals': [], 'tryptophan_vals': [], 'yield_vals': [],
         'virus_vals': [], 'lodging_vals': [], 'dff_vals': [],
         'ear_rot_vals': [], 'poor_husk_vals': [], 'stalk_lodge_vals': [], 'root_lodge_vals': [],
+        'lysine_vals': [],
         'plants_harvested': 0, 'ears_harvested': 0,
         'obs_count': 0, 'studies': set()
     })
@@ -481,8 +483,14 @@ def compute_historical_trends(observations):
         # Apply same outlier filters as main metrics
         if var_name in ['Zinc_sn', 'Zn_manual'] and 5 < value < 100:
             by_period[period]['zinc_vals'].append(value)
+        elif var_name in ['Fe_sn', 'Fe_manual'] and 10 < value < 150:
+            by_period[period]['iron_vals'].append(value)
+        elif var_name in ['Prot_sn', 'Prot_manual'] and 5 < value < 20:
+            by_period[period]['protein_vals'].append(value)
         elif var_name in ['Trp_sn', 'Trp_manual'] and 0.01 < value < 0.2:
             by_period[period]['tryptophan_vals'].append(value)
+        elif var_name in ['Lys_sn', 'Lys_manual'] and 0.1 < value < 1.0:
+            by_period[period]['lysine_vals'].append(value)
         elif var_name == 'RendTM_Ha' and value > 0:
             by_period[period]['yield_vals'].append(value)
         elif var_name in ['PLANTS_VIRUSsn', 'Spiroplasm_pct'] and value >= 0:
@@ -513,7 +521,10 @@ def compute_historical_trends(observations):
     trends = {
         'periods': [],
         'zinc': [],
+        'iron': [],
+        'protein': [],
         'tryptophan': [],
+        'lysine': [],
         'yield': [],
         'yieldRaw': [],  # Raw yield values for data table
         'virus': [],
@@ -533,7 +544,10 @@ def compute_historical_trends(observations):
         data = by_period[period]
         trends['periods'].append(period)
         trends['zinc'].append(avg(data['zinc_vals']))
+        trends['iron'].append(avg(data['iron_vals']))
+        trends['protein'].append(avg(data['protein_vals']))
         trends['tryptophan'].append(avg(data['tryptophan_vals']))
+        trends['lysine'].append(avg(data['lysine_vals']))
         trends['yield'].append(avg(data['yield_vals']))
         trends['yieldRaw'].append({
             'avg': avg(data['yield_vals']),
@@ -787,9 +801,10 @@ def main():
                 'method': method,
             })
 
-    # Build output
+    # Build output - use California time for lastUpdated
+    ca_time = datetime.now(ZoneInfo('America/Los_Angeles'))
     output = {
-        'lastUpdated': datetime.now().isoformat(),
+        'lastUpdated': ca_time.isoformat(),
         'filters': {
             'regions': ['All'] + regions,
             'traits': ['All'] + traits,

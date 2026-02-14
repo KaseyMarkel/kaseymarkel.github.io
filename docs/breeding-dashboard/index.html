@@ -1339,7 +1339,16 @@
             // Map metric name to trend data key
             var dataKey = 'zinc';
             var unit = 'ppm';
-            if (name.includes('Tryptophan')) {
+            if (name.includes('Iron')) {
+                dataKey = 'iron';
+                unit = 'ppm';
+            } else if (name.includes('Protein')) {
+                dataKey = 'protein';
+                unit = '%';
+            } else if (name.includes('Lysine')) {
+                dataKey = 'lysine';
+                unit = '%';
+            } else if (name.includes('Tryptophan')) {
                 dataKey = 'tryptophan';
                 unit = '%';
             } else if (name.includes('Yield')) {
