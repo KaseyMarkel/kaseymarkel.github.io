@@ -1413,7 +1413,7 @@
                 var col = cols[c];
                 var sortIcon = germplasmState.sortKey === col.key ? (germplasmState.sortAsc ? ' ▲' : ' ▼') : '';
                 html += '<th onclick="sortGermplasm(\'' + col.key + '\', true)" ';
-                html += 'style="padding: 10px 8px; text-align: left; color: white; cursor: pointer; user-select: none; width: ' + col.width + '; font-weight: 500;">';
+                html += 'style="padding: 10px 8px; text-align: left; color: white; background: #1e293b; cursor: pointer; user-select: none; width: ' + col.width + '; font-weight: 500;">';
                 html += col.label + '<span style="opacity: 0.8; font-size: 0.7rem;">' + sortIcon + '</span></th>';
             }
             html += '</tr></thead><tbody>';
