@@ -372,22 +372,16 @@ div[role="main"].container .col-md-offset-1 {
   </div>
 
   <div class="essay-body">
-    <p class="essay-first-paragraph">At a friend's 27th birthday party&thinsp;&mdash;&thinsp;cube-themed, naturally&thinsp;&mdash;&thinsp;the conversation turned to a MrBeast video in which competitors ranging from age 1 to 100 faced off in athletic challenges. In the final round, a 28-year-old played basketball free throws against a 7-year-old. The child couldn't physically heave the ball high enough to reach the hoop. It was, everyone agreed, spectacularly unfair. I pointed out that organized basketball already solves this problem: different levels of play use different hoop heights, ball sizes, and ball weights. Youth leagues don't ask 6-year-olds to shoot a full-size ball at a 10-foot rim any more than little league asks 8-year-olds to hit off a major league mound.</p>
+    <p class="essay-first-paragraph">At a friend's 27th birthday party&thinsp;&mdash;&thinsp;cube-themed, naturally&thinsp;&mdash;&thinsp;the conversation turned to a MrBeast video in which competitors ranging from age 1 to 100 faced off in athletic challenges<a href="#fn1" class="fn-ref">1</a>. In the final round, a 28-year-old played basketball free throws against a 7-year-old. The child couldn't physically heave the ball high enough to reach the hoop. It was, everyone agreed, spectacularly unfair. I pointed out that organized basketball already solves this problem: different levels of play use different hoop heights, ball sizes, and ball weights. Youth leagues don't ask 6-year-olds to shoot a full-size ball at a 10-foot rim any more than little league asks 8-year-olds to hit off a major league mound.</p>
 
-    <p>But I realized I wasn't totally sure about the details. Do women's professional leagues actually use a different ball than men's? Does the hoop height ever change, or just the ball? What about wheelchair basketball, deaf basketball, Special Olympics? The cube-themed party had planted the image in my head: three parameters, three axes, a cube of basketball configurations floating in space. So I went and looked it all up.</p>
+    <p>But I realized I wasn't totally sure about the details. Do women's professional leagues actually use a different ball than men's? Does the hoop height ever change, or just the ball? What about wheelchair basketball, deaf basketball, Special Olympics? The cube-themed party had planted the image in my head: three parameters, three axes, a cube of basketball configurations floating in space. So I asked Claude to look it all up.</p>
 
-    <p>The answer is more interesting than I expected. Ball size and weight do scale across levels&thinsp;&mdash;&thinsp;a Size 3 mini ball for the youngest kids is 7 inches in diameter and 10 ounces, while the NBA's Size 7 is 9.47 inches and 22 ounces, with the women's Size 6 sitting between them at 9.15 inches and 20 ounces. But hoop height turns out to be almost completely invariant. Every organized league from age 12 upward&thinsp;&mdash;&thinsp;boys, girls, men, women, NCAA, NBA, WNBA, FIBA, wheelchair, deaf, Special Olympics&thinsp;&mdash;&thinsp;plays on a 10-foot rim<a href="#fn1" class="fn-ref">1</a>. The hoop only drops for youth play: 6.5 feet for kindergartners, scaling up to 9 feet for ages 9&ndash;11.</p>
-
-    <p>This means the "cube" is really more of an L-shape. Youth categories trace a satisfying diagonal through 3D parameter space, with smaller balls, lighter weights, and lower hoops all moving in concert. But then at age 12 the hoop locks at 10 feet and everything collapses onto a flat plane, with only two real clusters: the men's ball and the women's ball.</p>
+   
 
     <div class="essay-chart-container">
       <div id="basketball-cube" style="width:100%; height:560px;"></div>
       <div class="chart-caption">Drag to rotate. Hover for details. Each point is one category of organized basketball.</div>
     </div>
-
-    <p>There is exactly one genuine outlier in the adult parameter space, and it's a weird one: the FIBA 3&times;3 ball. It has the <em>circumference</em> of a women's Size 6 but the <em>weight</em> of a men's Size 7. It's the only ball in organized basketball that breaks the otherwise tight diameter-weight correlation, sitting alone between the two main clusters like a point that wandered off the regression line<a href="#fn2" class="fn-ref">2</a>.</p>
-
-    <p>The adaptive sports were the biggest surprise. I'd assumed wheelchair basketball might use a lower hoop, or that Special Olympics might modify the ball. Neither is true. Wheelchair basketball, deaf basketball, and Special Olympics all use standard balls and the full 10-foot rim. Their adaptations are entirely in the <em>rules</em>: wheelchair basketball modifies traveling and dribbling and caps the total disability classification points per team; deaf basketball replaces whistles with strobe lights and flags; Special Olympics adjusts team composition and divisioning. The physical equipment is identical<a href="#fn3" class="fn-ref">3</a>.</p>
 
     <div class="essay-data-table-wrapper">
     <table class="essay-data-table">
@@ -422,11 +416,39 @@ div[role="main"].container .col-md-offset-1 {
     </table>
     </div>
 
-    <p style="font-size:14px; color:#999; margin-top:-0.5em;">*FIBA 3&times;3 uses a Size 6 circumference with Size 7 weight&thinsp;&mdash;&thinsp;the only hybrid ball in organized basketball.</p>
+    <p style="font-size:14px; color:#999; margin-top:-0.5em;">*FIBA 3&times;3 uses a Size 6 circumference with Size 7 weight&thinsp;&mdash;&thinsp;the only hybrid ball in organized basketball<a href="#fn2" class="fn-ref">2</a>.</p>
 
-    <p>So back to the MrBeast video. That 7-year-old was almost certainly playing with a regulation NBA ball on a 10-foot hoop, and that's not what any basketball organization on earth would give a 7-year-old. USA Basketball guidelines call for a Size 5 ball (27.5-inch circumference, about 17 ounces) and an 8-foot hoop for that age. The challenge wasn't just unfair because of the age gap&thinsp;&mdash;&thinsp;it was unfair because the equipment was wrong for both players in opposite directions. The 28-year-old got to play on the exact setup he'd trained on his whole adult life. The 7-year-old was handed a ball 30% heavier than her regulation ball and asked to throw it two feet higher than her regulation hoop.</p>
+    <p>The ball is only part of the story. Three court parameters also vary across levels: court length, three-point line distance, and key (paint) width. Unlike the ball cube, these parameters don't collapse into two clusters&thinsp;&mdash;&thinsp;the NBA's court is longer than a high school's, its three-point line is four feet deeper, and its key is a third wider than what college players use. The WNBA sits between them: NBA-sized court and key, but FIBA's shorter three-point arc. Youth leagues below age 12 don't use a three-point line at all.</p>
 
-    <p>The cube turned out not to be much of a cube. But it did answer my birthday-party question, and it surfaced a fact I find genuinely satisfying: the 10-foot hoop is one of the great constants of sport. Dr. James Naismith hung his peach basket 10 feet off the floor of a Springfield, Massachusetts gym in 1891, and 134 years later, every organized basketball league in the world&thinsp;&mdash;&thinsp;standing, seated, hearing, deaf&thinsp;&mdash;&thinsp;still shoots at exactly that height<a href="#fn4" class="fn-ref">4</a>.</p>
+    <div class="essay-chart-container">
+      <div id="court-cube" style="width:100%; height:560px;"></div>
+      <div class="chart-caption">Drag to rotate. Hover for details. Each point is one level of organized basketball.</div>
+    </div>
+
+    <div class="essay-data-table-wrapper">
+    <table class="essay-data-table">
+      <thead>
+        <tr>
+          <th>Category</th>
+          <th>Court Length</th>
+          <th>3-Point Line</th>
+          <th>Key Width</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="cat-youth">Junior High</td><td>74 ft</td><td>19&prime; 9&Prime;</td><td>12 ft</td></tr>
+        <tr><td class="cat-hs">High School</td><td>84 ft</td><td>19&prime; 9&Prime;</td><td>12 ft</td></tr>
+        <tr><td class="cat-college">NCAA (M &amp; W)</td><td>94 ft</td><td>20&prime; 9&Prime;</td><td>12 ft</td></tr>
+        <tr><td class="cat-pro">WNBA</td><td>94 ft</td><td>22&prime; 2&Prime;</td><td>16 ft</td></tr>
+        <tr><td class="cat-pro">NBA</td><td>94 ft</td><td>23&prime; 9&Prime;</td><td>16 ft</td></tr>
+        <tr><td class="cat-adaptive">FIBA / WC / Deaf / SO</td><td>92 ft</td><td>22&prime; 2&Prime;</td><td>16 ft</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p>So back to the MrBeast video. That 7-year-old was almost certainly playing with a regulation NBA ball on a 10-foot hoop, and that's not what any basketball organization on earth would give a 7-year-old. USA Basketball guidelines call for a Size 5 ball (27.5-inch circumference, about 17 ounces) and an 8-foot hoop for that age. The challenge wasn't just unfair because of the age gap&thinsp;&mdash;&thinsp;it was unfair because the equipment was wrong for both players in opposite directions. The 28-year-old got to play on the exact setup he'd trained on his whole adult life. The 7-year-old was handed a ball 30% heavier than an age-appropriate ball and asked to throw it two feet higher than an age-appropriate regulation hoop<a href="#fn3" class="fn-ref">3</a>.</p>
+
+    <p>At the party I asked "where on the spectrum of basketball size between an 8 year old and adult men does every other demographic fit?", but I was simplifying too much - the better question was "what is the shape of the basketball parameter cube?"</p>
   </div>
 
   <div class="essay-footnotes">
@@ -434,7 +456,7 @@ div[role="main"].container .col-md-offset-1 {
 
     <div class="essay-footnote" id="fn1">
       <span class="essay-footnote-num">1.</span>
-      The sole exception I could find: Special Olympics Junior Division allows an 8-foot rim. But this is explicitly a youth accommodation within Special Olympics, not a disability-specific adaptation.
+      <a href="https://www.youtube.com/watch?v=9WEQts7b8Pw">Ages 1&ndash;100 Compete for $250,000</a>, MrBeast, YouTube.
     </div>
 
     <div class="essay-footnote" id="fn2">
@@ -444,12 +466,7 @@ div[role="main"].container .col-md-offset-1 {
 
     <div class="essay-footnote" id="fn3">
       <span class="essay-footnote-num">3.</span>
-      This is a deliberate philosophical choice. The International Wheelchair Basketball Federation explicitly maintains the same court dimensions and hoop height to emphasize that wheelchair basketball is basketball, not a separate sport with separate standards.
-    </div>
-
-    <div class="essay-footnote" id="fn4">
-      <span class="essay-footnote-num">4.</span>
-      Unless you're under 12. Then you get a break.
+      The sole exception: Special Olympics Junior Division allows an 8-foot rim, but this is a youth accommodation, not a disability-specific adaptation. Every other adaptive league&thinsp;&mdash;&thinsp;wheelchair, deaf, Special Olympics adult&thinsp;&mdash;&thinsp;uses the full 10-foot hoop. The International Wheelchair Basketball Federation explicitly maintains standard court dimensions to emphasize that wheelchair basketball <em>is</em> basketball.
     </div>
   </div>
 
@@ -467,70 +484,69 @@ div[role="main"].container .col-md-offset-1 {
   var axisLabelColor = isDark ? '#999' : '#666';
   var planeBg = isDark ? '#111' : '#f8f8f8';
 
-  var data = [
-    { name: "Mini (Ages \u22644)",       hoopHt: 5.5, diameter: 7.00, weight: 10, group: "Youth",       color: isDark ? "#58a6ff" : "#2563eb" },
-    { name: "Youth (Ages 5\u20136)",     hoopHt: 6.5, diameter: 8.12, weight: 14, group: "Youth",       color: isDark ? "#58a6ff" : "#2563eb" },
-    { name: "Youth (Ages 7\u20138)",     hoopHt: 8.0, diameter: 8.75, weight: 17, group: "Youth",       color: isDark ? "#58a6ff" : "#2563eb" },
-    { name: "Youth (Ages 9\u201311)",    hoopHt: 9.0, diameter: 9.10, weight: 20, group: "Youth",       color: isDark ? "#58a6ff" : "#2563eb" },
-    { name: "Boys\u2019 HS",             hoopHt: 10.0, diameter: 9.40, weight: 22, group: "High School", color: isDark ? "#4ade80" : "#16a34a" },
-    { name: "Girls\u2019 HS",            hoopHt: 10.0, diameter: 9.10, weight: 20, group: "High School", color: isDark ? "#4ade80" : "#16a34a" },
-    { name: "NCAA Men\u2019s",           hoopHt: 10.0, diameter: 9.47, weight: 22, group: "NCAA",        color: isDark ? "#c084fc" : "#7c3aed" },
-    { name: "NCAA Women\u2019s",         hoopHt: 10.0, diameter: 9.15, weight: 20, group: "NCAA",        color: isDark ? "#c084fc" : "#7c3aed" },
-    { name: "NBA",                       hoopHt: 10.0, diameter: 9.47, weight: 22, group: "Professional", color: isDark ? "#fb923c" : "#ea580c" },
-    { name: "WNBA",                      hoopHt: 10.0, diameter: 9.15, weight: 20, group: "Professional", color: isDark ? "#fb923c" : "#ea580c" },
-    { name: "FIBA 3\u00d73",             hoopHt: 10.0, diameter: 9.15, weight: 21, group: "FIBA 3\u00d73", color: isDark ? "#facc15" : "#ca8a04" },
-    { name: "Wheelchair (M)",            hoopHt: 10.0, diameter: 9.47, weight: 22, group: "Adaptive",    color: isDark ? "#f472b6" : "#db2777" },
-    { name: "Wheelchair (W)",            hoopHt: 10.0, diameter: 9.15, weight: 20, group: "Adaptive",    color: isDark ? "#f472b6" : "#db2777" },
-    { name: "Deaf (M)",                  hoopHt: 10.0, diameter: 9.47, weight: 22, group: "Adaptive",    color: isDark ? "#f472b6" : "#db2777" },
-    { name: "Deaf (W)",                  hoopHt: 10.0, diameter: 9.15, weight: 20, group: "Adaptive",    color: isDark ? "#f472b6" : "#db2777" },
-    { name: "Spec. Olympics (M)",        hoopHt: 10.0, diameter: 9.47, weight: 22, group: "Adaptive",    color: isDark ? "#f472b6" : "#db2777" },
-    { name: "Spec. Olympics (Jr.)",      hoopHt: 8.0,  diameter: 9.15, weight: 20, group: "Adaptive",    color: isDark ? "#f472b6" : "#db2777" }
+  // Each entry = one unique point in the cube. Overlapping categories are merged.
+  var points = [
+    { legend: "Mini (Ages \u22644)",
+      hoopHt: 5.5, diameter: 7.00, weight: 10,
+      color: isDark ? "#93c5fd" : "#2563eb",
+      cats: ["Mini (Ages \u22644)"] },
+    { legend: "Youth (5\u20136)",
+      hoopHt: 6.5, diameter: 8.12, weight: 14,
+      color: isDark ? "#60a5fa" : "#3b82f6",
+      cats: ["Youth (Ages 5\u20136)"] },
+    { legend: "Youth (7\u20138)",
+      hoopHt: 8.0, diameter: 8.75, weight: 17,
+      color: isDark ? "#3b82f6" : "#1d4ed8",
+      cats: ["Youth (Ages 7\u20138)"] },
+    { legend: "Youth (9\u201311)",
+      hoopHt: 9.0, diameter: 9.10, weight: 20,
+      color: isDark ? "#2563eb" : "#1e40af",
+      cats: ["Youth (Ages 9\u201311)"] },
+    { legend: "Boys\u2019 HS",
+      hoopHt: 10.0, diameter: 9.40, weight: 22,
+      color: isDark ? "#4ade80" : "#16a34a",
+      cats: ["Boys\u2019 High School"] },
+    { legend: "Girls\u2019 HS",
+      hoopHt: 10.0, diameter: 9.10, weight: 20,
+      color: isDark ? "#86efac" : "#22c55e",
+      cats: ["Girls\u2019 High School"] },
+    { legend: "NBA, NCAA (M), WC (M), Deaf (M), SO (M)",
+      hoopHt: 10.0, diameter: 9.47, weight: 22,
+      color: isDark ? "#fb923c" : "#ea580c",
+      cats: ["NBA", "NCAA Men\u2019s", "Wheelchair (M)", "Deaf (M)", "Spec. Olympics (M)"] },
+    { legend: "WNBA, NCAA (W), WC (W), Deaf (W)",
+      hoopHt: 10.0, diameter: 9.15, weight: 20,
+      color: isDark ? "#c084fc" : "#7c3aed",
+      cats: ["WNBA", "NCAA Women\u2019s", "Wheelchair (W)", "Deaf (W)"] },
+    { legend: "FIBA 3\u00d73",
+      hoopHt: 10.0, diameter: 9.15, weight: 21,
+      color: isDark ? "#facc15" : "#ca8a04",
+      cats: ["FIBA 3\u00d73 (hybrid ball)"] },
+    { legend: "Spec. Olympics (Jr.)",
+      hoopHt: 8.0, diameter: 9.15, weight: 20,
+      color: isDark ? "#f472b6" : "#db2777",
+      cats: ["Special Olympics Junior Division"] }
   ];
 
-  var groups = {};
-  data.forEach(function(d) {
-    if (!groups[d.group]) groups[d.group] = { x: [], y: [], z: [], text: [], color: d.color };
-    groups[d.group].x.push(d.diameter);
-    groups[d.group].y.push(d.weight);
-    groups[d.group].z.push(d.hoopHt);
-    groups[d.group].text.push(
-      '<b>' + d.name + '</b><br>' +
-      'Ball Diameter: ' + d.diameter + '"<br>' +
-      'Ball Weight: ' + d.weight + ' oz<br>' +
-      'Hoop Height: ' + d.hoopHt + ' ft'
-    );
-  });
-
-  var traces = Object.keys(groups).map(function(name) {
-    var g = groups[name];
+  var traces = points.map(function(p) {
+    var hover = '<b>' + p.cats.join(', ') + '</b><br>' +
+      'Ball Diameter: ' + p.diameter + '"<br>' +
+      'Ball Weight: ' + p.weight + ' oz<br>' +
+      'Hoop Height: ' + p.hoopHt + ' ft';
     return {
-      x: g.x, y: g.y, z: g.z,
-      text: g.text,
+      x: [p.diameter], y: [p.weight], z: [p.hoopHt],
+      text: [hover],
       hoverinfo: 'text',
       mode: 'markers',
       type: 'scatter3d',
-      name: name,
+      name: p.legend,
       marker: {
         size: 7,
-        color: g.color,
+        color: p.color,
         opacity: 0.92,
-        line: { color: isDark ? 'rgba(255,255,255,0.25)' : 'rgba(0,0,0,0.15)', width: 1 }
+        line: { color: isDark ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.15)', width: 1 }
       }
     };
-  });
-
-  // Youth progression line
-  var youth = data.filter(function(d) { return d.group === "Youth"; }).sort(function(a,b) { return a.hoopHt - b.hoopHt; });
-  traces.push({
-    x: youth.map(function(d){return d.diameter}),
-    y: youth.map(function(d){return d.weight}),
-    z: youth.map(function(d){return d.hoopHt}),
-    mode: 'lines',
-    type: 'scatter3d',
-    name: 'Youth progression',
-    line: { color: isDark ? '#58a6ff' : '#2563eb', width: 3, dash: 'dot' },
-    hoverinfo: 'skip',
-    showlegend: true
   });
 
   var layout = {
@@ -571,6 +587,97 @@ div[role="main"].container .col-md-offset-1 {
   };
 
   Plotly.newPlot('basketball-cube', traces, layout, {
+    responsive: true,
+    displayModeBar: false
+  });
+
+  // === Court Parameter Cube ===
+  var courtPoints = [
+    { legend: "Junior High",
+      courtLen: 74, threePt: 19.75, keyW: 12,
+      color: isDark ? "#93c5fd" : "#2563eb",
+      cats: ["Junior High / Middle School"] },
+    { legend: "High School",
+      courtLen: 84, threePt: 19.75, keyW: 12,
+      color: isDark ? "#4ade80" : "#16a34a",
+      cats: ["High School (Boys & Girls)"] },
+    { legend: "NCAA (M & W)",
+      courtLen: 94, threePt: 20.75, keyW: 12,
+      color: isDark ? "#c084fc" : "#7c3aed",
+      cats: ["NCAA Men\u2019s", "NCAA Women\u2019s"] },
+    { legend: "WNBA",
+      courtLen: 94, threePt: 22.15, keyW: 16,
+      color: isDark ? "#fb923c" : "#ea580c",
+      cats: ["WNBA"] },
+    { legend: "NBA",
+      courtLen: 94, threePt: 23.75, keyW: 16,
+      color: isDark ? "#f87171" : "#dc2626",
+      cats: ["NBA"] },
+    { legend: "FIBA, WC, Deaf, SO",
+      courtLen: 92, threePt: 22.15, keyW: 16,
+      color: isDark ? "#f472b6" : "#db2777",
+      cats: ["FIBA 5v5", "Wheelchair", "Deaf", "Spec. Olympics"] }
+  ];
+
+  var courtTraces = courtPoints.map(function(p) {
+    var hover = '<b>' + p.cats.join(', ') + '</b><br>' +
+      'Court Length: ' + p.courtLen + ' ft<br>' +
+      '3-Point Line: ' + p.threePt + ' ft<br>' +
+      'Key Width: ' + p.keyW + ' ft';
+    return {
+      x: [p.courtLen], y: [p.threePt], z: [p.keyW],
+      text: [hover],
+      hoverinfo: 'text',
+      mode: 'markers',
+      type: 'scatter3d',
+      name: p.legend,
+      marker: {
+        size: 7,
+        color: p.color,
+        opacity: 0.92,
+        line: { color: isDark ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.15)', width: 1 }
+      }
+    };
+  });
+
+  var courtLayout = {
+    paper_bgcolor: 'rgba(0,0,0,0)',
+    plot_bgcolor: 'rgba(0,0,0,0)',
+    font: { color: fontColor, family: "'Open Sans', system-ui, sans-serif", size: 12 },
+    scene: {
+      xaxis: {
+        title: { text: 'Court Length (ft)', font: { size: 12, color: axisLabelColor } },
+        range: [70, 96],
+        gridcolor: gridColor,
+        zerolinecolor: gridColor,
+        backgroundcolor: planeBg
+      },
+      yaxis: {
+        title: { text: '3-Point Line (ft)', font: { size: 12, color: axisLabelColor } },
+        range: [18, 25],
+        gridcolor: gridColor,
+        zerolinecolor: gridColor,
+        backgroundcolor: planeBg
+      },
+      zaxis: {
+        title: { text: 'Key Width (ft)', font: { size: 12, color: axisLabelColor } },
+        range: [10, 18],
+        gridcolor: gridColor,
+        zerolinecolor: gridColor,
+        backgroundcolor: planeBg
+      },
+      camera: { eye: { x: 1.9, y: 1.3, z: 0.8 } },
+      aspectmode: 'cube'
+    },
+    legend: {
+      x: 0.01, y: 0.99,
+      bgcolor: 'rgba(0,0,0,0)',
+      font: { size: 11 }
+    },
+    margin: { l: 0, r: 0, t: 10, b: 0 }
+  };
+
+  Plotly.newPlot('court-cube', courtTraces, courtLayout, {
     responsive: true,
     displayModeBar: false
   });
