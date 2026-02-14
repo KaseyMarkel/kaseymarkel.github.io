@@ -379,6 +379,7 @@ div[role="main"].container .col-md-offset-1 {
    
 
     <div class="essay-chart-container">
+      <div class="chart-caption" style="margin-bottom:8px; margin-top:0;"><strong>Cube 1: Ball and hoop</strong></div>
       <div id="basketball-cube" style="width:100%; height:560px;"></div>
       <div class="chart-caption">Drag to rotate. Hover for details. Each point is one category of organized basketball.</div>
     </div>
@@ -421,6 +422,7 @@ div[role="main"].container .col-md-offset-1 {
     <p>The ball is only part of the story. Three court parameters also vary across levels: court length, three-point line distance, and key (paint) width. Unlike the ball cube, these parameters don't collapse into two clusters&thinsp;&mdash;&thinsp;the NBA's court is longer than a high school's, its three-point line is four feet deeper, and its key is a third wider than what college players use. The WNBA sits between them: NBA-sized court and key, but FIBA's shorter three-point arc. Youth leagues below age 12 don't use a three-point line at all.</p>
 
     <div class="essay-chart-container">
+      <div class="chart-caption" style="margin-bottom:8px; margin-top:0;"><strong>Cube 2: Court dimensions</strong></div>
       <div id="court-cube" style="width:100%; height:560px;"></div>
       <div class="chart-caption">Drag to rotate. Hover for details. Each point is one level of organized basketball.</div>
     </div>
@@ -446,7 +448,7 @@ div[role="main"].container .col-md-offset-1 {
     </table>
     </div>
 
-    <p>So back to the MrBeast video. That 7-year-old was almost certainly playing with a regulation NBA ball on a 10-foot hoop, and that's not what any basketball organization on earth would give a 7-year-old. USA Basketball guidelines call for a Size 5 ball (27.5-inch circumference, about 17 ounces) and an 8-foot hoop for that age. The challenge wasn't just unfair because of the age gap&thinsp;&mdash;&thinsp;it was unfair because the equipment was wrong for both players in opposite directions. The 28-year-old got to play on the exact setup he'd trained on his whole adult life. The 7-year-old was handed a ball 30% heavier than an age-appropriate ball and asked to throw it two feet higher than an age-appropriate regulation hoop<a href="#fn3" class="fn-ref">3</a>.</p>
+    <p>So back to the MrBeast video. That 7-year-old appears to be playing with a regulation NBA ball on a 10-foot hoop, and that's not what any basketball organization on earth would give a 7-year-old. USA Basketball guidelines call for a Size 5 ball (27.5-inch circumference, about 17 ounces) and an 8-foot hoop for that age. The challenge wasn't just unfair because of the age gap&thinsp;&mdash;&thinsp;it was unfair because the equipment was wrong. The 7-year-old was handed a ball 30% heavier than an age-appropriate ball and asked to throw it two feet higher than an age-appropriate regulation hoop<a href="#fn3" class="fn-ref">3</a>.</p>
 
     <p>At the party I asked "where on the spectrum of basketball size between an 8 year old and adult men does every other demographic fit?", but I was simplifying too much - the better question was "what is the shape of the basketball parameter cube?"</p>
   </div>
@@ -550,6 +552,7 @@ div[role="main"].container .col-md-offset-1 {
   });
 
   var layout = {
+    showlegend: false,
     paper_bgcolor: 'rgba(0,0,0,0)',
     plot_bgcolor: 'rgba(0,0,0,0)',
     font: { color: fontColor, family: "'Open Sans', system-ui, sans-serif", size: 12 },
