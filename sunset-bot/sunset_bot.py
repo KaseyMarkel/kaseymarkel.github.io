@@ -148,16 +148,38 @@ class SunsetBot:
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
         
-        # Users table
+        # Users table with per-user location
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS users (
                 chat_id INTEGER PRIMARY KEY,
                 username TEXT,
                 first_name TEXT,
                 registered_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                active INTEGER DEFAULT 1
+                active INTEGER DEFAULT 1,
+                location_name TEXT DEFAULT 'Richmond, CA',
+                lat REAL DEFAULT 37.9358,
+                lon REAL DEFAULT -122.3478,
+                timezone TEXT DEFAULT 'America/Los_Angeles'
             )
         ''')
+
+        # Add location columns if they don't exist (for existing databases)
+        try:
+            cursor.execute('ALTER TABLE users ADD COLUMN location_name TEXT DEFAULT "Richmond, CA"')
+        except:
+            pass
+        try:
+            cursor.execute('ALTER TABLE users ADD COLUMN lat REAL DEFAULT 37.9358')
+        except:
+            pass
+        try:
+            cursor.execute('ALTER TABLE users ADD COLUMN lon REAL DEFAULT -122.3478')
+        except:
+            pass
+        try:
+            cursor.execute('ALTER TABLE users ADD COLUMN timezone TEXT DEFAULT "America/Los_Angeles"')
+        except:
+            pass
         
         # Predictions table
         cursor.execute('''
@@ -219,34 +241,127 @@ class SunsetBot:
         response = requests.get(url)
         return response.json()
     
+    def get_user_count(self):
+        """Get count of registered users"""
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
+        cursor.execute('SELECT COUNT(*) FROM users')
+        count = cursor.fetchone()[0]
+        conn.close()
+        return count
+
+    def set_user_location(self, chat_id, location_name, lat, lon, timezone='America/Los_Angeles'):
+        """Update a user's location"""
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
+        cursor.execute('''
+            UPDATE users SET location_name = ?, lat = ?, lon = ?, timezone = ?
+            WHERE chat_id = ?
+        ''', (location_name, lat, lon, timezone, chat_id))
+        conn.commit()
+        conn.close()
+
+    def geocode_location(self, location_text):
+        """Convert location text to coordinates using OpenWeatherMap geocoding"""
+        url = "http://api.openweathermap.org/geo/1.0/direct"
+        params = {
+            'q': location_text,
+            'limit': 1,
+            'appid': self.weather_fetcher.api_key
+        }
+        try:
+            response = requests.get(url, params=params)
+            response.raise_for_status()
+            results = response.json()
+            if results:
+                r = results[0]
+                return {
+                    'name': f"{r.get('name', location_text)}, {r.get('country', '')}",
+                    'lat': r['lat'],
+                    'lon': r['lon']
+                }
+        except Exception as e:
+            print(f"Geocoding error: {e}")
+        return None
+
+    def handle_setlocation_command(self, chat_id, text):
+        """Handle /setlocation command"""
+        # Extract location from command
+        parts = text.split(maxsplit=1)
+        if len(parts) < 2:
+            self.send_telegram_message(chat_id,
+                "Please specify a location, e.g.:\n`/setlocation San Francisco, CA`\nor\n`/setlocation Tokyo, Japan`")
+            return
+
+        location_text = parts[1].strip()
+        result = self.geocode_location(location_text)
+
+        if result:
+            self.set_user_location(chat_id, result['name'], result['lat'], result['lon'])
+            self.send_telegram_message(chat_id,
+                f"✅ Location updated to *{result['name']}*\n"
+                f"Coordinates: {result['lat']:.4f}, {result['lon']:.4f}\n\n"
+                f"You'll now receive sunset predictions for this location!")
+        else:
+            self.send_telegram_message(chat_id,
+                f"❌ Couldn't find location: {location_text}\n"
+                f"Try being more specific, e.g. 'San Francisco, CA, USA'")
+
     def register_users_from_updates(self):
-        """Check for new users and register them"""
+        """Check for new users and register them (max 100 users)"""
+        MAX_USERS = 100
         updates = self.get_telegram_updates()
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
-        
+
         new_users = 0
+        current_count = self.get_user_count()
+
         for update in updates.get('result', []):
             if 'message' in update:
                 msg = update['message']
                 chat_id = msg['chat']['id']
                 username = msg.get('from', {}).get('username', '')
                 first_name = msg.get('from', {}).get('first_name', '')
-                
+                text = msg.get('text', '').strip()
+
+                # Handle /setlocation command for existing users
+                if text.lower().startswith('/setlocation'):
+                    # Check if user exists first
+                    cursor.execute('SELECT chat_id FROM users WHERE chat_id = ?', (chat_id,))
+                    if cursor.fetchone():
+                        self.handle_setlocation_command(chat_id, text)
+                    continue
+
                 # Check if user exists
                 cursor.execute('SELECT chat_id FROM users WHERE chat_id = ?', (chat_id,))
                 if not cursor.fetchone():
-                    # New user - register them
+                    # Check user cap
+                    if current_count >= MAX_USERS:
+                        self.send_telegram_message(chat_id,
+                            f"Sorry {first_name}, we've reached our limit of {MAX_USERS} users. "
+                            f"Please try again later!")
+                        continue
+
+                    # New user - register them with default location
                     cursor.execute('''
-                        INSERT INTO users (chat_id, username, first_name)
-                        VALUES (?, ?, ?)
-                    ''', (chat_id, username, first_name))
+                        INSERT INTO users (chat_id, username, first_name, location_name, lat, lon, timezone)
+                        VALUES (?, ?, ?, ?, ?, ?, ?)
+                    ''', (chat_id, username, first_name, self.location_name, self.lat, self.lon, 'America/Los_Angeles'))
                     new_users += 1
-                    
+                    current_count += 1
+
                     # Send welcome message
                     welcome = f"""🌅 Welcome to Sunset Predictions, {first_name}!
 
-You're now registered to receive daily sunset quality predictions 30 minutes before sunset in {self.location_name}.
+You're now registered to receive daily sunset quality predictions 30 minutes before sunset.
+
+📍 Your default location is *{self.location_name}*
+
+To change your location, use:
+`/setlocation Your City, Country`
+
+Example: `/setlocation Tokyo, Japan`
 
 After each sunset, reply with a number 1-10 to rate the actual quality and help improve the predictions!
 
@@ -257,20 +372,23 @@ Rating guide:
 • 9-10: Spectacular
 """
                     self.send_telegram_message(chat_id, welcome)
-        
+
         conn.commit()
         conn.close()
-        
+
         if new_users > 0:
-            print(f"Registered {new_users} new user(s)")
-        
+            print(f"Registered {new_users} new user(s). Total: {current_count}")
+
         return new_users
     
     def get_active_users(self):
-        """Get all active registered users"""
+        """Get all active registered users with their locations"""
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
-        cursor.execute('SELECT chat_id, username, first_name FROM users WHERE active = 1')
+        cursor.execute('''
+            SELECT chat_id, username, first_name, location_name, lat, lon, timezone
+            FROM users WHERE active = 1
+        ''')
         users = cursor.fetchall()
         conn.close()
         return users
@@ -293,34 +411,61 @@ Rating guide:
         conn.close()
         return prediction_id
     
+    def get_sunset_time_for_location(self, lat, lon, timezone_str, location_name):
+        """Calculate sunset time for a specific location"""
+        tz = pytz.timezone(timezone_str)
+        date = datetime.now(tz)
+
+        location = LocationInfo(
+            location_name,
+            "World",
+            timezone_str,
+            lat,
+            lon
+        )
+        s = sun(location.observer, date=date)
+        return s['sunset']
+
     def run_prediction(self):
-        """Main prediction workflow - send to all users"""
-        # First, register any new users
+        """Main prediction workflow - send personalized predictions to all users"""
+        # First, register any new users and handle commands
         self.register_users_from_updates()
-        
+
         # Get all active users
         users = self.get_active_users()
-        
+
         if not users:
             print("No registered users yet!")
             return
-        
-        # Get sunset time
-        sunset_time = self.get_sunset_time()
-        
-        # Fetch weather data
-        weather = self.weather_fetcher.get_current_weather(self.lat, self.lon)
-        air_quality = self.weather_fetcher.get_air_quality(self.lat, self.lon)
-        weather.update(air_quality)
-        
-        # Make prediction
-        predicted_quality = self.predictor.predict(weather)
-        
-        # Save to database
-        prediction_id = self.save_prediction(sunset_time, predicted_quality, weather)
-        
-        # Format message
-        message = f"""🌅 *Sunset Prediction for {self.location_name}*
+
+        sent_count = 0
+        prediction_id = None
+
+        for chat_id, username, first_name, location_name, lat, lon, timezone_str in users:
+            try:
+                # Use user's location, fallback to defaults if missing
+                user_lat = lat if lat else self.lat
+                user_lon = lon if lon else self.lon
+                user_location = location_name if location_name else self.location_name
+                user_tz = timezone_str if timezone_str else 'America/Los_Angeles'
+
+                # Get sunset time for this user's location
+                sunset_time = self.get_sunset_time_for_location(user_lat, user_lon, user_tz, user_location)
+
+                # Fetch weather data for user's location
+                weather = self.weather_fetcher.get_current_weather(user_lat, user_lon)
+                air_quality = self.weather_fetcher.get_air_quality(user_lat, user_lon)
+                weather.update(air_quality)
+
+                # Make prediction
+                predicted_quality = self.predictor.predict(weather)
+
+                # Save to database (just once, using first user's data)
+                if prediction_id is None:
+                    prediction_id = self.save_prediction(sunset_time, predicted_quality, weather)
+
+                # Format personalized message
+                message = f"""🌅 *Sunset Prediction for {user_location}*
 
 *Sunset Time:* {sunset_time.strftime('%I:%M %p')}
 *Predicted Quality:* {predicted_quality:.1f}/10
@@ -333,25 +478,24 @@ Rating guide:
 • Weather: {weather['description']}
 
 After watching the sunset, reply with a number 1-10 to help calibrate the model!
+
+_Change location: /setlocation City, Country_
 """
-        
-        # Send to all users
-        sent_count = 0
-        for chat_id, username, first_name in users:
-            try:
+
                 result = self.send_telegram_message(chat_id, message)
                 if result.get('ok'):
                     sent_count += 1
-                    print(f"Sent prediction to @{username} (chat_id: {chat_id})")
+                    print(f"Sent prediction to @{username} in {user_location}")
                 else:
                     print(f"Failed to send to @{username}: {result}")
             except Exception as e:
                 print(f"Error sending to @{username}: {e}")
-        
+
         print(f"Sent predictions to {sent_count}/{len(users)} users")
-        
+
         # Process any pending feedback
-        self.process_feedback(prediction_id)
+        if prediction_id:
+            self.process_feedback(prediction_id)
     
     def process_feedback(self, latest_prediction_id):
         """Check for feedback messages and update database"""
