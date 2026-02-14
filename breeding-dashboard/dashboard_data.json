@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-01-25T23:53:41.826511",
+  "lastUpdated": "2026-02-14T00:42:51.006994",
   "filters": {
     "regions": [
       "All",
@@ -4085,6 +4085,810 @@
       }
     }
   },
+  "germplasmCount": 5000,
+  "germplasmWithGID": 5000,
+  "germplasmSample": [
+    {
+      "gid": "1",
+      "guid": "2QEDGKtSVMRgy",
+      "name": "X1G01U00013",
+      "heterGroup": "",
+      "recParent": "CLWQHZN19",
+      "method": "Seed increase"
+    },
+    {
+      "gid": "2",
+      "guid": "2QEDGBgWhvNQG",
+      "name": "X1G01U00014",
+      "heterGroup": "",
+      "recParent": "CLWNHZN44",
+      "method": "Seed increase"
+    },
+    {
+      "gid": "3",
+      "guid": "2QEDG1Mb0lN37",
+      "name": "X1G01U00015",
+      "heterGroup": "",
+      "recParent": "CLWQHZN69",
+      "method": "Seed increase"
+    },
+    {
+      "gid": "4",
+      "guid": "2QEDG76EGQjWx",
+      "name": "X1G01U00016",
+      "heterGroup": "",
+      "recParent": "CLWQHZN19",
+      "method": "Seed increase"
+    },
+    {
+      "gid": "5",
+      "guid": "2QEDGbSadSuEo",
+      "name": "X1G01U00017",
+      "heterGroup": "",
+      "recParent": "CLWNHZN43",
+      "method": "Seed increase"
+    },
+    {
+      "gid": "6",
+      "guid": "2QEDGtWT1HSms",
+      "name": "X1G01U00018",
+      "heterGroup": "",
+      "recParent": "CLWQHZN69",
+      "method": "Seed increase"
+    },
+    {
+      "gid": "7",
+      "guid": "2QEDGSG9bH6JL",
+      "name": "X1G01U00019",
+      "heterGroup": "",
+      "recParent": "CML576",
+      "method": "Seed increase"
+    },
+    {
+      "gid": "8",
+      "guid": "2QEDGvLkQpnt9",
+      "name": "X1G01U00020",
+      "heterGroup": "",
+      "recParent": "CLWQHZN46",
+      "method": "Seed increase"
+    },
+    {
+      "gid": "9",
+      "guid": "2QEDGJ6thYAbZ",
+      "name": "X1G01U00001",
+      "heterGroup": "",
+      "recParent": "CLWQHZN19",
+      "method": "Backcross"
+    },
+    {
+      "gid": "10",
+      "guid": "2QEDGhk6DGheu",
+      "name": "X1G01U00002",
+      "heterGroup": "",
+      "recParent": "CLWQHZN19",
+      "method": "Backcross"
+    },
+    {
+      "gid": "11",
+      "guid": "2QEDGbznsE0h9",
+      "name": "X1G01U00003",
+      "heterGroup": "",
+      "recParent": "CLWNHZN44",
+      "method": "Backcross"
+    },
+    {
+      "gid": "12",
+      "guid": "2QEDGKPSzQon6",
+      "name": "X1G01U00004",
+      "heterGroup": "",
+      "recParent": "CLWNHZN44",
+      "method": "Backcross"
+    },
+    {
+      "gid": "13",
+      "guid": "2QEDGHvce19Qf",
+      "name": "X1G01U00005",
+      "heterGroup": "",
+      "recParent": "CLWQHZN69",
+      "method": "Backcross"
+    },
+    {
+      "gid": "14",
+      "guid": "2QEDGXsFSPHfZ",
+      "name": "X1G01U00006",
+      "heterGroup": "",
+      "recParent": "CLWQHZN69",
+      "method": "Backcross"
+    },
+    {
+      "gid": "15",
+      "guid": "2QEDGaLGErcUn",
+      "name": "X1G01U00007",
+      "heterGroup": "",
+      "recParent": "CLWQHZN19",
+      "method": "Backcross"
+    },
+    {
+      "gid": "16",
+      "guid": "2QEDGlOoVVfER",
+      "name": "X1G01U00008",
+      "heterGroup": "",
+      "recParent": "CLWQHZN19",
+      "method": "Backcross"
+    },
+    {
+      "gid": "17",
+      "guid": "2QEDG9yn9tgsb",
+      "name": "X1G01U00009",
+      "heterGroup": "",
+      "recParent": "CLWNHZN43",
+      "method": "Backcross"
+    },
+    {
+      "gid": "18",
+      "guid": "2QEDGnxm8MGcT",
+      "name": "X1G01U00010",
+      "heterGroup": "",
+      "recParent": "CLWNHZN43",
+      "method": "Backcross"
+    },
+    {
+      "gid": "19",
+      "guid": "2QEDG3otAe5lx",
+      "name": "X1G01U00011",
+      "heterGroup": "",
+      "recParent": "CLWQHZN69",
+      "method": "Backcross"
+    },
+    {
+      "gid": "20",
+      "guid": "2QEDG1u8CdTTa",
+      "name": "X1G01U00012",
+      "heterGroup": "",
+      "recParent": "CML576",
+      "method": "Backcross"
+    },
+    {
+      "gid": "21",
+      "guid": "2QEDGoO8uWqIG",
+      "name": "CLRCW96",
+      "heterGroup": "A",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Import"
+    },
+    {
+      "gid": "22",
+      "guid": "2QEDGMJVUpZT0",
+      "name": "CLRCW86",
+      "heterGroup": "A",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Import"
+    },
+    {
+      "gid": "23",
+      "guid": "2QEDGmvNUPKM7",
+      "name": "CML264",
+      "heterGroup": "A",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Import"
+    },
+    {
+      "gid": "24",
+      "guid": "2QEDGU7nGnWeY",
+      "name": "CML269",
+      "heterGroup": "B",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Import"
+    },
+    {
+      "gid": "25",
+      "guid": "2QEDGeFYgmoRR",
+      "name": "CLWQHZN12",
+      "heterGroup": "A",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Import"
+    },
+    {
+      "gid": "26",
+      "guid": "2QEDGVYF00DIz",
+      "name": "CLWQHZN14",
+      "heterGroup": "A",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Import"
+    },
+    {
+      "gid": "27",
+      "guid": "2QEDG5wfZQJ5h",
+      "name": "CLWQHZN49",
+      "heterGroup": "B",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Import"
+    },
+    {
+      "gid": "28",
+      "guid": "2QEDGNso9CIOl",
+      "name": "CLWQHZN53",
+      "heterGroup": "B",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Import"
+    },
+    {
+      "gid": "29",
+      "guid": "2QEDGXSawpMki",
+      "name": "CML550=CLWN201",
+      "heterGroup": "B",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Import"
+    },
+    {
+      "gid": "30",
+      "guid": "2QEDGq099oWA6",
+      "name": "CML549=CLRCW105",
+      "heterGroup": "A",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Import"
+    },
+    {
+      "gid": "31",
+      "guid": "2QEDGGHgPbIU8",
+      "name": "CLWN207",
+      "heterGroup": "A",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Import"
+    },
+    {
+      "gid": "32",
+      "guid": "2QEDGzb0xVxMl",
+      "name": "CLQRCWQ10",
+      "heterGroup": "B",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Import"
+    },
+    {
+      "gid": "33",
+      "guid": "2QEDGNLmJZC16",
+      "name": "CLQRCWQ108",
+      "heterGroup": "B",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Import"
+    },
+    {
+      "gid": "34",
+      "guid": "2QEDGnEUeFDVr",
+      "name": "CLQRCWQ113",
+      "heterGroup": "A",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Import"
+    },
+    {
+      "gid": "35",
+      "guid": "2QEDGFYWd9on6",
+      "name": "CLQRCWQ119",
+      "heterGroup": "B",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Import"
+    },
+    {
+      "gid": "36",
+      "guid": "2QEDGcliKDqIb",
+      "name": "CLQRCWQ120",
+      "heterGroup": "A",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Import"
+    },
+    {
+      "gid": "37",
+      "guid": "2QEDGiHSKb09y",
+      "name": "CLQRCWQ121",
+      "heterGroup": "B",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Import"
+    },
+    {
+      "gid": "38",
+      "guid": "2QEDGcFQNhRg0",
+      "name": "CLQRCWQ122",
+      "heterGroup": "B",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Import"
+    },
+    {
+      "gid": "39",
+      "guid": "2QEDGCu74RXqr",
+      "name": "CLQRCWQ123",
+      "heterGroup": "B",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Import"
+    },
+    {
+      "gid": "40",
+      "guid": "2QEDGgqr1Ms01",
+      "name": "CLQRCWQ125",
+      "heterGroup": "B",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Import"
+    },
+    {
+      "gid": "41",
+      "guid": "2QEDGJa4H8LVf",
+      "name": "CLQRCWQ126",
+      "heterGroup": "B",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Import"
+    },
+    {
+      "gid": "42",
+      "guid": "2QEDGJumsT8OC",
+      "name": "CLQRCWQ127",
+      "heterGroup": "B",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Import"
+    },
+    {
+      "gid": "43",
+      "guid": "2QEDG1ffTrggu",
+      "name": "CLQRCWQ128",
+      "heterGroup": "B",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Import"
+    },
+    {
+      "gid": "44",
+      "guid": "2QEDG1BJ3wcOi",
+      "name": "CML554=CLQRCWQ131",
+      "heterGroup": "B",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Import"
+    },
+    {
+      "gid": "45",
+      "guid": "2QEDGkg8iks05",
+      "name": "CLQRCWQ134",
+      "heterGroup": "B",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Import"
+    },
+    {
+      "gid": "46",
+      "guid": "2QEDGC4OCxOsR",
+      "name": "CLQRCWQ26",
+      "heterGroup": "B",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Import"
+    },
+    {
+      "gid": "47",
+      "guid": "2QEDGMPOLAnaD",
+      "name": "CLQRCWQ48",
+      "heterGroup": "B",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Import"
+    },
+    {
+      "gid": "48",
+      "guid": "2QEDGAuGKI2BL",
+      "name": "CLQRCWQ83",
+      "heterGroup": "B",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Import"
+    },
+    {
+      "gid": "49",
+      "guid": "2QEDGgPTXB5Ap",
+      "name": "CLQRCWQ92",
+      "heterGroup": "B",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Import"
+    },
+    {
+      "gid": "50",
+      "guid": "2QEDGM2dT520t",
+      "name": "CLQRCWQ97",
+      "heterGroup": "B",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Import"
+    },
+    {
+      "gid": "51",
+      "guid": "2QEDGfAl9etRt",
+      "name": "CLQ6316",
+      "heterGroup": "B",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Import"
+    },
+    {
+      "gid": "52",
+      "guid": "2QEDG6fvbPgil",
+      "name": "CLWQ206",
+      "heterGroup": "B",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Import"
+    },
+    {
+      "gid": "53",
+      "guid": "2QEDGKiGNg1DH",
+      "name": "CLWQ208",
+      "heterGroup": "B",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Import"
+    },
+    {
+      "gid": "54",
+      "guid": "2QEDGXHAxl6ZI",
+      "name": "CLWQ219",
+      "heterGroup": "B",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Import"
+    },
+    {
+      "gid": "55",
+      "guid": "2QEDGwinUuoBX",
+      "name": "CLWQ220",
+      "heterGroup": "B",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Import"
+    },
+    {
+      "gid": "56",
+      "guid": "2QEDGE8dTHyHc",
+      "name": "CLWQ226",
+      "heterGroup": "B",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Import"
+    },
+    {
+      "gid": "57",
+      "guid": "2QEDGkWOK8dDa",
+      "name": "CLWQ227",
+      "heterGroup": "B",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Import"
+    },
+    {
+      "gid": "58",
+      "guid": "2QEDGxOQcvYCz",
+      "name": "CLWQ228",
+      "heterGroup": "B",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Import"
+    },
+    {
+      "gid": "59",
+      "guid": "2QEDGitUn6dKN",
+      "name": "CLWQ229",
+      "heterGroup": "B",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Import"
+    },
+    {
+      "gid": "60",
+      "guid": "2QEDGX7luyGb1",
+      "name": "CLWQ230",
+      "heterGroup": "B",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Import"
+    },
+    {
+      "gid": "61",
+      "guid": "2QEDGzhEl9AaK",
+      "name": "CLWQ232",
+      "heterGroup": "B",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Import"
+    },
+    {
+      "gid": "62",
+      "guid": "2QEDGXOWX0oPi",
+      "name": "CLWQ235",
+      "heterGroup": "B",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Import"
+    },
+    {
+      "gid": "63",
+      "guid": "2QEDGDms6MD59",
+      "name": "CLWQ236",
+      "heterGroup": "B",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Import"
+    },
+    {
+      "gid": "64",
+      "guid": "2QEDGWkP5tBJR",
+      "name": "CLWQ237",
+      "heterGroup": "B",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Import"
+    },
+    {
+      "gid": "65",
+      "guid": "2QEDGw65lKnks",
+      "name": "CLWQ240",
+      "heterGroup": "B",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Import"
+    },
+    {
+      "gid": "66",
+      "guid": "2QEDGyH2d0c5u",
+      "name": "CLWQ242",
+      "heterGroup": "B",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Import"
+    },
+    {
+      "gid": "67",
+      "guid": "2QEDG7FJDNjtB",
+      "name": "CLWQ243",
+      "heterGroup": "B",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Import"
+    },
+    {
+      "gid": "68",
+      "guid": "2QEDGlnSIt5sq",
+      "name": "CLWQ244",
+      "heterGroup": "B",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Import"
+    },
+    {
+      "gid": "69",
+      "guid": "2QEDGwQ25G9lA",
+      "name": "CLWQ245",
+      "heterGroup": "B",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Import"
+    },
+    {
+      "gid": "70",
+      "guid": "2QEDGYycuz7VR",
+      "name": "CLWQ246",
+      "heterGroup": "B",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Import"
+    },
+    {
+      "gid": "71",
+      "guid": "2QEDGNhkmcfdl",
+      "name": "CLWQ249",
+      "heterGroup": "B",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Import"
+    },
+    {
+      "gid": "72",
+      "guid": "2QEDG5p4wIkgi",
+      "name": "CML144",
+      "heterGroup": "B",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Import"
+    },
+    {
+      "gid": "73",
+      "guid": "2QEDGzFIkZjkB",
+      "name": "CML159",
+      "heterGroup": "B",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Import"
+    },
+    {
+      "gid": "74",
+      "guid": "2QEDGs6kpC3Nj",
+      "name": "CML491",
+      "heterGroup": "B",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Import"
+    },
+    {
+      "gid": "75",
+      "guid": "2QEDGwi87VjeJ",
+      "name": "CML502",
+      "heterGroup": "B",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Import"
+    },
+    {
+      "gid": "76",
+      "guid": "2QEDG53fqezkU",
+      "name": "CML503",
+      "heterGroup": "B",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Import"
+    },
+    {
+      "gid": "77",
+      "guid": "2QEDGdI1FfoKY",
+      "name": "VI00001U0001",
+      "heterGroup": "A",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Seed increase"
+    },
+    {
+      "gid": "78",
+      "guid": "2QEDGQKHw39zC",
+      "name": "VI00001U0002",
+      "heterGroup": "A",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Seed increase"
+    },
+    {
+      "gid": "79",
+      "guid": "2QEDGuEfr3gQU",
+      "name": "VI00001U0003",
+      "heterGroup": "A",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Seed increase"
+    },
+    {
+      "gid": "80",
+      "guid": "2QEDGadszziew",
+      "name": "VI00001U0004",
+      "heterGroup": "B",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Seed increase"
+    },
+    {
+      "gid": "81",
+      "guid": "2QEDGOjl5Xo8c",
+      "name": "VI00001U0005",
+      "heterGroup": "A",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Seed increase"
+    },
+    {
+      "gid": "82",
+      "guid": "2QEDGCRCatwgf",
+      "name": "VI00001U0006",
+      "heterGroup": "A",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Seed increase"
+    },
+    {
+      "gid": "83",
+      "guid": "2QEDGxiqOd3GC",
+      "name": "VI00001U0007",
+      "heterGroup": "B",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Seed increase"
+    },
+    {
+      "gid": "84",
+      "guid": "2QEDG1eRHoH1I",
+      "name": "VI00001U0008",
+      "heterGroup": "B",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Seed increase"
+    },
+    {
+      "gid": "85",
+      "guid": "2QEDGInS42SPn",
+      "name": "VI00001U0009",
+      "heterGroup": "B",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Seed increase"
+    },
+    {
+      "gid": "86",
+      "guid": "2QEDGtyxezfC0",
+      "name": "VI00001U0010",
+      "heterGroup": "A",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Seed increase"
+    },
+    {
+      "gid": "87",
+      "guid": "2QEDGixZ8v5yu",
+      "name": "VI00001U0011",
+      "heterGroup": "A",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Seed increase"
+    },
+    {
+      "gid": "88",
+      "guid": "2QEDGt833ih1A",
+      "name": "VI00001U0012",
+      "heterGroup": "B",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Seed increase"
+    },
+    {
+      "gid": "89",
+      "guid": "2QEDGyOO5sG2C",
+      "name": "VI00001U0013",
+      "heterGroup": "B",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Seed increase"
+    },
+    {
+      "gid": "90",
+      "guid": "2QEDGOKoNZ4HC",
+      "name": "VI00001U0014",
+      "heterGroup": "A",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Seed increase"
+    },
+    {
+      "gid": "91",
+      "guid": "2QEDG8S15CvSN",
+      "name": "VI00001U0015",
+      "heterGroup": "B",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Seed increase"
+    },
+    {
+      "gid": "92",
+      "guid": "2QEDGEJ8hLfdH",
+      "name": "VI00001U0016",
+      "heterGroup": "A",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Seed increase"
+    },
+    {
+      "gid": "93",
+      "guid": "2QEDG0ASZqdsq",
+      "name": "VI00001U0017",
+      "heterGroup": "B",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Seed increase"
+    },
+    {
+      "gid": "94",
+      "guid": "2QEDGbA6hiEGz",
+      "name": "VI00001U0018",
+      "heterGroup": "B",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Seed increase"
+    },
+    {
+      "gid": "95",
+      "guid": "2QEDG7Y7URRhR",
+      "name": "VI00001U0019",
+      "heterGroup": "B",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Seed increase"
+    },
+    {
+      "gid": "96",
+      "guid": "2QEDGdL6un5Xe",
+      "name": "VI00001U0020",
+      "heterGroup": "B",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Seed increase"
+    },
+    {
+      "gid": "97",
+      "guid": "2QEDGRAmsa8z4",
+      "name": "VI00001U0021",
+      "heterGroup": "B",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Seed increase"
+    },
+    {
+      "gid": "98",
+      "guid": "2QEDGxYZfXC1G",
+      "name": "VI00001U0022",
+      "heterGroup": "B",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Seed increase"
+    },
+    {
+      "gid": "99",
+      "guid": "2QEDGOlqUAiaU",
+      "name": "VI00001U0023",
+      "heterGroup": "B",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Seed increase"
+    },
+    {
+      "gid": "100",
+      "guid": "2QEDG6OVev4oC",
+      "name": "VI00001U0024",
+      "heterGroup": "B",
+      "recParent": "CIMMYT No. S2017_31158624",
+      "method": "Seed increase"
+    }
+  ],
   "studies": [
     {
       "id": "5",

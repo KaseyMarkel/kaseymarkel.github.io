@@ -1186,6 +1186,7 @@
             var items = [
                 { label: 'Studies', value: data.totalStudies || 0, key: 'studies', type: 'timeseries' },
                 { label: 'Active', value: data.activeStudies || 0, key: 'active', type: 'timeseries' },
+                { label: 'Germplasm', value: dashboardData.germplasmCount || 0, key: 'germplasm', type: 'germplasm' },
                 { label: 'Obs Units', value: data.totalObsUnits || 0, key: 'observations', type: 'timeseries' },
                 { label: 'Plants', value: data.plantsHarvested || 0, key: 'plants', type: 'info' },
                 { label: 'Ears', value: data.earsHarvested || 0, key: 'ears', type: 'info' },
@@ -1294,6 +1295,31 @@
                     html += '<tr><td>' + trends.periods[i] + '</td><td style="text-align:right;">' + trends[dataKey][i].toLocaleString() + '</td></tr>';
                 }
                 html += '</tbody></table></div>';
+            } else if (type === 'germplasm' && dashboardData.germplasmSample) {
+                html += '<h3 style="margin-bottom: 16px;">Germplasm Entries with GIDs</h3>';
+                html += '<div style="margin-bottom: 16px; padding: 12px; background: #f0fdf4; border-radius: 8px; border-left: 4px solid #22c55e;">';
+                html += '<strong style="color: #166534;">' + (dashboardData.germplasmWithGID || 0).toLocaleString() + '</strong>';
+                html += '<span style="color: #166534;"> germplasm entries with verified GIDs from BMS</span></div>';
+                html += '<div style="max-height: 300px; overflow-y: auto;">';
+                html += '<table style="width: 100%; font-size: 0.8rem; border-collapse: collapse;"><thead>';
+                html += '<tr style="background: #f3f4f6;"><th style="padding: 8px; text-align: left; border-bottom: 2px solid #e5e7eb;">GID</th>';
+                html += '<th style="padding: 8px; text-align: left; border-bottom: 2px solid #e5e7eb;">Name</th>';
+                html += '<th style="padding: 8px; text-align: left; border-bottom: 2px solid #e5e7eb;">Het. Group</th>';
+                html += '<th style="padding: 8px; text-align: left; border-bottom: 2px solid #e5e7eb;">Rec. Parent</th>';
+                html += '<th style="padding: 8px; text-align: left; border-bottom: 2px solid #e5e7eb;">Method</th></tr></thead><tbody>';
+                var sample = dashboardData.germplasmSample;
+                for (var i = 0; i < sample.length; i++) {
+                    var g = sample[i];
+                    html += '<tr style="border-bottom: 1px solid #e5e7eb;">';
+                    html += '<td style="padding: 6px 8px; font-family: monospace; color: #764ba2; font-weight: 600;">' + g.gid + '</td>';
+                    html += '<td style="padding: 6px 8px;">' + (g.name || '-') + '</td>';
+                    html += '<td style="padding: 6px 8px;">' + (g.heterGroup || '-') + '</td>';
+                    html += '<td style="padding: 6px 8px;">' + (g.recParent || '-') + '</td>';
+                    html += '<td style="padding: 6px 8px; font-size: 0.75rem;">' + (g.method || '-') + '</td>';
+                    html += '</tr>';
+                }
+                html += '</tbody></table></div>';
+                html += '<p style="margin-top: 12px; font-size: 0.8rem; color: #6b7280;">Showing first 100 entries. Full dataset exported from BMS.</p>';
             } else {
                 html += '<p>Detailed breakdown for ' + label + '</p>';
             }

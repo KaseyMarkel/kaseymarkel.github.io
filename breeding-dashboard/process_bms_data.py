@@ -653,6 +653,31 @@ def compute_region_breakdown(study_data, observations):
     }
 
 
+def load_germplasm_with_gid():
+    """Load germplasm from new BMS export CSV with GIDs"""
+    filepath = DATA_DIR / 'maybe_full_BMS.csv'
+    if not filepath.exists():
+        print(f"  Warning: {filepath} not found, falling back to germplasm.csv")
+        return load_csv('germplasm.csv'), {}
+
+    with open(filepath, 'r', encoding='utf-8', errors='replace') as f:
+        content = f.read().replace('\x00', '')
+
+    reader = csv.DictReader(io.StringIO(content))
+    germplasm_list = list(reader)
+
+    # Build GUID → GID lookup
+    guid_to_gid = {}
+    for g in germplasm_list:
+        guid = g.get('GUID', '')
+        gid = g.get('GID', '')
+        if guid and gid:
+            guid_to_gid[guid] = gid
+
+    print(f"  Built GUID→GID lookup with {len(guid_to_gid)} entries")
+    return germplasm_list, guid_to_gid
+
+
 def main():
     print("Loading BMS data...")
 
@@ -660,13 +685,13 @@ def main():
     studies = load_csv('studies.csv')
     trials = load_csv('trials.csv')
     obs_units = load_csv('observation_units.csv')
-    germplasm = load_csv('germplasm.csv')
+    germplasm, guid_to_gid = load_germplasm_with_gid()
 
     print(f"  Observations: {len(observations)}")
     print(f"  Studies: {len(studies)}")
     print(f"  Trials: {len(trials)}")
     print(f"  Observation Units: {len(obs_units)}")
-    print(f"  Germplasm: {len(germplasm)}")
+    print(f"  Germplasm: {len(germplasm)} (with GIDs)")
 
     # Group observations by study
     obs_by_study = defaultdict(list)
@@ -742,6 +767,26 @@ def main():
         if subset:
             by_trait[trait] = compute_comprehensive_metrics(subset, observations, obs_units)
 
+    # Build germplasm summary with GIDs
+    print("Building germplasm summary...")
+    germplasm_summary = []
+    for g in germplasm[:100]:  # Sample for display
+        gid = g.get('GID', '')
+        guid = g.get('GUID', '')
+        name = g.get('Preferred Name', g.get('ACCNAME', ''))
+        heter_group = g.get('HETER_GROUP', '')
+        rec_parent = g.get('REC_PARENT', '')
+        method = g.get('Breeding Method Name', g.get('Method Code', ''))
+        if gid:
+            germplasm_summary.append({
+                'gid': gid,
+                'guid': guid,
+                'name': name,
+                'heterGroup': heter_group,
+                'recParent': rec_parent,
+                'method': method,
+            })
+
     # Build output
     output = {
         'lastUpdated': datetime.now().isoformat(),
@@ -756,6 +801,9 @@ def main():
         'regionBreakdown': region_breakdown,
         'byRegion': by_region,
         'byTrait': by_trait,
+        'germplasmCount': len(germplasm),
+        'germplasmWithGID': len(guid_to_gid),
+        'germplasmSample': germplasm_summary,
         'studies': [{
             'id': s['studyId'],
             'name': s['studyName'],
@@ -776,6 +824,7 @@ def main():
     print("\n✓ Dashboard data saved!")
     print(f"\nSummary:")
     print(f"  Studies: {all_metrics['summary']['totalStudies']}")
+    print(f"  Germplasm: {len(germplasm):,} entries with {len(guid_to_gid):,} GIDs")
     print(f"  Plants Harvested: {all_metrics['summary']['plantsHarvested']:,}")
     print(f"  Ears Harvested: {all_metrics['summary']['earsHarvested']:,}")
     print(f"  Avg Yield: {all_metrics['summary']['avgYield']} t/ha")
