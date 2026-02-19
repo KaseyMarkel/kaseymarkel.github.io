@@ -189,6 +189,13 @@ div[role="main"].container .col-md-offset-1 {
     <div class="essays-divider"></div>
   </div>
 
+  <a href="/page/essays/the-vibe-card/" class="essay-card">
+    <div class="essay-card-number">Essay 03</div>
+    <div class="essay-card-title">The Vibe Card</div>
+    <div class="essay-card-excerpt">It's very useful to know which mind is responsible for the content of an essay or any intellectual work product. For the first time in history, there's a new category of mind available. I'm proposing a simple transparency standard for human&ndash;AI collaboration.</div>
+    <div class="essay-card-meta">AI &middot; Transparency &middot; Standards &middot; February 2026</div>
+  </a>
+
   <a href="/page/essays/the-basketball-cube/" class="essay-card">
     <div class="essay-card-number">Essay 02</div>
     <div class="essay-card-title">The Basketball Cube</div>
