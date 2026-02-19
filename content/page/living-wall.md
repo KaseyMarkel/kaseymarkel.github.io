@@ -61,3 +61,25 @@ This project has taught me a lot about horticulture, a subfield of plant biology
 </div>
 {{< /rawhtml >}}
 
+The wall has matured nicely. Here are some close-ups of the plants thriving in the wall:
+
+{{< rawhtml >}}
+<div class="living-wall-photo-grid">
+  <img src="/img/PW8.jpg" alt="Purple oxalis flowering in the living wall">
+  <img src="/img/PW9.jpg" alt="Begonia, kalanchoe, and bird's nest fern">
+</div>
+{{< /rawhtml >}}
+
+{{< rawhtml >}}
+<div class="living-wall-photo-grid">
+  <img src="/img/PW11.jpg" alt="Tropical foliage growing in the wall">
+  <img src="/img/PW12.jpg" alt="Drain spigot and moss terrariums below the wall">
+</div>
+{{< /rawhtml >}}
+
+{{< rawhtml >}}
+<div class="living-wall-photo-grid">
+  <img src="/img/PW13.jpg" alt="Full living wall with grow lights">
+</div>
+{{< /rawhtml >}}
+
