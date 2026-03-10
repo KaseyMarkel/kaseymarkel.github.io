@@ -198,6 +198,7 @@ I enjoy working with my hands and creating things, whether it's woodworking, ele
   <a href="/page/origin/" class="thing-button">Origin</a>
   <a href="/page/glass/" class="thing-button">Glass</a>
   <a href="/page/gallery/" class="thing-button">Pour Paintings</a>
+  <a href="/page/mandarin/" class="thing-button">Mandarin</a>
 </div>
 {{< /rawhtml >}}
 
