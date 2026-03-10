@@ -9,7 +9,7 @@ socialShare: false
 /* Hide header */
 .intro-header { display: none !important; }
 .header-section.has-img { display: none !important; }
-div[role="main"].container { padding-top: 80px !important; margin-top: 0 !important; }
+div[role="main"].container { padding-top: 120px !important; margin-top: 0 !important; }
 
 /* Hide page title since we have our own */
 .post-heading h1, article header { display: none !important; }
@@ -319,6 +319,7 @@ div[role="main"].container { padding-top: 80px !important; margin-top: 0 !import
 <div class="hanzi-app" id="hanziApp">
   <div class="hanzi-header">
     <h1>Zhōngpath</h1>
+    <p style="color:#888;font-size:14px;margin:0 0 8px 0;">Learn Mandarin characters through spaced repetition. 5 new characters a day, one story at a time.</p>
     <div class="hanzi-stats">
       <span id="statLearned">0 learned</span>
       <span id="statDue">0 due</span>
@@ -558,7 +559,8 @@ div[role="main"].container { padding-top: 80px !important; margin-top: 0 !import
   }
 
   function today() {
-    return new Date().toISOString().slice(0, 10);
+    const d = new Date();
+    return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0");
   }
 
   function loadState() {
