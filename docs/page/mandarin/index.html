@@ -19,18 +19,7 @@
 
   
     Zhōngpath
-    
-      0 learned
-      0 due
-      0 new
-    
-  
-  
-  
-  Reset progress
-
-
-">
+    Learn Mandarin characters through spaced repetition. 5 new characters a day, one story at a time.">
   <meta name="author" content="Kasey Markel"/><script type="application/ld+json">
 {
     "@context": "http://schema.org",
@@ -79,9 +68,9 @@
     "name" : "Kasey Markel"
   },
   "headline": "Mandarin",
-  "description" : " Zhōngpath 0 learned 0 due 0 new Reset progress ",
+  "description" : " Zhōngpath Learn Mandarin characters through spaced repetition. 5 new characters a day, one story at a time.\n",
   "inLanguage" : "en",
-  "wordCount":  9 ,
+  "wordCount":  25 ,
   "datePublished" : "0001-01-01T00:00:00\u002b00:00",
   "dateModified" : "0001-01-01T00:00:00\u002b00:00",
   "image" : "https:\/\/kaseymarkel.com\/",
@@ -107,18 +96,7 @@
 
   
     Zhōngpath
-    
-      0 learned
-      0 due
-      0 new
-    
-  
-  
-  
-  Reset progress
-
-
-">
+    Learn Mandarin characters through spaced repetition. 5 new characters a day, one story at a time.">
 <meta property="og:url" content="https://kaseymarkel.com/page/mandarin/" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Kasey Markel" />
@@ -298,7 +276,7 @@
 /* Hide header */
 .intro-header { display: none !important; }
 .header-section.has-img { display: none !important; }
-div[role="main"].container { padding-top: 80px !important; margin-top: 0 !important; }
+div[role="main"].container { padding-top: 120px !important; margin-top: 0 !important; }
 
 /* Hide page title since we have our own */
 .post-heading h1, article header { display: none !important; }
@@ -608,6 +586,7 @@ div[role="main"].container { padding-top: 80px !important; margin-top: 0 !import
 <div class="hanzi-app" id="hanziApp">
   <div class="hanzi-header">
     <h1>Zhōngpath</h1>
+    <p style="color:#888;font-size:14px;margin:0 0 8px 0;">Learn Mandarin characters through spaced repetition. 5 new characters a day, one story at a time.</p>
     <div class="hanzi-stats">
       <span id="statLearned">0 learned</span>
       <span id="statDue">0 due</span>
@@ -847,7 +826,8 @@ div[role="main"].container { padding-top: 80px !important; margin-top: 0 !import
   }
 
   function today() {
-    return new Date().toISOString().slice(0, 10);
+    const d = new Date();
+    return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0");
   }
 
   function loadState() {
