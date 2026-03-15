@@ -833,10 +833,10 @@ function App() {
           <div style={{textAlign:'right'}}>
             <div className="view-toggle" style={{marginBottom:4}}>
               <button className={modelVersion==='v8'?'active':''} onClick={()=>handleVersionChange('v8')}>V8</button>
-              <button className={modelVersion==='v10'?'active':''} onClick={()=>handleVersionChange('v10')}>V10</button>
+              <button className={modelVersion==='v10'?'active':''} onClick={()=>handleVersionChange('v10')}>V11</button>
             </div>
             <div style={{fontSize:'0.7rem', opacity:0.6, color:'white', maxWidth:180}}>
-              {modelVersion==='v8' ? 'Annual, no discounting, 19 pathways' : 'PV-adjusted, WELLBY framework, 21 pathways'}
+              {modelVersion==='v8' ? 'Annual, no discounting, 19 pathways' : 'Stunting DW 3.5, 60% adoption, 21 pathways'}
             </div>
           </div>
         </div>
