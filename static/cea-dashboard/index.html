@@ -32,12 +32,13 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
 .sec-metric .value { font-size: 1.1rem; font-weight: 600; }
 
 .pathway-table-wrap { padding: 0 24px 24px; overflow-x: auto; }
-.pathway-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
-.pathway-table th { background: #f9fafb; padding: 10px 12px; text-align: left; font-weight: 600; color: #374151; border-bottom: 2px solid #e5e7eb; cursor: pointer; white-space: nowrap; user-select: none; }
+.pathway-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+.pathway-table th { background: #f9fafb; padding: 8px 10px; text-align: left; font-weight: 600; color: #374151; border-bottom: 2px solid #e5e7eb; cursor: pointer; white-space: nowrap; user-select: none; font-size: 0.72rem; }
 .pathway-table th:hover { background: #f3f4f6; }
-.pathway-table td { padding: 9px 12px; border-bottom: 1px solid #f3f4f6; }
+.pathway-table td { padding: 7px 10px; border-bottom: 1px solid #f3f4f6; white-space: nowrap; }
 .pathway-table tr:hover td { background: #f9fafb; }
 .pathway-table tr.new-row td { background: #fef9ee; }
+.pathway-table .col-group-border { border-left: 2px solid #e5e7eb; }
 
 .badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 0.7rem; font-weight: 600; }
 .badge-strong { background: #dcfce7; color: #166534; }
@@ -69,6 +70,15 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
 
 .tooltip-box { position: absolute; background: white; padding: 8px 12px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); font-size: 0.78rem; pointer-events: none; z-index: 200; white-space: nowrap; }
 
+.view-toggle { display: inline-flex; border: 1px solid #d1d5db; border-radius: 6px; overflow: hidden; font-size: 0.8rem; }
+.view-toggle button { padding: 5px 14px; border: none; background: #fff; cursor: pointer; color: #6b7280; }
+.view-toggle button.active { background: #4472C4; color: white; }
+
+.source-link { color: #4472C4; text-decoration: none; font-size: 0.72rem; }
+.source-link:hover { text-decoration: underline; }
+
+.table-controls { display: flex; justify-content: space-between; align-items: center; padding: 0 24px 12px; }
+
 @media (max-width: 900px) {
   .metric-cards { grid-template-columns: repeat(2, 1fr); }
   .secondary-metrics { grid-template-columns: repeat(2, 1fr); }
@@ -86,9 +96,8 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
 <div id="root"></div>
 
 <script type="text/babel">
-const { useState, useMemo, useCallback, useRef } = React;
+const { useState, useMemo, useCallback } = React;
 
-// ─── NORMDIST ───
 function normcdf(x, mean, sd) {
   const z = (x - mean) / sd;
   const t = 1 / (1 + 0.2316419 * Math.abs(z));
@@ -97,7 +106,6 @@ function normcdf(x, mean, sd) {
   return z > 0 ? 1 - p : p;
 }
 
-// ─── DEFAULT PARAMETERS ───
 const DEFAULTS = {
   children_under_5: 140, working_age_adults: 580, pregnancies_per_yr: 27, children_0_24mo: 55,
   farmers: 212, household_size: 4.72,
@@ -120,9 +128,116 @@ const DEFAULTS = {
   adoption_rate: 1.0,
 };
 
+const V8_DEFAULTS = {
+  ...DEFAULTS,
+  children_under_5: 500, working_age_adults: 600, children_0_24mo: 40, pregnancies_per_yr: 21,
+  stunting_dw: 6.1, discount_rate: 0, adoption_rate: 1.0,
+};
+
 const COLORS = { protein: '#4472C4', food: '#808080', iron: '#C55A11', zinc: '#548235', income: '#BF8F00', wellby: '#7030A0' };
 
-function computeModel(P) {
+// ─── SOURCES: citations for each pathway ───
+const SOURCES = {
+  protein_stunting: [
+    { short: 'INCAP Atole trial', cite: 'Martorell et al. 2010', url: 'https://doi.org/10.3945/jn.109.114504' },
+    { short: 'HAZ calibration', cite: 'Guatemala DHS 2014-15', url: 'https://dhsprogram.com/publications/publication-fr318-dhs-final-reports.cfm' },
+  ],
+  protein_iq: [
+    { short: 'INCAP Atole cognition', cite: 'Maluccio et al. 2009', url: 'https://doi.org/10.1111/j.1468-0297.2009.02220.x' },
+    { short: 'IQ\u2192earnings', cite: 'Hanushek & Woessmann 2008', url: 'https://doi.org/10.1257/jel.46.3.607' },
+  ],
+  protein_work: [
+    { short: 'INCAP wages & productivity', cite: 'Hoddinott et al. 2008', url: 'https://doi.org/10.1016/S0140-6736(08)60205-6' },
+  ],
+  protein_cvd: [
+    { short: 'Undernutrition & adult disease', cite: 'Victora et al. 2008', url: 'https://doi.org/10.1016/S0140-6736(07)61692-4' },
+  ],
+  protein_immune: [
+    { short: 'Nutrition\u2013infection interaction', cite: 'Dewey & Mayers 2011', url: 'https://doi.org/10.1111/j.1740-8709.2011.00357.x' },
+  ],
+  food_stunting: [
+    { short: 'Biofortification evidence review', cite: 'Bouis & Saltzman 2017', url: 'https://doi.org/10.1016/j.gfs.2017.01.009' },
+  ],
+  iron_iq: [
+    { short: 'Iron\u2192cognition meta-analysis', cite: 'Sachdev et al. 2005', url: 'https://doi.org/10.1079/PHN2004677' },
+    { short: 'IQ\u2192earnings elasticity', cite: 'Hanushek & Woessmann 2008', url: 'https://doi.org/10.1257/jel.46.3.607' },
+  ],
+  iron_work: [
+    { short: 'Iron\u2192Hb\u2192aerobic capacity', cite: 'Haas & Brownlie 2001', url: 'https://doi.org/10.1093/jn/131.2.676S' },
+    { short: 'Hb\u2192productivity', cite: 'Thomas et al. 2006', url: 'https://escholarship.org/uc/item/0g28k77w' },
+  ],
+  iron_immune: [
+    { short: 'Iron & infection risk', cite: 'Oppenheimer 2001', url: 'https://doi.org/10.1093/jn/131.2.616S' },
+  ],
+  iron_maternal: [
+    { short: 'Anemia & maternal mortality', cite: 'Brabin et al. 2001', url: 'https://doi.org/10.1093/jn/131.2.604S' },
+    { short: 'Guatemala MMR', cite: 'WHO MMEIG 2020', url: 'https://www.who.int/data/gho/data/indicators/indicator-details/GHO/maternal-mortality-ratio' },
+  ],
+  iron_infant: [
+    { short: 'Micronutrients & LBW', cite: 'Christian et al. 2003', url: 'https://doi.org/10.1136/bmj.326.7389.571' },
+    { short: 'VSLY estimate', cite: 'Viscusi & Masterman 2017', url: 'https://doi.org/10.1017/bca.2017.12' },
+  ],
+  iron_mh: [
+    { short: 'Iron deficiency & postpartum mood', cite: 'Beard et al. 2005', url: 'https://doi.org/10.1093/jn/135.2.267' },
+  ],
+  zinc_diarrhea: [
+    { short: 'Zinc & diarrhea/pneumonia meta-analysis', cite: 'Yakoob et al. 2011', url: 'https://doi.org/10.1186/1471-2458-11-S3-S23' },
+  ],
+  zinc_pneumonia: [
+    { short: 'Zinc & diarrhea/pneumonia meta-analysis', cite: 'Yakoob et al. 2011', url: 'https://doi.org/10.1186/1471-2458-11-S3-S23' },
+  ],
+  zinc_stunting: [
+    { short: 'Zn+Fe interaction reduces efficacy', cite: 'Fischer Walker et al. 2005', url: 'https://doi.org/10.1093/ajcn/82.1.5' },
+  ],
+  zinc_preterm: [
+    { short: 'Zinc & preterm birth', cite: 'Ota et al. 2015 (Cochrane)', url: 'https://doi.org/10.1002/14651858.CD000230.pub5' },
+  ],
+  zinc_mh: [
+    { short: 'Zinc & depression RCTs', cite: 'Lai et al. 2012', url: 'https://doi.org/10.1016/j.jad.2011.06.022' },
+  ],
+  yield_income: [
+    { short: 'Semilla Nueva field data', cite: 'Semilla Nueva internal 2023', url: null },
+    { short: 'Biofortification evidence review', cite: 'Bouis & Saltzman 2017', url: 'https://doi.org/10.1016/j.gfs.2017.01.009' },
+  ],
+  income_healthcare: [
+    { short: 'Poverty & health inequalities', cite: 'Wagstaff 2002', url: 'https://pubmed.ncbi.nlm.nih.gov/11953787/' },
+  ],
+  income_mh: [
+    { short: 'Poverty & mental health review', cite: 'Ridley et al. 2020', url: 'https://doi.org/10.1126/science.aay0214' },
+    { short: 'WELLBY methodology', cite: 'Frijters & Krekel 2021', url: 'https://doi.org/10.1093/oso/9780192896803.001.0001' },
+  ],
+  income_nextgen: [
+    { short: 'Geography of intergenerational mobility', cite: 'Chetty et al. 2014', url: 'https://doi.org/10.1093/qje/qju022' },
+  ],
+};
+
+// ─── DERIVATIONS: how each estimate was obtained from its source ───
+const DERIVATIONS = {
+  protein_stunting: 'Martorell Table 1: Atole group +0.18 HAZ vs control at 3yr. Stunting prevalence from DHS Table 11.1 (46.7% national <5). NORMDIST converts HAZ shift to cases averted.',
+  protein_iq: 'Maluccio Table 3: Atole exposure 0\u201324mo \u2192 +1.2 Raven score points (raw). Converted via 0.5 IQ/Raven pt. Earnings link: Hanushek Table 2, 2% wage return per IQ point.',
+  protein_work: 'Hoddinott Table 2: Atole-exposed men earned 46% more; we apply a conservative 3% marginal productivity gain for improved protein quality (not full Atole effect).',
+  protein_cvd: 'Victora Section 4: undernutrition in early life increases adult CVD risk. We assume 3% reduction in lifetime CVD incidence (80/1000 baseline) via DOHaD pathway. Conservative estimate.',
+  protein_immune: 'Dewey & Mayers review: bidirectional nutrition\u2013infection cycle. Improved protein status reduces infection susceptibility. We estimate 5% reduction in episodes (800/1000 baseline for <5).',
+  food_stunting: 'Bouis & Saltzman Section 3: biofortified crops improve food security and dietary diversity. We assume 0.05 HAZ gain from caloric/food security channel (smaller than protein quality pathway).',
+  iron_iq: 'Sachdev Table 3: pooled SMD = 0.15 for iron supplementation on mental development. Hanushek: 15 IQ pts/SD, 2% earnings/IQ pt applied to $25k lifetime earnings.',
+  iron_work: 'Haas & Brownlie review: iron repletion restores aerobic capacity in deficient workers. Thomas et al.: iron supplementation increased output ~5% in anemic Indonesian workers.',
+  iron_immune: 'Oppenheimer review: iron deficiency impairs cell-mediated immunity. We apply 10% reduction in bacterial infection episodes among iron-deficient children.',
+  iron_maternal: 'Brabin Table 1: severe anemia (Hb<70) associated with maternal mortality OR 2.4\u20133.5. We estimate 5% MMR reduction. Guatemala MMR: 95/100k from WHO MMEIG estimates.',
+  iron_infant: 'Christian Table 2: micronutrient supplementation reduced LBW by 16% in Nepal trial. We use 6% neonatal mortality reduction for LBW infants. VSLY from Viscusi Table 3 (Guatemala-adjusted).',
+  iron_mh: 'Beard Table 2: iron-sufficient mothers had 25% better depression/stress scores than iron-deficient. We use 5% as a conservative population-wide anxiety/fatigue reduction for iron-deficient individuals.',
+  zinc_diarrhea: 'Yakoob Table 2: preventive zinc supplementation reduced diarrhea incidence by 13% (pooled RR 0.87). We use 12% as a conservative round-down.',
+  zinc_pneumonia: 'Yakoob Table 3: preventive zinc reduced pneumonia incidence by 19% (pooled RR 0.81). We use 10% as a conservative estimate accounting for biofortification vs supplementation.',
+  zinc_stunting: 'Fischer Walker review: co-administration of zinc+iron reduces absorption of both minerals. HAZ effect zeroed because iron fortification in same crop antagonizes zinc uptake.',
+  zinc_preterm: 'Ota Summary of Findings Table 1: zinc supplementation reduced preterm birth by 14% (RR 0.86). Applied to 160/1000 preterm baseline \u2192 ~1.3% absolute reduction.',
+  zinc_mh: 'Lai meta-analysis of 3 RCTs: zinc supplementation reduced depression scores (pooled effect significant). We apply 5% mood/anxiety improvement among zinc-deficient adults.',
+  yield_income: 'Semilla Nueva field trial data 2023: biofortified varieties yield $108/yr additional profit per farmer vs conventional. Bouis & Saltzman confirm yield advantage is typical of HarvestPlus varieties.',
+  income_healthcare: 'Wagstaff analysis: lower income is associated with higher hospitalization rates. We estimate 12% reduction in healthcare costs from $108/yr income gain.',
+  income_mh: 'Ridley review: poverty causally worsens depression/anxiety. We apply 0.06 SD well-being improvement per income gain. WELLBY conversion via Frijters & Krekel Ch. 4 methodology.',
+  income_nextgen: 'Chetty Figure V: rank-rank slope of 0.34 for intergenerational income mobility. We use 0.05% of lifetime earnings ($25k) as the marginal next-generation benefit of $108/yr income gain.',
+};
+
+function computeModel(P, version) {
+  const isV8 = version === 'v8';
   const wellbys_per_ly = P.guatemala_ls - P.neutral_point;
   const pv = (yrs) => 1 / Math.pow(1 + P.discount_rate, yrs);
   const adopt = P.adoption_rate;
@@ -133,11 +248,15 @@ function computeModel(P) {
   }
   const pathways = [];
 
+  // Each pathway now includes: central, units, subgroup_desc, subgroup_n, baseline_rate, formula_note, dollar_per_unit
   // Row 4: Protein → Stunting
   { const raw = stuntingCases(P.protein_haz) * adopt; const adj = raw;
     const dalys = adj * P.stunting_dw; const dollars = adj * 3800;
     const ls = P.ls_per_01_haz * P.protein_haz / 0.1;
-    pathways.push({ id:'protein_stunting', cat:'protein', intervention:'Protein quality', outcome:'Stunting', raw, overlap:0, adj, daly_wt:P.stunting_dw, pv_f:1.0, dalys, dollars, confidence:'Strong', ls, wellby_dur:40, wellbys: adj*ls*40, new_row:false }); }
+    pathways.push({ id:'protein_stunting', cat:'protein', intervention:'Protein quality', outcome:'Stunting',
+      central: P.protein_haz, units:'HAZ shift', subgroup_desc:'Children <5', subgroup_n: P.children_under_5, baseline_rate: (baseline_stunting*1000).toFixed(0)+'/1000',
+      formula_note: 'NORMDIST(\u22122, \u03bc+HAZ, 1) shift', dollar_per_unit: 3800,
+      raw, overlap:0, adj, daly_wt:P.stunting_dw, pv_f:1.0, dalys, dollars, confidence:'Strong', ls, wellby_dur:40, wellbys: adj*ls*40, new_row:false }); }
 
   // Row 5: Protein → Future Salary (IQ)
   { const raw = P.children_0_24mo * adopt; const adj = raw;
@@ -145,119 +264,181 @@ function computeModel(P) {
     const dollars = adj * du * pvf;
     const ig = P.protein_iq_raven * P.raven_to_iq * P.earnings_per_iq;
     const ls = P.ls_per_income_doubling * Math.log(1+ig)/Math.log(2);
-    pathways.push({ id:'protein_iq', cat:'protein', intervention:'Protein quality', outcome:'Future salary (IQ)', raw, overlap:0, adj, daly_wt:null, pv_f:pvf, dalys:0, dollars, confidence:'Strong', ls, wellby_dur:40, wellbys: adj*ls*40*pvf, new_row:false }); }
+    pathways.push({ id:'protein_iq', cat:'protein', intervention:'Protein quality', outcome:'Future salary (IQ)',
+      central: P.protein_iq_raven, units:'Raven pts', subgroup_desc:'Children 0\u201324mo', subgroup_n: P.children_0_24mo, baseline_rate:'\u2014',
+      formula_note: 'Raven\u00d70.5\u00d72%\u00d7$25k lifetime', dollar_per_unit: du,
+      raw, overlap:0, adj, daly_wt:null, pv_f:pvf, dalys:0, dollars, confidence:'Strong', ls, wellby_dur:40, wellbys: adj*ls*40*pvf, new_row:false }); }
 
   // Row 6: Protein → Work Capacity
   { const raw = P.working_age_adults * adopt; const adj = raw;
     const du = (P.protein_work_pct/100)*P.labor_earnings; const dollars = adj*du;
     const ls = P.ls_per_income_doubling * Math.log(1+P.protein_work_pct/100)/Math.log(2);
-    pathways.push({ id:'protein_work', cat:'protein', intervention:'Protein quality', outcome:'Work capacity', raw, overlap:0, adj, daly_wt:null, pv_f:1.0, dalys:0, dollars, confidence:'Moderate', ls, wellby_dur:1, wellbys: adj*ls, new_row:false }); }
+    pathways.push({ id:'protein_work', cat:'protein', intervention:'Protein quality', outcome:'Work capacity',
+      central: P.protein_work_pct, units:'% productivity', subgroup_desc:'Working-age adults', subgroup_n: P.working_age_adults, baseline_rate:'\u2014',
+      formula_note: 'Effect%\u00d7$405 labor earnings', dollar_per_unit: du,
+      raw, overlap:0, adj, daly_wt:null, pv_f:1.0, dalys:0, dollars, confidence:'Moderate', ls, wellby_dur:1, wellbys: adj*ls, new_row:false }); }
 
   // Row 7: Protein → CVD
-  { const raw = (P.protein_cvd_pct/100)*(80/1000)*P.children_0_24mo*adopt; const adj = raw; const pvf = pv(30);
+  { const cvd_sub = isV8 ? 1000 : P.children_0_24mo;
+    const cvd_baseline = isV8 ? 80/10000 : 80/1000; // V8: 80 per 10k; V10: 80 per 1k (smaller subgroup)
+    const raw = (P.protein_cvd_pct/100)*cvd_baseline*cvd_sub*adopt; const adj = raw; const pvf = isV8 ? 1.0 : pv(30);
     const dalys = adj*5*pvf; const dollars = adj*5000*pvf; const ls = wellbys_per_ly*0.5;
-    pathways.push({ id:'protein_cvd', cat:'protein', intervention:'Protein quality', outcome:'CVD risk', raw, overlap:0, adj, daly_wt:5, pv_f:pvf, dalys, dollars, confidence:'Moderate', ls, wellby_dur:1, wellbys: adj*ls*pvf, new_row:false }); }
+    pathways.push({ id:'protein_cvd', cat:'protein', intervention:'Protein quality', outcome:'CVD risk',
+      central: P.protein_cvd_pct, units:'% CVD reduction', subgroup_desc: isV8?'Population':'Children 0\u201324mo (DOHaD)', subgroup_n: cvd_sub, baseline_rate:'80/1000 lifetime',
+      formula_note: 'Effect%\u00d7baseline\u00d7subgroup', dollar_per_unit: 5000,
+      raw, overlap:0, adj, daly_wt:5, pv_f:pvf, dalys, dollars, confidence:'Moderate', ls, wellby_dur:1, wellbys: adj*ls*pvf, new_row:false }); }
 
   // Row 8: Protein → Immune
   { const raw = (P.protein_immune_pct/100)*(800/1000)*P.children_under_5*adopt; const adj = raw;
     const dalys = adj*0.05; const dollars = adj*50;
     const ls = P.ls_acute_illness*P.illness_duration_fraction;
-    pathways.push({ id:'protein_immune', cat:'protein', intervention:'Protein quality', outcome:'Immune function', raw, overlap:0, adj, daly_wt:0.05, pv_f:1.0, dalys, dollars, confidence:'Moderate', ls, wellby_dur:1, wellbys: adj*ls, new_row:false }); }
+    pathways.push({ id:'protein_immune', cat:'protein', intervention:'Protein quality', outcome:'Immune function',
+      central: P.protein_immune_pct, units:'% infection reduction', subgroup_desc:'Children <5', subgroup_n: P.children_under_5, baseline_rate:'800/1000 episodes/yr',
+      formula_note: 'Effect%\u00d7baseline\u00d7subgroup', dollar_per_unit: 50,
+      raw, overlap:0, adj, daly_wt:0.05, pv_f:1.0, dalys, dollars, confidence:'Moderate', ls, wellby_dur:1, wellbys: adj*ls, new_row:false }); }
 
   // Row 9: Food → Stunting
   { const raw = stuntingCases(P.food_haz)*adopt; const adj = raw*(1-0.15);
     const dalys = adj*P.stunting_dw; const dollars = adj*3800;
     const ls = P.ls_per_01_haz*P.food_haz/0.1;
-    pathways.push({ id:'food_stunting', cat:'food', intervention:'Total food', outcome:'Stunting', raw, overlap:0.15, adj, daly_wt:P.stunting_dw, pv_f:1.0, dalys, dollars, confidence:'Moderate', ls, wellby_dur:40, wellbys: adj*ls*40, new_row:false }); }
+    pathways.push({ id:'food_stunting', cat:'food', intervention:'Total food', outcome:'Stunting',
+      central: P.food_haz, units:'HAZ shift', subgroup_desc:'Children <5', subgroup_n: P.children_under_5, baseline_rate: (baseline_stunting*1000).toFixed(0)+'/1000',
+      formula_note: 'NORMDIST shift (2nd pathway after protein)', dollar_per_unit: 3800,
+      raw, overlap:0.15, adj, daly_wt:P.stunting_dw, pv_f:1.0, dalys, dollars, confidence:'Moderate', ls, wellby_dur:40, wellbys: adj*ls*40, new_row:false }); }
 
   // Row 10: Iron → Future Salary (IQ)
   { const raw = P.children_under_5*P.iron_def_children*adopt; const adj = raw*(1-0.25); const pvf = pv(15);
     const du = P.iron_iq_smd*P.iq_per_sd*P.earnings_per_iq*P.lifetime_earnings; const dollars = adj*du*pvf;
     const ig = P.iron_iq_smd*P.iq_per_sd*P.earnings_per_iq;
     const ls = P.ls_per_income_doubling*Math.log(1+ig)/Math.log(2);
-    pathways.push({ id:'iron_iq', cat:'iron', intervention:'Iron', outcome:'Future salary (IQ)', raw, overlap:0.25, adj, daly_wt:null, pv_f:pvf, dalys:0, dollars, confidence:'Moderate', ls, wellby_dur:40, wellbys: adj*ls*40*pvf, new_row:false }); }
+    pathways.push({ id:'iron_iq', cat:'iron', intervention:'Iron', outcome:'Future salary (IQ)',
+      central: P.iron_iq_smd, units:'SMD cognitive', subgroup_desc:'Fe-def children <5', subgroup_n: Math.round(P.children_under_5*P.iron_def_children), baseline_rate:'30% Fe-def',
+      formula_note: 'SMD\u00d715 IQ/SD\u00d72%\u00d7$25k', dollar_per_unit: du,
+      raw, overlap:0.25, adj, daly_wt:null, pv_f:pvf, dalys:0, dollars, confidence:'Moderate', ls, wellby_dur:40, wellbys: adj*ls*40*pvf, new_row:false }); }
 
   // Row 11: Iron → Work Capacity
   { const raw = P.working_age_adults*P.anemia_prevalence*adopt; const adj = raw*(1-0.10);
     const du = (P.iron_work_pct/100)*P.labor_earnings; const dollars = adj*du;
     const ls = P.ls_per_income_doubling*Math.log(1+P.iron_work_pct/100)/Math.log(2);
-    pathways.push({ id:'iron_work', cat:'iron', intervention:'Iron', outcome:'Work capacity (Hb)', raw, overlap:0.10, adj, daly_wt:null, pv_f:1.0, dalys:0, dollars, confidence:'Strong', ls, wellby_dur:1, wellbys: adj*ls, new_row:false }); }
+    pathways.push({ id:'iron_work', cat:'iron', intervention:'Iron', outcome:'Work capacity (Hb)',
+      central: P.iron_work_pct, units:'% productivity', subgroup_desc:'Anemic adults', subgroup_n: Math.round(P.working_age_adults*P.anemia_prevalence), baseline_rate:'22% anemia',
+      formula_note: 'Effect%\u00d7$405 labor earnings', dollar_per_unit: du,
+      raw, overlap:0.10, adj, daly_wt:null, pv_f:1.0, dalys:0, dollars, confidence:'Strong', ls, wellby_dur:1, wellbys: adj*ls, new_row:false }); }
 
   // Row 12: Iron → Immune
   { const raw = (P.iron_immune_pct/100)*(400/1000)*P.children_under_5*adopt; const adj = raw*(1-0.10);
     const dalys = adj*0.05; const dollars = adj*50;
     const ls = P.ls_acute_illness*P.illness_duration_fraction;
-    pathways.push({ id:'iron_immune', cat:'iron', intervention:'Iron', outcome:'Immune function', raw, overlap:0.10, adj, daly_wt:0.05, pv_f:1.0, dalys, dollars, confidence:'Moderate', ls, wellby_dur:1, wellbys: adj*ls, new_row:false }); }
+    pathways.push({ id:'iron_immune', cat:'iron', intervention:'Iron', outcome:'Immune function',
+      central: P.iron_immune_pct, units:'% bacterial reduction', subgroup_desc:'Children <5', subgroup_n: P.children_under_5, baseline_rate:'400/1000',
+      formula_note: 'Effect%\u00d7baseline\u00d7subgroup', dollar_per_unit: 50,
+      raw, overlap:0.10, adj, daly_wt:0.05, pv_f:1.0, dalys, dollars, confidence:'Moderate', ls, wellby_dur:1, wellbys: adj*ls, new_row:false }); }
 
   // Row 13: Iron → Maternal Mortality
   { const raw = (P.iron_maternal_pct/100)*0.95*adopt; const adj = raw;
     const dalys = adj*28; const dollars = adj*150000; const ls = wellbys_per_ly*35+7;
-    pathways.push({ id:'iron_maternal', cat:'iron', intervention:'Iron', outcome:'Maternal mortality', raw, overlap:0, adj, daly_wt:28, pv_f:1.0, dalys, dollars, confidence:'Moderate', ls, wellby_dur:1, wellbys: adj*ls, new_row:false }); }
+    pathways.push({ id:'iron_maternal', cat:'iron', intervention:'Iron', outcome:'Maternal mortality',
+      central: P.iron_maternal_pct, units:'% MMR reduction', subgroup_desc:'Population', subgroup_n: 1000, baseline_rate:'95/100k (0.95/1000)',
+      formula_note: 'Effect%\u00d7MMR', dollar_per_unit: 150000,
+      raw, overlap:0, adj, daly_wt:28, pv_f:1.0, dalys, dollars, confidence:'Moderate', ls, wellby_dur:1, wellbys: adj*ls, new_row:false }); }
 
   // Row 14: Iron → Infant Survival
-  { const raw = (P.iron_infant_pct/100)*2.5*0.15*adopt; const adj = raw*(1-0.25);
+  { const raw = (P.iron_infant_pct/100)*2.5*0.15*adopt; const infant_overlap = isV8 ? 0 : 0.25; const adj = raw*(1-infant_overlap);
     const dalys = adj*32; const dollars = adj*P.vsly;
     const ls = wellbys_per_ly*P.remaining_life_child+7;
-    pathways.push({ id:'iron_infant', cat:'iron', intervention:'Iron', outcome:'Infant survival', raw, overlap:0.25, adj, daly_wt:32, pv_f:1.0, dalys, dollars, confidence:'Moderate', ls, wellby_dur:1, wellbys: adj*ls, new_row:false }); }
+    pathways.push({ id:'iron_infant', cat:'iron', intervention:'Iron', outcome:'Infant survival',
+      central: P.iron_infant_pct, units:'% LBW death reduction', subgroup_desc:'Population', subgroup_n: 1000, baseline_rate:'2.5/1000 U5MR, 15% LBW-attrib',
+      formula_note: 'Effect%\u00d7U5MR\u00d7LBW fraction', dollar_per_unit: P.vsly,
+      raw, overlap:infant_overlap, adj, daly_wt:32, pv_f:1.0, dalys, dollars, confidence:'Moderate', ls, wellby_dur:1, wellbys: adj*ls, new_row:false }); }
 
   // Row 15: Iron → Mental Health
   { const subgroup = Math.round(P.working_age_adults*P.anemia_prevalence*0.20);
-    const raw = (P.iron_mh_pct/100)*subgroup*adopt; const adj = raw;
+    const raw = isV8 ? subgroup*adopt : (P.iron_mh_pct/100)*subgroup*adopt; const adj = raw;
     const dalys = adj*0.15; const dollars = dalys*P.value_per_daly;
     const ls = P.ls_mixed;
-    pathways.push({ id:'iron_mh', cat:'iron', intervention:'Iron', outcome:'Mental health', raw, overlap:0, adj, daly_wt:0.15, pv_f:1.0, dalys, dollars, confidence:'Moderate', ls, wellby_dur:1, wellbys: adj*ls, new_row:false }); }
+    pathways.push({ id:'iron_mh', cat:'iron', intervention:'Iron', outcome:'Mental health',
+      central: P.iron_mh_pct, units:'% anxiety/fatigue reduction', subgroup_desc:'Anemic adults w/ MH risk', subgroup_n: subgroup, baseline_rate:'20% of anemic adults',
+      formula_note: 'Effect%\u00d7subgroup; DALYs\u00d7$5500', dollar_per_unit: null,
+      raw, overlap:0, adj, daly_wt:0.15, pv_f:1.0, dalys, dollars, confidence:'Moderate', ls, wellby_dur:1, wellbys: adj*ls, new_row:false }); }
 
   // Row 16: Zinc → Diarrhea
   { const raw = (P.zinc_diarrhea_pct/100)*(300/1000)*P.children_under_5*adopt; const adj = raw;
     const dalys = adj*0.08; const dollars = adj*30;
     const ls = P.ls_acute_illness*P.illness_duration_fraction;
-    pathways.push({ id:'zinc_diarrhea', cat:'zinc', intervention:'Zinc', outcome:'Diarrhea', raw, overlap:0, adj, daly_wt:0.08, pv_f:1.0, dalys, dollars, confidence:'Strong', ls, wellby_dur:1, wellbys: adj*ls, new_row:false }); }
+    pathways.push({ id:'zinc_diarrhea', cat:'zinc', intervention:'Zinc', outcome:'Diarrhea',
+      central: P.zinc_diarrhea_pct, units:'% reduction', subgroup_desc:'Children <5', subgroup_n: P.children_under_5, baseline_rate:'300/1000 episodes/yr',
+      formula_note: 'Effect%\u00d7baseline\u00d7subgroup', dollar_per_unit: 30,
+      raw, overlap:0, adj, daly_wt:0.08, pv_f:1.0, dalys, dollars, confidence:'Strong', ls, wellby_dur:1, wellbys: adj*ls, new_row:false }); }
 
   // Row 17: Zinc → Pneumonia
   { const raw = (P.zinc_pneumonia_pct/100)*(150/1000)*P.children_under_5*adopt; const adj = raw;
     const dalys = adj*0.25; const dollars = adj*200;
     const ls = P.ls_acute_illness*P.illness_duration_fraction*2;
-    pathways.push({ id:'zinc_pneumonia', cat:'zinc', intervention:'Zinc', outcome:'Pneumonia', raw, overlap:0, adj, daly_wt:0.25, pv_f:1.0, dalys, dollars, confidence:'Strong', ls, wellby_dur:1, wellbys: adj*ls, new_row:false }); }
+    pathways.push({ id:'zinc_pneumonia', cat:'zinc', intervention:'Zinc', outcome:'Pneumonia',
+      central: P.zinc_pneumonia_pct, units:'% reduction', subgroup_desc:'Children <5', subgroup_n: P.children_under_5, baseline_rate:'150/1000',
+      formula_note: 'Effect%\u00d7baseline\u00d7subgroup', dollar_per_unit: 200,
+      raw, overlap:0, adj, daly_wt:0.25, pv_f:1.0, dalys, dollars, confidence:'Strong', ls, wellby_dur:1, wellbys: adj*ls, new_row:false }); }
 
   // Row 18: Zinc → Stunting (ZEROED)
-  { const raw = stuntingCases(P.zinc_haz)*adopt; const adj = raw*(1-1.0);
-    pathways.push({ id:'zinc_stunting', cat:'zinc', intervention:'Zinc', outcome:'Stunting (zeroed)', raw, overlap:1.0, adj:0, daly_wt:P.stunting_dw, pv_f:1.0, dalys:0, dollars:0, confidence:'Low-Mod', ls:0, wellby_dur:0, wellbys:0, new_row:false }); }
+  { const raw = stuntingCases(P.zinc_haz)*adopt;
+    pathways.push({ id:'zinc_stunting', cat:'zinc', intervention:'Zinc', outcome:'Stunting (zeroed)',
+      central: P.zinc_haz, units:'HAZ shift', subgroup_desc:'Children <5', subgroup_n: P.children_under_5, baseline_rate: (baseline_stunting*1000).toFixed(0)+'/1000',
+      formula_note: 'ZEROED: Zn+Fe co-admin antagonism', dollar_per_unit: 3800,
+      raw, overlap:1.0, adj:0, daly_wt:P.stunting_dw, pv_f:1.0, dalys:0, dollars:0, confidence:'Low-Mod', ls:0, wellby_dur:0, wellbys:0, new_row:false }); }
 
-  // Row 19: Zinc → Preterm Birth
-  { const raw = (P.zinc_preterm_pct/100)*(160/1000)*P.pregnancies_per_yr*adopt; const adj = raw;
+  // Row 19: Zinc → Preterm Birth (V10 only)
+  if (!isV8) { const raw = (P.zinc_preterm_pct/100)*(160/1000)*P.pregnancies_per_yr*adopt; const adj = raw;
     const dalys = adj*P.preterm_dw; const dollars = dalys*P.value_per_daly;
     const ls = 0.30*(wellbys_per_ly*P.remaining_life_child+7)+0.20*P.ls_severe_preterm_disability*P.remaining_life_child;
-    pathways.push({ id:'zinc_preterm', cat:'zinc', intervention:'Zinc', outcome:'Preterm birth', raw, overlap:0, adj, daly_wt:P.preterm_dw, pv_f:1.0, dalys, dollars, confidence:'Low-Mod', ls, wellby_dur:1, wellbys: adj*ls, new_row:true }); }
+    pathways.push({ id:'zinc_preterm', cat:'zinc', intervention:'Zinc', outcome:'Preterm birth',
+      central: P.zinc_preterm_pct, units:'% preterm reduction', subgroup_desc:'Pregnancies/yr', subgroup_n: P.pregnancies_per_yr, baseline_rate:'160/1000 births',
+      formula_note: 'Effect%\u00d7preterm rate\u00d7pregnancies', dollar_per_unit: null,
+      raw, overlap:0, adj, daly_wt:P.preterm_dw, pv_f:1.0, dalys, dollars, confidence:'Low-Mod', ls, wellby_dur:1, wellbys: adj*ls, new_row:true }); }
 
-  // Row 20: Zinc → Mental Health
-  { const subgroup = 20; const raw = (P.zinc_mh_pct/100)*subgroup*adopt; const adj = raw*(1-0.10);
+  // Row 20: Zinc → Mental Health (V10 only)
+  if (!isV8) { const subgroup = 20; const raw = (P.zinc_mh_pct/100)*subgroup*adopt; const adj = raw*(1-0.10);
     const dalys = adj*0.13; const dollars = dalys*P.value_per_daly;
     const ls = P.ls_mixed;
-    pathways.push({ id:'zinc_mh', cat:'zinc', intervention:'Zinc', outcome:'Mental health', raw, overlap:0.10, adj, daly_wt:0.13, pv_f:1.0, dalys, dollars, confidence:'Weak', ls, wellby_dur:1, wellbys: adj*ls, new_row:true }); }
+    pathways.push({ id:'zinc_mh', cat:'zinc', intervention:'Zinc', outcome:'Mental health',
+      central: P.zinc_mh_pct, units:'% reduction', subgroup_desc:'Zn-def adults w/ MH risk', subgroup_n: subgroup, baseline_rate:'20 per 1000',
+      formula_note: 'Effect%\u00d7subgroup; DALYs\u00d7$5500', dollar_per_unit: null,
+      raw, overlap:0.10, adj, daly_wt:0.13, pv_f:1.0, dalys, dollars, confidence:'Weak', ls, wellby_dur:1, wellbys: adj*ls, new_row:true }); }
 
   // Row 21: Yield → Farmer Income
   { const raw = P.farmers; const adj = raw;
     const dollars = P.yield_income*adj;
     const ls = P.ls_per_income_doubling*Math.log(1+P.yield_income/P.farmer_profit)/Math.log(2);
-    pathways.push({ id:'yield_income', cat:'income', intervention:'Yield', outcome:'Farmer income', raw, overlap:0, adj, daly_wt:null, pv_f:1.0, dalys:0, dollars, confidence:'Strong', ls, wellby_dur:1, wellbys: adj*ls, new_row:false }); }
+    pathways.push({ id:'yield_income', cat:'income', intervention:'Yield', outcome:'Farmer income',
+      central: P.yield_income, units:'USD/yr profit gain', subgroup_desc:'Farmers', subgroup_n: P.farmers, baseline_rate:'$255 baseline profit',
+      formula_note: 'Direct: central\u00d7farmers', dollar_per_unit: P.yield_income,
+      raw, overlap:0, adj, daly_wt:null, pv_f:1.0, dalys:0, dollars, confidence:'Strong', ls, wellby_dur:1, wellbys: adj*ls, new_row:false }); }
 
   // Row 22: Income → Healthcare
   { const raw = (P.income_healthcare_pct/100)*200; const adj = raw;
     const dollars = adj*150; const ls = 0.02;
-    pathways.push({ id:'income_healthcare', cat:'income', intervention:'Income', outcome:'Healthcare costs', raw, overlap:0, adj, daly_wt:null, pv_f:1.0, dalys:0, dollars, confidence:'Moderate', ls, wellby_dur:1, wellbys: adj*ls, new_row:false }); }
+    pathways.push({ id:'income_healthcare', cat:'income', intervention:'Income', outcome:'Healthcare costs',
+      central: P.income_healthcare_pct, units:'% hosp. reduction', subgroup_desc:'Population', subgroup_n: 1000, baseline_rate:'200/1000',
+      formula_note: 'Effect%\u00d7baseline; \u00d7$150/hosp', dollar_per_unit: 150,
+      raw, overlap:0, adj, daly_wt:null, pv_f:1.0, dalys:0, dollars, confidence:'Moderate', ls, wellby_dur:1, wellbys: adj*ls, new_row:false }); }
 
   // Row 23: Income → Mental Health
   { const raw = P.farmers; const adj = raw*(1-0.05);
     const dalys = adj*P.income_mh_sd*0.1; const dollars = dalys*P.value_per_daly;
     const ls = P.income_mh_sd*2;
-    pathways.push({ id:'income_mh', cat:'income', intervention:'Income', outcome:'Mental health', raw, overlap:0.05, adj, daly_wt:0.1, pv_f:1.0, dalys, dollars, confidence:'Moderate', ls, wellby_dur:1, wellbys: adj*ls, new_row:false }); }
+    pathways.push({ id:'income_mh', cat:'income', intervention:'Income', outcome:'Mental health',
+      central: P.income_mh_sd, units:'SD well-being', subgroup_desc:'Farmers', subgroup_n: P.farmers, baseline_rate:'\u2014',
+      formula_note: 'DALYs = I\u00d7C\u00d7J\u00d7K (effect\u00d7DW)', dollar_per_unit: null,
+      raw, overlap:0.05, adj, daly_wt:0.1, pv_f:1.0, dalys, dollars, confidence:'Moderate', ls, wellby_dur:1, wellbys: adj*ls, new_row:false }); }
 
   // Row 24: Income → Future Salary (Next Gen)
   { const subgroup = Math.round(P.farmers*P.household_size/2); const raw = subgroup; const adj = raw;
     const pvf = pv(18); const dollars = P.income_nextgen*P.lifetime_earnings*adj*pvf;
     const annual_inc = P.income_nextgen*P.lifetime_earnings/(40*P.labor_earnings);
     const ls = P.ls_per_income_doubling*Math.log(1+annual_inc)/Math.log(2);
-    pathways.push({ id:'income_nextgen', cat:'income', intervention:'Income', outcome:'Future salary (next gen)', raw, overlap:0, adj, daly_wt:null, pv_f:pvf, dalys:0, dollars, confidence:'Weak', ls, wellby_dur:40, wellbys: adj*ls*40*pvf, new_row:false }); }
+    pathways.push({ id:'income_nextgen', cat:'income', intervention:'Income', outcome:'Future salary (next gen)',
+      central: P.income_nextgen, units:'fraction lifetime earnings', subgroup_desc:'Children in farm families', subgroup_n: subgroup, baseline_rate:'\u2014',
+      formula_note: 'Fraction\u00d7$25k\u00d7children\u00d7PV', dollar_per_unit: P.income_nextgen*P.lifetime_earnings,
+      raw, overlap:0, adj, daly_wt:null, pv_f:pvf, dalys:0, dollars, confidence:'Weak', ls, wellby_dur:40, wellbys: adj*ls*40*pvf, new_row:false }); }
 
   const cost = (1000/P.household_size)*P.cost_per_farmer;
   const totalDalys = pathways.reduce((s,p) => s+p.dalys, 0);
@@ -306,42 +487,30 @@ function TornadoChart({ data, baseBcr, width }) {
   const rowH = 34, labelW = 150, pad = 40;
   const chartW = w - labelW - pad * 2;
   const h = data.length * rowH + 50;
-
   const allVals = data.flatMap(d => [d.low, d.high]);
   const minV = Math.min(...allVals, baseBcr) * 0.9;
   const maxV = Math.max(...allVals, baseBcr) * 1.1;
   const scale = (v) => labelW + pad + ((v - minV) / (maxV - minV)) * chartW;
   const baseX = scale(baseBcr);
-
   const [tip, setTip] = useState(null);
-
   return (
     <div style={{ position: 'relative' }}>
       <svg width={w} height={h} style={{ display: 'block' }}>
-        {/* Base line */}
         <line x1={baseX} y1={10} x2={baseX} y2={h-30} stroke="#666" strokeDasharray="4 3" strokeWidth={1.5} />
         <text x={baseX} y={h-12} textAnchor="middle" fontSize={11} fill="#666">{baseBcr.toFixed(1)}x (base)</text>
-
-        {/* Axis */}
         {[minV, (minV+maxV)/2, maxV].map((v, i) => (
           <text key={i} x={scale(v)} y={h-12} textAnchor="middle" fontSize={10} fill="#9ca3af">{v.toFixed(1)}x</text>
         ))}
-
         {data.map((d, i) => {
           const y = 15 + i * rowH;
-          const x1 = scale(d.low);
-          const x2 = scale(d.high);
+          const x1 = scale(d.low); const x2 = scale(d.high);
           return (
             <g key={i}>
               <text x={labelW - 8} y={y + rowH/2 + 1} textAnchor="end" fontSize={12} fill="#374151">{d.name}</text>
-              {/* Low side bar */}
-              <rect x={Math.min(x1, baseX)} y={y+4} width={Math.abs(baseX - x1)} height={rowH-10}
-                fill="#93c5fd" rx={3}
+              <rect x={Math.min(x1, baseX)} y={y+4} width={Math.abs(baseX - x1)} height={rowH-10} fill="#93c5fd" rx={3}
                 onMouseEnter={(e) => setTip({ x: e.clientX, y: e.clientY, name: d.name, low: d.low, high: d.high })}
                 onMouseLeave={() => setTip(null)} style={{ cursor: 'pointer' }} />
-              {/* High side bar */}
-              <rect x={Math.min(x2, baseX)} y={y+4} width={Math.abs(x2 - baseX)} height={rowH-10}
-                fill="#4472C4" rx={3}
+              <rect x={Math.min(x2, baseX)} y={y+4} width={Math.abs(x2 - baseX)} height={rowH-10} fill="#4472C4" rx={3}
                 onMouseEnter={(e) => setTip({ x: e.clientX, y: e.clientY, name: d.name, low: d.low, high: d.high })}
                 onMouseLeave={() => setTip(null)} style={{ cursor: 'pointer' }} />
             </g>
@@ -374,13 +543,13 @@ const EFFECT_SLIDERS = [
   { key:'income_mh_sd', label:'Income \u2192 MH (SD improvement)', min:0, max:0.15, step:0.005, fmt:v=>v.toFixed(3) },
 ];
 const DEMO_SLIDERS = [
-  { key:'children_under_5', label:'Children <5 per 1000', min:50, max:300, step:5, fmt:v=>v.toFixed(0) },
+  { key:'children_under_5', label:'Children <5 per 1000', min:50, max:600, step:5, fmt:v=>v.toFixed(0) },
   { key:'working_age_adults', label:'Working-age adults', min:400, max:700, step:10, fmt:v=>v.toFixed(0) },
   { key:'pregnancies_per_yr', label:'Pregnancies/yr per 1000', min:15, max:40, step:1, fmt:v=>v.toFixed(0) },
   { key:'children_0_24mo', label:'Children 0-24mo', min:30, max:80, step:1, fmt:v=>v.toFixed(0) },
 ];
 const DALY_SLIDERS = [
-  { key:'stunting_dw', label:'Stunting disability weight', min:0.1, max:1.0, step:0.05, fmt:v=>v.toFixed(2) },
+  { key:'stunting_dw', label:'Stunting disability weight', min:0.1, max:8.0, step:0.1, fmt:v=>v.toFixed(1) },
   { key:'preterm_dw', label:'Preterm disability weight', min:0.5, max:10, step:0.5, fmt:v=>v.toFixed(1) },
 ];
 const WELLBY_SLIDERS = [
@@ -408,6 +577,13 @@ const TORNADO_PARAMS = [
 ];
 
 function fmt$(v) { return '$' + Math.round(v).toLocaleString(); }
+function fmtCentral(v) {
+  if (v === null || v === undefined) return '\u2014';
+  if (v < 0.01) return v.toFixed(4);
+  if (v < 1) return v.toFixed(2);
+  if (v < 10) return v.toFixed(1);
+  return Math.round(v).toLocaleString();
+}
 
 function Slider({ config, value, onChange }) {
   return (
@@ -438,15 +614,32 @@ function ConfBadge({ conf }) {
   return <span className={'badge '+cls}>{conf}</span>;
 }
 
+function SourceLinks({ sources }) {
+  if (!sources || sources.length === 0) return <span style={{color:'#9ca3af'}}>\u2014</span>;
+  return <span>{sources.map((s, i) => (
+    <span key={i}>
+      {i > 0 && '; '}
+      {s.url ? <a href={s.url} target="_blank" rel="noopener noreferrer" className="source-link" title={s.short}>{s.cite}</a>
+        : <span style={{fontSize:'0.72rem',color:'#6b7280'}} title={s.short}>{s.cite}</span>}
+    </span>
+  ))}</span>;
+}
+
 function App() {
   const [tab, setTab] = useState('summary');
+  const [modelVersion, setModelVersion] = useState('v10');
   const [params, setParams] = useState({...DEFAULTS});
   const [sortCol, setSortCol] = useState(null);
   const [sortDir, setSortDir] = useState(1);
+  const [detailView, setDetailView] = useState(false);
 
+  const handleVersionChange = useCallback((v) => {
+    setModelVersion(v);
+    setParams(v === 'v8' ? {...V8_DEFAULTS} : {...DEFAULTS});
+  }, []);
   const handleParam = useCallback((key, val) => { setParams(prev => ({...prev, [key]: val})); }, []);
-  const resetParams = useCallback(() => setParams({...DEFAULTS}), []);
-  const model = useMemo(() => computeModel(params), [params]);
+  const resetParams = useCallback(() => setParams(modelVersion === 'v8' ? {...V8_DEFAULTS} : {...DEFAULTS}), [modelVersion]);
+  const model = useMemo(() => computeModel(params, modelVersion), [params, modelVersion]);
 
   const sortedPathways = useMemo(() => {
     if (!sortCol) return model.pathways;
@@ -465,11 +658,11 @@ function App() {
 
   const tornadoData = useMemo(() => {
     return TORNADO_PARAMS.map(tp => {
-      const lo_bcr = computeModel({...params, [tp.key]: tp.lo}).bcrDollar;
-      const hi_bcr = computeModel({...params, [tp.key]: tp.hi}).bcrDollar;
+      const lo_bcr = computeModel({...params, [tp.key]: tp.lo}, modelVersion).bcrDollar;
+      const hi_bcr = computeModel({...params, [tp.key]: tp.hi}, modelVersion).bcrDollar;
       return { name: tp.label, low: Math.min(lo_bcr, hi_bcr), high: Math.max(lo_bcr, hi_bcr), range: Math.abs(hi_bcr-lo_bcr) };
     }).sort((a,b) => b.range-a.range);
-  }, [params]);
+  }, [params, modelVersion]);
 
   const dalyBarData = model.pathways.filter(p=>p.dalys>0).map(p=>({ name: p.intervention+' \u2192 '+p.outcome, value: p.dalys, cat: p.cat }));
   const wellbyBarData = model.pathways.filter(p=>p.wellbys>0).map(p=>({ name: p.intervention+' \u2192 '+p.outcome, value: p.wellbys, cat: p.cat }));
@@ -477,8 +670,21 @@ function App() {
   return (
     <div>
       <div className="dash-header">
-        <h1>Semilla Nueva Biofortified Maize — Interactive CEA Dashboard</h1>
-        <p>Per 1,000 farming family members reached</p>
+        <div style={{display:'flex', justifyContent:'space-between', alignItems:'flex-start'}}>
+          <div>
+            <h1>Semilla Nueva Biofortified Maize &mdash; Interactive CEA Dashboard</h1>
+            <p>Per 1,000 farming family members reached</p>
+          </div>
+          <div style={{textAlign:'right'}}>
+            <div className="view-toggle" style={{marginBottom:4}}>
+              <button className={modelVersion==='v8'?'active':''} onClick={()=>handleVersionChange('v8')}>V8</button>
+              <button className={modelVersion==='v10'?'active':''} onClick={()=>handleVersionChange('v10')}>V10</button>
+            </div>
+            <div style={{fontSize:'0.7rem', opacity:0.6, color:'white', maxWidth:180}}>
+              {modelVersion==='v8' ? 'Annual, no discounting, 19 pathways' : 'PV-adjusted, WELLBY framework, 21 pathways'}
+            </div>
+          </div>
+        </div>
       </div>
       <div className="tab-bar">
         <button className={'tab-btn '+(tab==='summary'?'active':'')} onClick={()=>setTab('summary')}>Summary</button>
@@ -514,32 +720,80 @@ function App() {
             </div>
           </div>
         </div>
+
+        <div className="table-controls">
+          <h3 style={{fontSize:'1rem', fontWeight:600, color:'#374151'}}>Pathway Detail</h3>
+          <div className="view-toggle">
+            <button className={!detailView?'active':''} onClick={()=>setDetailView(false)}>Summary</button>
+            <button className={detailView?'active':''} onClick={()=>setDetailView(true)}>Full Model</button>
+          </div>
+        </div>
+
         <div className="pathway-table-wrap">
           <table className="pathway-table">
             <thead><tr>
               <th onClick={()=>handleSort('intervention')}>Intervention</th>
               <th onClick={()=>handleSort('outcome')}>Outcome</th>
-              <th onClick={()=>handleSort('adj')}>Adj. Cases</th>
+              {detailView && <th onClick={()=>handleSort('central')}>Central Est.</th>}
+              {detailView && <th>Units</th>}
+              {detailView && <th>Subgroup</th>}
+              {detailView && <th onClick={()=>handleSort('subgroup_n')}>N</th>}
+              {detailView && <th>Baseline</th>}
+              {detailView && <th onClick={()=>handleSort('raw')}>Raw Cases</th>}
+              {detailView && <th onClick={()=>handleSort('overlap')}>Overlap %</th>}
+              <th onClick={()=>handleSort('adj')} className={detailView?'col-group-border':''}>Adj. Cases</th>
+              {detailView && <th>DALY Wt</th>}
+              {detailView && <th>PV Factor</th>}
               <th onClick={()=>handleSort('dalys')}>DALYs</th>
-              <th onClick={()=>handleSort('wellbys')}>WELLBYs</th>
+              {detailView && <th className="col-group-border">$/Unit</th>}
               <th onClick={()=>handleSort('dollars')}>$ Benefit</th>
+              {detailView && <th className="col-group-border">LS Impact</th>}
+              {detailView && <th>WELLBY Dur</th>}
+              <th onClick={()=>handleSort('wellbys')}>WELLBYs</th>
               <th onClick={()=>handleSort('confidence')}>Confidence</th>
+              {detailView && <th>Formula</th>}
+              <th>Sources</th>
+              {detailView && <th>How We Got Numbers</th>}
             </tr></thead>
             <tbody>
               {sortedPathways.map(p => <tr key={p.id} className={p.new_row?'new-row':''}>
                 <td><span className="idot" style={{background:COLORS[p.cat]||'#888'}}></span>{p.intervention}</td>
                 <td>{p.outcome}</td>
-                <td>{p.adj.toFixed(1)}</td>
+                {detailView && <td style={{fontWeight:600}}>{fmtCentral(p.central)}</td>}
+                {detailView && <td style={{color:'#6b7280'}}>{p.units}</td>}
+                {detailView && <td style={{color:'#6b7280',fontSize:'0.7rem'}}>{p.subgroup_desc}</td>}
+                {detailView && <td>{p.subgroup_n}</td>}
+                {detailView && <td style={{color:'#6b7280',fontSize:'0.7rem'}}>{p.baseline_rate}</td>}
+                {detailView && <td>{p.raw.toFixed(2)}</td>}
+                {detailView && <td>{p.overlap > 0 ? (p.overlap*100).toFixed(0)+'%' : '\u2014'}</td>}
+                <td className={detailView?'col-group-border':''}>{p.adj.toFixed(1)}</td>
+                {detailView && <td>{p.daly_wt !== null ? p.daly_wt : '\u2014'}</td>}
+                {detailView && <td>{p.pv_f < 1 ? p.pv_f.toFixed(3) : '1.0'}</td>}
                 <td>{p.dalys.toFixed(2)}</td>
-                <td>{p.wellbys.toFixed(1)}</td>
+                {detailView && <td className="col-group-border">{p.dollar_per_unit !== null ? fmt$(p.dollar_per_unit) : '\u2014'}</td>}
                 <td>{fmt$(p.dollars)}</td>
+                {detailView && <td className="col-group-border">{p.ls ? p.ls.toFixed(4) : '\u2014'}</td>}
+                {detailView && <td>{p.wellby_dur || '\u2014'}</td>}
+                <td>{p.wellbys.toFixed(1)}</td>
                 <td><ConfBadge conf={p.confidence} /></td>
+                {detailView && <td style={{color:'#6b7280',fontSize:'0.68rem',maxWidth:180,whiteSpace:'normal'}}>{p.formula_note}</td>}
+                <td><SourceLinks sources={SOURCES[p.id]} /></td>
+                {detailView && <td style={{color:'#6b7280',fontSize:'0.68rem',maxWidth:260,whiteSpace:'normal',lineHeight:'1.3'}}>{DERIVATIONS[p.id] || '\u2014'}</td>}
               </tr>)}
               <tr style={{fontWeight:700, background:'#f9fafb'}}>
-                <td colSpan={2}>Total</td><td></td>
+                <td colSpan={2}>Total</td>
+                {detailView && <td colSpan={7}></td>}
+                <td className={detailView?'col-group-border':''}></td>
+                {detailView && <td colSpan={2}></td>}
                 <td>{model.totalDalys.toFixed(2)}</td>
+                {detailView && <td className="col-group-border"></td>}
+                <td>{fmt$(model.totalDollars)}</td>
+                {detailView && <td className="col-group-border" colSpan={2}></td>}
                 <td>{model.totalWellbys.toFixed(1)}</td>
-                <td>{fmt$(model.totalDollars)}</td><td></td>
+                <td></td>
+                {detailView && <td></td>}
+                <td></td>
+                {detailView && <td></td>}
               </tr>
             </tbody>
           </table>
@@ -563,7 +817,7 @@ function App() {
 
       {tab==='sensitivity' && <div className="tornado-wrap">
         <div className="chart-card">
-          <h3>Tornado Chart — $ Benefit-Cost Ratio Sensitivity</h3>
+          <h3>Tornado Chart &mdash; $ Benefit-Cost Ratio Sensitivity</h3>
           <p style={{fontSize:'0.82rem',color:'#6b7280',marginBottom:16}}>Each bar shows BCR range when parameter varies from 5th to 95th percentile. Base BCR: {model.bcrDollar.toFixed(1)}&times;</p>
           <TornadoChart data={tornadoData} baseBcr={model.bcrDollar} width={850} />
         </div>
