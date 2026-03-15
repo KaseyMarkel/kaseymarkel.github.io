@@ -120,11 +120,11 @@ function percentile(arr, p) {
   return lo === hi ? sorted[lo] : sorted[lo] + (sorted[hi] - sorted[lo]) * (idx - lo);
 }
 
-const MC_PARAMS = [
+const MC_PARAMS_BASE = [
   { id:'haz_shift', key:'protein_haz', label:'Protein HAZ shift', min:0.05, mode:0.18, max:0.35 },
   { id:'iron_iq_smd', key:'iron_iq_smd', label:'Iron IQ (SMD)', min:0, mode:0.15, max:0.40 },
   { id:'farmer_income', key:'yield_income', label:'Farmer income gain (USD)', min:50, mode:108, max:200 },
-  { id:'adoption_rate', key:'adoption_rate', label:'Adoption/coverage rate', min:0.40, mode:0.60, max:1.0 },
+  { id:'adoption_rate', key:'adoption_rate', label:'Adoption/coverage rate', min:0.85, mode:0.98, max:1.0 },
   { id:'cost_per_farmer', key:'cost_per_farmer', label:'Cost per farmer (USD)', min:80, mode:121, max:200 },
   { id:'discount_rate', key:'discount_rate', label:'Discount rate', min:0.0, mode:0.03, max:0.06 },
   { id:'stunting_dw', key:'stunting_dw', label:'Stunting DALY weight', min:0.23, mode:3.5, max:6.1 },
@@ -137,13 +137,31 @@ const MC_PARAMS = [
   { id:'iron_mh_pct', key:'iron_mh_pct', label:'Iron MH reduction (%)', min:1, mode:5, max:12 },
   { id:'raven_pts', key:'protein_iq_raven', label:'Protein IQ (Raven pts)', min:0.3, mode:1.2, max:2.5 },
   { id:'dollar_per_stunting', key:'dollar_per_stunting', label:'$ per stunting case averted', min:1500, mode:3800, max:5000 },
+  { id:'market_spillover', key:'market_spillover', label:'Market spillover factor', min:0.20, mode:0.50, max:0.80 },
 ];
 
+// V8 overrides: modes centered on V8 defaults
+const MC_V8_OVERRIDES = {
+  adoption_rate: { min:0.90, mode:1.0, max:1.0 },
+  stunting_dw: { min:3.0, mode:6.1, max:8.0 },
+  discount_rate: { min:0.0, mode:0.0, max:0.03 },
+  market_spillover: { min:0.0, mode:0.0, max:0.0 },
+};
+
+function getMCParams(version) {
+  if (version === 'v8') {
+    return MC_PARAMS_BASE.map(p => MC_V8_OVERRIDES[p.key] ? {...p, ...MC_V8_OVERRIDES[p.key]} : p)
+      .filter(p => !(p.key === 'market_spillover' && p.mode === 0));
+  }
+  return MC_PARAMS_BASE;
+}
+
 function runMonteCarlo(baseParams, version, nIterations) {
+  const mcParams = getMCParams(version);
   const results = { dalys:[], dollars:[], bcr:[], wellbys:[], costPerDaly:[], costPerWellby:[], wellbyBcr:[] };
   for (let i = 0; i < nIterations; i++) {
     const sampled = {...baseParams};
-    for (const p of MC_PARAMS) {
+    for (const p of mcParams) {
       sampled[p.key] = sampleTriangular(p.min, p.mode, p.max);
     }
     const m = computeModel(sampled, version);
@@ -177,13 +195,15 @@ const DEFAULTS = {
   zinc_diarrhea_pct: 12, zinc_pneumonia_pct: 10, zinc_haz: 0.03, zinc_preterm_pct: 1.3, zinc_mh_pct: 5,
   yield_income: 108, income_healthcare_pct: 12, income_mh_sd: 0.06, income_nextgen: 0.0005,
   stunting_dw: 3.5, preterm_dw: 3.0,
-  adoption_rate: 0.60, iron_iq_include: true, dollar_per_stunting: 3800,
+  adoption_rate: 0.98, iron_iq_include: true, dollar_per_stunting: 3800,
+  market_spillover: 0.50,
 };
 
 const V8_DEFAULTS = {
   ...DEFAULTS,
   children_under_5: 500, working_age_adults: 600, children_0_24mo: 40, pregnancies_per_yr: 21,
   stunting_dw: 6.1, discount_rate: 0, adoption_rate: 1.0, iron_iq_include: true, dollar_per_stunting: 3800,
+  market_spillover: 0,
 };
 
 const COLORS = { protein: '#4472C4', food: '#808080', iron: '#C55A11', zinc: '#548235', income: '#BF8F00', wellby: '#7030A0' };
@@ -261,6 +281,9 @@ const SOURCES = {
   income_nextgen: [
     { short: 'Geography of intergenerational mobility', cite: 'Chetty et al. 2014', url: 'https://doi.org/10.1093/qje/qju022' },
   ],
+  market_spillover: [
+    { short: 'Semilla Nueva market data', cite: 'Semilla Nueva internal 2023', url: null },
+  ],
 };
 
 // ─── DERIVATIONS: how each estimate was obtained from its source ───
@@ -286,6 +309,7 @@ const DERIVATIONS = {
   income_healthcare: 'Wagstaff analysis: lower income is associated with higher hospitalization rates. We estimate 12% reduction in healthcare costs from $108/yr income gain.',
   income_mh: 'Ridley review: poverty causally worsens depression/anxiety. We apply 0.06 SD well-being improvement per income gain. WELLBY conversion via Frijters & Krekel Ch. 4 methodology.',
   income_nextgen: 'Chetty Figure V: rank-rank slope of 0.34 for intergenerational income mobility. We use 0.05% of lifetime earnings ($25k) as the marginal next-generation benefit of $108/yr income gain.',
+  market_spillover: 'Farmers sell ~50% of harvest into general market. Biofortified corn gets mixed into supply, reaching non-farm consumers at diluted doses. Spillover factor × sum of all nutritional pathway benefits.',
 };
 
 function computeModel(P, version) {
@@ -493,6 +517,20 @@ function computeModel(P, version) {
       formula_note: 'Fraction\u00d7$25k\u00d7children\u00d7PV', dollar_per_unit: P.income_nextgen*P.lifetime_earnings,
       raw, overlap:0, adj, daly_wt:null, pv_f:pvf, dalys:0, dollars, confidence:'Weak', ls, wellby_dur:40, wellbys: adj*ls*40*pvf, new_row:false }); }
 
+  // Row 25: Market Spillover — farmers sell ~50% of corn into general market
+  if (P.market_spillover > 0) {
+    const nutritionalCats = new Set(['protein','food','iron','zinc']);
+    const nutDalys = pathways.filter(p=>nutritionalCats.has(p.cat)).reduce((s,p)=>s+p.dalys, 0);
+    const nutDollars = pathways.filter(p=>nutritionalCats.has(p.cat)).reduce((s,p)=>s+p.dollars, 0);
+    const nutWellbys = pathways.filter(p=>nutritionalCats.has(p.cat)).reduce((s,p)=>s+p.wellbys, 0);
+    const spDalys = nutDalys * P.market_spillover;
+    const spDollars = nutDollars * P.market_spillover;
+    const spWellbys = nutWellbys * P.market_spillover;
+    pathways.push({ id:'market_spillover', cat:'income', intervention:'Market', outcome:'Spillover (non-farm consumers)',
+      central: P.market_spillover, units:'fraction of farm benefit', subgroup_desc:'Market consumers', subgroup_n: '—', baseline_rate:'~50% of corn sold',
+      formula_note: 'Spillover%×sum(nutritional DALYs/$)', dollar_per_unit: null,
+      raw: 0, overlap:0, adj:0, daly_wt:null, pv_f:1.0, dalys:spDalys, dollars:spDollars, confidence:'Weak', ls:0, wellby_dur:0, wellbys:spWellbys, new_row:true }); }
+
   const cost = (1000/P.household_size)*P.cost_per_farmer;
   const totalDalys = pathways.reduce((s,p) => s+p.dalys, 0);
   const totalDollars = pathways.reduce((s,p) => s+p.dollars, 0);
@@ -613,7 +651,8 @@ const WELLBY_SLIDERS = [
 ];
 const METHOD_SLIDERS = [
   { key:'discount_rate', label:'Discount rate', min:0, max:0.06, step:0.005, fmt:v=>(v*100).toFixed(1)+'%' },
-  { key:'adoption_rate', label:'Adoption/compliance', min:0.50, max:1.0, step:0.05, fmt:v=>(v*100).toFixed(0)+'%' },
+  { key:'adoption_rate', label:'Adoption (farmers growing seed)', min:0.80, max:1.0, step:0.01, fmt:v=>(v*100).toFixed(0)+'%' },
+  { key:'market_spillover', label:'Market spillover (non-farm consumers)', min:0, max:1.0, step:0.05, fmt:v=>(v*100).toFixed(0)+'%' },
   { key:'cost_per_farmer', label:'Cost per farmer (USD)', min:50, max:250, step:5, fmt:v=>'$'+v.toFixed(0) },
 ];
 
@@ -622,7 +661,8 @@ const TORNADO_PARAMS = [
   { key:'iron_iq_smd', label:'Iron IQ (SMD)', lo:0, hi:0.40 },
   { key:'yield_income', label:'Farmer income (USD)', lo:50, hi:200 },
   { key:'stunting_dw', label:'Stunting DW', lo:0.23, hi:6.1 },
-  { key:'adoption_rate', label:'Adoption rate', lo:0.50, hi:1.0 },
+  { key:'adoption_rate', label:'Adoption rate', lo:0.90, hi:1.0 },
+  { key:'market_spillover', label:'Market spillover', lo:0.20, hi:0.80 },
   { key:'dollar_per_stunting', label:'$/stunting case', lo:1500, hi:5000 },
   { key:'discount_rate', label:'Discount rate', lo:0, hi:0.05 },
   { key:'cost_per_farmer', label:'Cost per farmer', lo:80, hi:180 },
@@ -833,10 +873,10 @@ function App() {
           <div style={{textAlign:'right'}}>
             <div className="view-toggle" style={{marginBottom:4}}>
               <button className={modelVersion==='v8'?'active':''} onClick={()=>handleVersionChange('v8')}>V8</button>
-              <button className={modelVersion==='v10'?'active':''} onClick={()=>handleVersionChange('v10')}>V11</button>
+              <button className={modelVersion==='v10'?'active':''} onClick={()=>handleVersionChange('v10')}>V12</button>
             </div>
-            <div style={{fontSize:'0.7rem', opacity:0.6, color:'white', maxWidth:180}}>
-              {modelVersion==='v8' ? 'Annual, no discounting, 19 pathways' : 'Stunting DW 3.5, 60% adoption, 21 pathways'}
+            <div style={{fontSize:'0.7rem', opacity:0.6, color:'white', maxWidth:220}}>
+              {modelVersion==='v8' ? 'Annual, no discounting, 19 pathways' : 'DW 3.5, 98% adoption, market spillover, 22 pathways'}
             </div>
           </div>
         </div>
@@ -1006,7 +1046,7 @@ function App() {
           <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:16}}>
             <div>
               <h3 style={{margin:0}}>Monte Carlo Simulation</h3>
-              <p style={{fontSize:'0.82rem',color:'#6b7280',margin:'4px 0 0'}}>Simultaneously varies {MC_PARAMS.length} parameters from triangular distributions</p>
+              <p style={{fontSize:'0.82rem',color:'#6b7280',margin:'4px 0 0'}}>Simultaneously varies {getMCParams(modelVersion).length} parameters from triangular distributions</p>
             </div>
             <div style={{display:'flex',gap:12,alignItems:'center'}}>
               <select value={mcIterations} onChange={e=>setMcIterations(parseInt(e.target.value))}
@@ -1094,7 +1134,7 @@ function App() {
               <h3>Parameter Distributions</h3>
               <table className="pathway-table" style={{fontSize:'0.82rem'}}>
                 <thead><tr><th>Parameter</th><th>Min</th><th>Mode (base)</th><th>Max</th><th>Distribution</th></tr></thead>
-                <tbody>{MC_PARAMS.map(p =>
+                <tbody>{getMCParams(modelVersion).map(p =>
                   <tr key={p.id}><td>{p.label}</td><td>{p.min}</td><td style={{fontWeight:600}}>{p.mode}</td><td>{p.max}</td><td>Triangular</td></tr>
                 )}</tbody>
               </table>
