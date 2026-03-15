@@ -106,6 +106,58 @@ function normcdf(x, mean, sd) {
   return z > 0 ? 1 - p : p;
 }
 
+function sampleTriangular(min, mode, max) {
+  const u = Math.random();
+  const fc = (mode - min) / (max - min);
+  if (u < fc) return min + Math.sqrt(u * (max - min) * (mode - min));
+  return max - Math.sqrt((1 - u) * (max - min) * (max - mode));
+}
+
+function percentile(arr, p) {
+  const sorted = [...arr].sort((a, b) => a - b);
+  const idx = (p / 100) * (sorted.length - 1);
+  const lo = Math.floor(idx), hi = Math.ceil(idx);
+  return lo === hi ? sorted[lo] : sorted[lo] + (sorted[hi] - sorted[lo]) * (idx - lo);
+}
+
+const MC_PARAMS = [
+  { id:'haz_shift', key:'protein_haz', label:'Protein HAZ shift', min:0.05, mode:0.18, max:0.35 },
+  { id:'iron_iq_smd', key:'iron_iq_smd', label:'Iron IQ (SMD)', min:0, mode:0.15, max:0.40 },
+  { id:'farmer_income', key:'yield_income', label:'Farmer income gain (USD)', min:50, mode:108, max:200 },
+  { id:'adoption_rate', key:'adoption_rate', label:'Adoption/coverage rate', min:0.40, mode:0.60, max:1.0 },
+  { id:'cost_per_farmer', key:'cost_per_farmer', label:'Cost per farmer (USD)', min:80, mode:121, max:200 },
+  { id:'discount_rate', key:'discount_rate', label:'Discount rate', min:0.0, mode:0.03, max:0.06 },
+  { id:'stunting_dw', key:'stunting_dw', label:'Stunting DALY weight', min:0.23, mode:3.5, max:6.1 },
+  { id:'protein_work_pct', key:'protein_work_pct', label:'Protein work capacity (%)', min:1, mode:3, max:6 },
+  { id:'iron_work_pct', key:'iron_work_pct', label:'Iron work capacity (%)', min:2, mode:5, max:12 },
+  { id:'iron_maternal_pct', key:'iron_maternal_pct', label:'Iron maternal mort (%)', min:1, mode:5, max:12 },
+  { id:'income_mh_sd', key:'income_mh_sd', label:'Income MH (SD improvement)', min:0.02, mode:0.06, max:0.12 },
+  { id:'zinc_preterm_pct', key:'zinc_preterm_pct', label:'Zinc preterm reduction (%)', min:0, mode:1.3, max:4.2 },
+  { id:'zinc_mh_pct', key:'zinc_mh_pct', label:'Zinc MH reduction (%)', min:0, mode:5, max:12 },
+  { id:'iron_mh_pct', key:'iron_mh_pct', label:'Iron MH reduction (%)', min:1, mode:5, max:12 },
+  { id:'raven_pts', key:'protein_iq_raven', label:'Protein IQ (Raven pts)', min:0.3, mode:1.2, max:2.5 },
+  { id:'dollar_per_stunting', key:'dollar_per_stunting', label:'$ per stunting case averted', min:1500, mode:3800, max:5000 },
+];
+
+function runMonteCarlo(baseParams, version, nIterations) {
+  const results = { dalys:[], dollars:[], bcr:[], wellbys:[], costPerDaly:[], costPerWellby:[], wellbyBcr:[] };
+  for (let i = 0; i < nIterations; i++) {
+    const sampled = {...baseParams};
+    for (const p of MC_PARAMS) {
+      sampled[p.key] = sampleTriangular(p.min, p.mode, p.max);
+    }
+    const m = computeModel(sampled, version);
+    results.dalys.push(m.totalDalys);
+    results.dollars.push(m.totalDollars);
+    results.bcr.push(m.bcrDollar);
+    results.wellbys.push(m.totalWellbys);
+    results.costPerDaly.push(m.dollarPerDaly);
+    results.costPerWellby.push(m.dollarPerWellby);
+    results.wellbyBcr.push(m.bcrWellby);
+  }
+  return results;
+}
+
 const DEFAULTS = {
   children_under_5: 140, working_age_adults: 580, pregnancies_per_yr: 27, children_0_24mo: 55,
   farmers: 212, household_size: 4.72,
@@ -124,14 +176,14 @@ const DEFAULTS = {
   iron_iq_smd: 0.15, iron_work_pct: 5, iron_immune_pct: 10, iron_maternal_pct: 5, iron_infant_pct: 6, iron_mh_pct: 5,
   zinc_diarrhea_pct: 12, zinc_pneumonia_pct: 10, zinc_haz: 0.03, zinc_preterm_pct: 1.3, zinc_mh_pct: 5,
   yield_income: 108, income_healthcare_pct: 12, income_mh_sd: 0.06, income_nextgen: 0.0005,
-  stunting_dw: 0.4, preterm_dw: 3.0,
-  adoption_rate: 1.0,
+  stunting_dw: 3.5, preterm_dw: 3.0,
+  adoption_rate: 0.60, iron_iq_include: true, dollar_per_stunting: 3800,
 };
 
 const V8_DEFAULTS = {
   ...DEFAULTS,
   children_under_5: 500, working_age_adults: 600, children_0_24mo: 40, pregnancies_per_yr: 21,
-  stunting_dw: 6.1, discount_rate: 0, adoption_rate: 1.0,
+  stunting_dw: 6.1, discount_rate: 0, adoption_rate: 1.0, iron_iq_include: true, dollar_per_stunting: 3800,
 };
 
 const COLORS = { protein: '#4472C4', food: '#808080', iron: '#C55A11', zinc: '#548235', income: '#BF8F00', wellby: '#7030A0' };
@@ -251,11 +303,11 @@ function computeModel(P, version) {
   // Each pathway now includes: central, units, subgroup_desc, subgroup_n, baseline_rate, formula_note, dollar_per_unit
   // Row 4: Protein → Stunting
   { const raw = stuntingCases(P.protein_haz) * adopt; const adj = raw;
-    const dalys = adj * P.stunting_dw; const dollars = adj * 3800;
+    const dalys = adj * P.stunting_dw; const dollars = adj * P.dollar_per_stunting;
     const ls = P.ls_per_01_haz * P.protein_haz / 0.1;
     pathways.push({ id:'protein_stunting', cat:'protein', intervention:'Protein quality', outcome:'Stunting',
       central: P.protein_haz, units:'HAZ shift', subgroup_desc:'Children <5', subgroup_n: P.children_under_5, baseline_rate: (baseline_stunting*1000).toFixed(0)+'/1000',
-      formula_note: 'NORMDIST(\u22122, \u03bc+HAZ, 1) shift', dollar_per_unit: 3800,
+      formula_note: 'NORMDIST(\u22122, \u03bc+HAZ, 1) shift', dollar_per_unit: P.dollar_per_stunting,
       raw, overlap:0, adj, daly_wt:P.stunting_dw, pv_f:1.0, dalys, dollars, confidence:'Strong', ls, wellby_dur:40, wellbys: adj*ls*40, new_row:false }); }
 
   // Row 5: Protein → Future Salary (IQ)
@@ -299,22 +351,23 @@ function computeModel(P, version) {
 
   // Row 9: Food → Stunting
   { const raw = stuntingCases(P.food_haz)*adopt; const adj = raw*(1-0.15);
-    const dalys = adj*P.stunting_dw; const dollars = adj*3800;
+    const dalys = adj*P.stunting_dw; const dollars = adj*P.dollar_per_stunting;
     const ls = P.ls_per_01_haz*P.food_haz/0.1;
     pathways.push({ id:'food_stunting', cat:'food', intervention:'Total food', outcome:'Stunting',
       central: P.food_haz, units:'HAZ shift', subgroup_desc:'Children <5', subgroup_n: P.children_under_5, baseline_rate: (baseline_stunting*1000).toFixed(0)+'/1000',
-      formula_note: 'NORMDIST shift (2nd pathway after protein)', dollar_per_unit: 3800,
+      formula_note: 'NORMDIST shift (2nd pathway after protein)', dollar_per_unit: P.dollar_per_stunting,
       raw, overlap:0.15, adj, daly_wt:P.stunting_dw, pv_f:1.0, dalys, dollars, confidence:'Moderate', ls, wellby_dur:40, wellbys: adj*ls*40, new_row:false }); }
 
-  // Row 10: Iron → Future Salary (IQ)
-  { const raw = P.children_under_5*P.iron_def_children*adopt; const adj = raw*(1-0.25); const pvf = pv(15);
+  // Row 10: Iron → Future Salary (IQ) — V11: toggle to zero if dose-extrapolation concern
+  { const iqActive = P.iron_iq_include !== false;
+    const raw = iqActive ? P.children_under_5*P.iron_def_children*adopt : 0; const adj = raw*(1-0.25); const pvf = pv(15);
     const du = P.iron_iq_smd*P.iq_per_sd*P.earnings_per_iq*P.lifetime_earnings; const dollars = adj*du*pvf;
     const ig = P.iron_iq_smd*P.iq_per_sd*P.earnings_per_iq;
     const ls = P.ls_per_income_doubling*Math.log(1+ig)/Math.log(2);
-    pathways.push({ id:'iron_iq', cat:'iron', intervention:'Iron', outcome:'Future salary (IQ)',
+    pathways.push({ id:'iron_iq', cat:'iron', intervention:'Iron', outcome: iqActive ? 'Future salary (IQ)' : 'Future salary (IQ) [OFF]',
       central: P.iron_iq_smd, units:'SMD cognitive', subgroup_desc:'Fe-def children <5', subgroup_n: Math.round(P.children_under_5*P.iron_def_children), baseline_rate:'30% Fe-def',
-      formula_note: 'SMD\u00d715 IQ/SD\u00d72%\u00d7$25k', dollar_per_unit: du,
-      raw, overlap:0.25, adj, daly_wt:null, pv_f:pvf, dalys:0, dollars, confidence:'Moderate', ls, wellby_dur:40, wellbys: adj*ls*40*pvf, new_row:false }); }
+      formula_note: iqActive ? 'SMD\u00d715 IQ/SD\u00d72%\u00d7$25k' : 'ZEROED: dose-extrapolation flag (3-5mg vs 60mg RCT)', dollar_per_unit: du,
+      raw, overlap:0.25, adj, daly_wt:null, pv_f:pvf, dalys:0, dollars, confidence: iqActive ? 'Moderate' : 'Weak', ls: iqActive ? ls : 0, wellby_dur:40, wellbys: iqActive ? adj*ls*40*pvf : 0, new_row:false }); }
 
   // Row 11: Iron → Work Capacity
   { const raw = P.working_age_adults*P.anemia_prevalence*adopt; const adj = raw*(1-0.10);
@@ -383,7 +436,7 @@ function computeModel(P, version) {
   { const raw = stuntingCases(P.zinc_haz)*adopt;
     pathways.push({ id:'zinc_stunting', cat:'zinc', intervention:'Zinc', outcome:'Stunting (zeroed)',
       central: P.zinc_haz, units:'HAZ shift', subgroup_desc:'Children <5', subgroup_n: P.children_under_5, baseline_rate: (baseline_stunting*1000).toFixed(0)+'/1000',
-      formula_note: 'ZEROED: Zn+Fe co-admin antagonism', dollar_per_unit: 3800,
+      formula_note: 'ZEROED: Zn+Fe co-admin antagonism', dollar_per_unit: P.dollar_per_stunting,
       raw, overlap:1.0, adj:0, daly_wt:P.stunting_dw, pv_f:1.0, dalys:0, dollars:0, confidence:'Low-Mod', ls:0, wellby_dur:0, wellbys:0, new_row:false }); }
 
   // Row 19: Zinc → Preterm Birth (V10 only)
@@ -549,8 +602,9 @@ const DEMO_SLIDERS = [
   { key:'children_0_24mo', label:'Children 0-24mo', min:30, max:80, step:1, fmt:v=>v.toFixed(0) },
 ];
 const DALY_SLIDERS = [
-  { key:'stunting_dw', label:'Stunting disability weight', min:0.1, max:8.0, step:0.1, fmt:v=>v.toFixed(1) },
+  { key:'stunting_dw', label:'Stunting DALY weight (lifetime)', min:0.23, max:8.0, step:0.01, fmt:v=>v.toFixed(2) },
   { key:'preterm_dw', label:'Preterm disability weight', min:0.5, max:10, step:0.5, fmt:v=>v.toFixed(1) },
+  { key:'dollar_per_stunting', label:'$ per stunting case averted', min:1500, max:5000, step:100, fmt:v=>'$'+v.toLocaleString() },
 ];
 const WELLBY_SLIDERS = [
   { key:'guatemala_ls', label:'Guatemala avg life satisfaction', min:4, max:8, step:0.1, fmt:v=>v.toFixed(1) },
@@ -559,7 +613,7 @@ const WELLBY_SLIDERS = [
 ];
 const METHOD_SLIDERS = [
   { key:'discount_rate', label:'Discount rate', min:0, max:0.06, step:0.005, fmt:v=>(v*100).toFixed(1)+'%' },
-  { key:'adoption_rate', label:'Adoption/compliance', min:0.30, max:1.0, step:0.05, fmt:v=>(v*100).toFixed(0)+'%' },
+  { key:'adoption_rate', label:'Adoption/compliance', min:0.50, max:1.0, step:0.05, fmt:v=>(v*100).toFixed(0)+'%' },
   { key:'cost_per_farmer', label:'Cost per farmer (USD)', min:50, max:250, step:5, fmt:v=>'$'+v.toFixed(0) },
 ];
 
@@ -567,8 +621,9 @@ const TORNADO_PARAMS = [
   { key:'protein_haz', label:'Protein HAZ shift', lo:0.05, hi:0.35 },
   { key:'iron_iq_smd', label:'Iron IQ (SMD)', lo:0, hi:0.40 },
   { key:'yield_income', label:'Farmer income (USD)', lo:50, hi:200 },
-  { key:'stunting_dw', label:'Stunting DW', lo:0.23, hi:0.6 },
+  { key:'stunting_dw', label:'Stunting DW', lo:0.23, hi:6.1 },
   { key:'adoption_rate', label:'Adoption rate', lo:0.50, hi:1.0 },
+  { key:'dollar_per_stunting', label:'$/stunting case', lo:1500, hi:5000 },
   { key:'discount_rate', label:'Discount rate', lo:0, hi:0.05 },
   { key:'cost_per_farmer', label:'Cost per farmer', lo:80, hi:180 },
   { key:'income_mh_sd', label:'Income MH (SD)', lo:0.02, hi:0.10 },
@@ -625,6 +680,94 @@ function SourceLinks({ sources }) {
   ))}</span>;
 }
 
+function Histogram({ data, label, thresholds, width, height }) {
+  const w = width || 700, h = height || 320;
+  const pad = { top: 20, right: 30, bottom: 50, left: 60 };
+  const cw = w - pad.left - pad.right, ch = h - pad.top - pad.bottom;
+  if (!data || data.length === 0) return null;
+  const sorted = [...data].sort((a,b) => a - b);
+  const p10 = percentile(data, 10), p50 = percentile(data, 50), p90 = percentile(data, 90);
+  const minV = sorted[0], maxV = sorted[sorted.length - 1];
+  const nBins = 40;
+  const binW = (maxV - minV) / nBins || 1;
+  const bins = Array(nBins).fill(0);
+  for (const v of data) { const b = Math.min(Math.floor((v - minV) / binW), nBins - 1); bins[b]++; }
+  const maxBin = Math.max(...bins);
+  const scaleX = v => pad.left + ((v - minV) / (maxV - minV)) * cw;
+  const scaleY = v => pad.top + ch - (v / maxBin) * ch;
+  const barW = cw / nBins;
+  const [tip, setTip] = useState(null);
+  return (
+    <div style={{position:'relative'}}>
+      <svg width={w} height={h} style={{display:'block'}}>
+        {bins.map((count, i) => {
+          const x = pad.left + i * barW;
+          const bh = (count / maxBin) * ch;
+          const binStart = minV + i * binW;
+          const inRange = binStart + binW/2 >= p10 && binStart + binW/2 <= p90;
+          return <rect key={i} x={x} y={pad.top + ch - bh} width={Math.max(barW - 1, 1)} height={bh}
+            fill={inRange ? '#4472C4' : '#93c5fd'} opacity={0.85}
+            onMouseEnter={e => setTip({x:e.clientX,y:e.clientY,lo:binStart.toFixed(2),hi:(binStart+binW).toFixed(2),n:count})}
+            onMouseLeave={() => setTip(null)} style={{cursor:'pointer'}} />;
+        })}
+        <line x1={scaleX(p50)} y1={pad.top} x2={scaleX(p50)} y2={pad.top+ch} stroke="#1a1a2e" strokeWidth={2} strokeDasharray="6 3" />
+        <text x={scaleX(p50)} y={pad.top-4} textAnchor="middle" fontSize={11} fill="#1a1a2e" fontWeight={600}>Median: {p50.toFixed(1)}</text>
+        {[0, 0.25, 0.5, 0.75, 1].map((f, i) => {
+          const v = minV + f * (maxV - minV);
+          return <text key={i} x={scaleX(v)} y={h - 8} textAnchor="middle" fontSize={10} fill="#6b7280">{v.toFixed(1)}</text>;
+        })}
+        <text x={w/2} y={h-2} textAnchor="middle" fontSize={12} fill="#374151">{label}</text>
+        <text x={pad.left-8} y={pad.top+ch/2} textAnchor="middle" fontSize={11} fill="#6b7280" transform={`rotate(-90,${pad.left-8},${pad.top+ch/2})`}>Frequency</text>
+        {thresholds && thresholds.map((t, i) => {
+          const prob = (data.filter(v => v > t.value).length / data.length * 100).toFixed(0);
+          return <g key={i}>
+            <line x1={scaleX(t.value)} y1={pad.top} x2={scaleX(t.value)} y2={pad.top+ch} stroke={t.color||'#ef4444'} strokeWidth={1.5} strokeDasharray="4 2" />
+            <text x={scaleX(t.value)+4} y={pad.top+14+i*14} fontSize={10} fill={t.color||'#ef4444'}>P(&gt;{t.label})={prob}%</text>
+          </g>;
+        })}
+      </svg>
+      {tip && <div className="tooltip-box" style={{left:tip.x+10,top:tip.y-40,position:'fixed'}}>
+        Range: {tip.lo}&ndash;{tip.hi}<br/>Count: {tip.n} ({(tip.n/data.length*100).toFixed(1)}%)
+      </div>}
+    </div>
+  );
+}
+
+function CDFChart({ data, label, width, height }) {
+  const w = width || 700, h = height || 280;
+  const pad = { top: 20, right: 30, bottom: 45, left: 60 };
+  const cw = w - pad.left - pad.right, ch = h - pad.top - pad.bottom;
+  if (!data || data.length === 0) return null;
+  const sorted = [...data].sort((a,b) => a - b);
+  const minV = sorted[0], maxV = sorted[sorted.length - 1];
+  const scaleX = v => pad.left + ((v - minV) / (maxV - minV)) * cw;
+  const scaleY = p => pad.top + ch - p * ch;
+  const step = Math.max(1, Math.floor(sorted.length / 200));
+  const points = sorted.filter((_,i) => i % step === 0 || i === sorted.length - 1)
+    .map((v, i, arr) => `${scaleX(v)},${scaleY((i * step) / sorted.length)}`).join(' ');
+  const p10 = percentile(data, 10), p50 = percentile(data, 50), p90 = percentile(data, 90);
+  return (
+    <svg width={w} height={h} style={{display:'block'}}>
+      <polyline points={points} fill="none" stroke="#4472C4" strokeWidth={2} />
+      {[{p:0.10,v:p10,label:'10th'},{p:0.50,v:p50,label:'50th'},{p:0.90,v:p90,label:'90th'}].map(({p,v,label:l}) => (
+        <g key={l}>
+          <line x1={pad.left} y1={scaleY(p)} x2={scaleX(v)} y2={scaleY(p)} stroke="#9ca3af" strokeDasharray="3 2" strokeWidth={1} />
+          <line x1={scaleX(v)} y1={scaleY(p)} x2={scaleX(v)} y2={pad.top+ch} stroke="#9ca3af" strokeDasharray="3 2" strokeWidth={1} />
+          <text x={pad.left-4} y={scaleY(p)+4} textAnchor="end" fontSize={10} fill="#6b7280">{(p*100).toFixed(0)}%</text>
+          <text x={scaleX(v)} y={pad.top+ch+14} textAnchor="middle" fontSize={10} fill="#374151" fontWeight={500}>{v.toFixed(1)}</text>
+          <circle cx={scaleX(v)} cy={scaleY(p)} r={3.5} fill="#4472C4" />
+        </g>
+      ))}
+      {[0, 0.25, 0.5, 0.75, 1].map((f, i) => {
+        const v = minV + f * (maxV - minV);
+        return <text key={i} x={scaleX(v)} y={h-4} textAnchor="middle" fontSize={10} fill="#6b7280">{v.toFixed(1)}</text>;
+      })}
+      <text x={w/2} y={h} textAnchor="middle" fontSize={12} fill="#374151">{label}</text>
+      <text x={pad.left-8} y={pad.top+ch/2} textAnchor="middle" fontSize={11} fill="#6b7280" transform={`rotate(-90,${pad.left-8},${pad.top+ch/2})`}>Cumulative Probability</text>
+    </svg>
+  );
+}
+
 function App() {
   const [tab, setTab] = useState('summary');
   const [modelVersion, setModelVersion] = useState('v10');
@@ -632,6 +775,10 @@ function App() {
   const [sortCol, setSortCol] = useState(null);
   const [sortDir, setSortDir] = useState(1);
   const [detailView, setDetailView] = useState(false);
+  const [mcResults, setMcResults] = useState(null);
+  const [mcRunning, setMcRunning] = useState(false);
+  const [mcIterations, setMcIterations] = useState(5000);
+  const [mcMetric, setMcMetric] = useState('bcr');
 
   const handleVersionChange = useCallback((v) => {
     setModelVersion(v);
@@ -639,6 +786,14 @@ function App() {
   }, []);
   const handleParam = useCallback((key, val) => { setParams(prev => ({...prev, [key]: val})); }, []);
   const resetParams = useCallback(() => setParams(modelVersion === 'v8' ? {...V8_DEFAULTS} : {...DEFAULTS}), [modelVersion]);
+  const handleRunMC = useCallback(() => {
+    setMcRunning(true);
+    setTimeout(() => {
+      const results = runMonteCarlo(params, modelVersion, mcIterations);
+      setMcResults(results);
+      setMcRunning(false);
+    }, 50);
+  }, [params, modelVersion, mcIterations]);
   const model = useMemo(() => computeModel(params, modelVersion), [params, modelVersion]);
 
   const sortedPathways = useMemo(() => {
@@ -690,6 +845,7 @@ function App() {
         <button className={'tab-btn '+(tab==='summary'?'active':'')} onClick={()=>setTab('summary')}>Summary</button>
         <button className={'tab-btn '+(tab==='params'?'active':'')} onClick={()=>setTab('params')}>Parameters</button>
         <button className={'tab-btn '+(tab==='sensitivity'?'active':'')} onClick={()=>setTab('sensitivity')}>Sensitivity</button>
+        <button className={'tab-btn '+(tab==='montecarlo'?'active':'')} onClick={()=>setTab('montecarlo')}>Monte Carlo</button>
       </div>
 
       {tab==='summary' && <div>
@@ -808,6 +964,18 @@ function App() {
           </div>
           <button className="reset-btn" onClick={resetParams}>Reset to defaults</button>
         </div>
+        <div className="param-group">
+          <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+            <div>
+              <h3 style={{fontSize:'1rem',fontWeight:600,color:'#374151',marginBottom:2}}>Iron &rarr; IQ Pathway</h3>
+              <p style={{fontSize:'0.78rem',color:'#9ca3af',margin:0}}>RCT evidence at &ge;60mg/day; biofortification provides ~3&ndash;5mg. Toggle off to see impact of zeroing this pathway.</p>
+            </div>
+            <div className="view-toggle">
+              <button className={params.iron_iq_include?'active':''} onClick={()=>handleParam('iron_iq_include', true)}>Include</button>
+              <button className={!params.iron_iq_include?'active':''} onClick={()=>handleParam('iron_iq_include', false)}>Zero</button>
+            </div>
+          </div>
+        </div>
         <ParamGroup title="Effect Sizes" sliders={EFFECT_SLIDERS} params={params} onChange={handleParam} />
         <ParamGroup title="Demographics" sliders={DEMO_SLIDERS} params={params} onChange={handleParam} defaultOpen={false} />
         <ParamGroup title="DALY Weights" sliders={DALY_SLIDERS} params={params} onChange={handleParam} defaultOpen={false} />
@@ -830,6 +998,108 @@ function App() {
               return <tr key={d.name}><td>{d.name}</td><td>{tp?.lo}</td><td>{tp?.hi}</td><td>{d.low.toFixed(2)}&times;</td><td>{d.high.toFixed(2)}&times;</td><td>{d.range.toFixed(2)}</td></tr>;
             })}</tbody>
           </table>
+        </div>
+      </div>}
+
+      {tab==='montecarlo' && <div style={{padding:24,maxWidth:1000,margin:'0 auto'}}>
+        <div className="chart-card">
+          <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:16}}>
+            <div>
+              <h3 style={{margin:0}}>Monte Carlo Simulation</h3>
+              <p style={{fontSize:'0.82rem',color:'#6b7280',margin:'4px 0 0'}}>Simultaneously varies {MC_PARAMS.length} parameters from triangular distributions</p>
+            </div>
+            <div style={{display:'flex',gap:12,alignItems:'center'}}>
+              <select value={mcIterations} onChange={e=>setMcIterations(parseInt(e.target.value))}
+                style={{padding:'6px 10px',borderRadius:6,border:'1px solid #d1d5db',fontSize:'0.85rem'}}>
+                <option value={1000}>1,000 runs</option>
+                <option value={5000}>5,000 runs</option>
+                <option value={10000}>10,000 runs</option>
+                <option value={20000}>20,000 runs</option>
+              </select>
+              <button onClick={handleRunMC} disabled={mcRunning}
+                style={{padding:'8px 20px',background:mcRunning?'#9ca3af':'#4472C4',color:'white',border:'none',borderRadius:6,cursor:mcRunning?'default':'pointer',fontWeight:600,fontSize:'0.9rem'}}>
+                {mcRunning ? 'Running...' : 'Run Simulation'}
+              </button>
+            </div>
+          </div>
+
+          {!mcResults && !mcRunning && <div style={{textAlign:'center',padding:'60px 20px',color:'#9ca3af'}}>
+            <p style={{fontSize:'1.1rem',marginBottom:8}}>Click "Run Simulation" to start</p>
+            <p style={{fontSize:'0.85rem'}}>The simulation samples all uncertain parameters simultaneously from their distributions, capturing compounding uncertainty that one-at-a-time sensitivity analysis misses.</p>
+          </div>}
+
+          {mcResults && <div>
+            <div style={{display:'flex',gap:8,marginBottom:16}}>
+              {[{k:'bcr',l:'BCR ($)'},{k:'costPerDaly',l:'$/DALY'},{k:'wellbys',l:'WELLBYs'},{k:'wellbyBcr',l:'BCR (WELLBY)'}].map(({k,l}) =>
+                <button key={k} className={'tab-btn'+(mcMetric===k?' active':'')} onClick={()=>setMcMetric(k)}
+                  style={{padding:'6px 14px',fontSize:'0.82rem',borderBottom:mcMetric===k?'3px solid #4472C4':'3px solid transparent'}}>{l}</button>
+              )}
+            </div>
+
+            <Histogram data={mcResults[mcMetric]}
+              label={mcMetric==='bcr'?'Benefit-Cost Ratio ($)':mcMetric==='costPerDaly'?'$/DALY':mcMetric==='wellbys'?'WELLBYs per 1,000':'BCR (WELLBY)'}
+              thresholds={mcMetric==='bcr'?[{value:1,label:'1\u00d7',color:'#ef4444'},{value:3,label:'3\u00d7',color:'#f59e0b'}]:
+                mcMetric==='wellbyBcr'?[{value:1,label:'1\u00d7',color:'#ef4444'}]:null}
+              width={900} height={320} />
+
+            <div style={{display:'grid',gridTemplateColumns:'repeat(5,1fr)',gap:12,margin:'20px 0',background:'#f9fafb',borderRadius:8,padding:16}}>
+              <div style={{fontWeight:600,fontSize:'0.82rem',color:'#6b7280'}}></div>
+              <div style={{fontWeight:600,fontSize:'0.82rem',color:'#6b7280',textAlign:'center'}}>10th %ile</div>
+              <div style={{fontWeight:600,fontSize:'0.82rem',color:'#6b7280',textAlign:'center'}}>Median</div>
+              <div style={{fontWeight:600,fontSize:'0.82rem',color:'#6b7280',textAlign:'center'}}>90th %ile</div>
+              <div style={{fontWeight:600,fontSize:'0.82rem',color:'#6b7280',textAlign:'center'}}>Mean</div>
+              {[
+                {k:'bcr',l:'BCR ($)',fmt:v=>v.toFixed(1)+'\u00d7'},
+                {k:'costPerDaly',l:'$/DALY',fmt:v=>'$'+Math.round(v).toLocaleString()},
+                {k:'dalys',l:'DALYs/1000',fmt:v=>v.toFixed(1)},
+                {k:'wellbys',l:'WELLBYs/1000',fmt:v=>v.toFixed(1)},
+                {k:'costPerWellby',l:'$/WELLBY',fmt:v=>'$'+Math.round(v).toLocaleString()},
+                {k:'wellbyBcr',l:'BCR (WELLBY)',fmt:v=>v.toFixed(1)+'\u00d7'},
+              ].map(({k,l,fmt}) => {
+                const d = mcResults[k]; const mean = d.reduce((s,v)=>s+v,0)/d.length;
+                return <React.Fragment key={k}>
+                  <div style={{fontWeight:500,fontSize:'0.85rem'}}>{l}</div>
+                  <div style={{textAlign:'center',fontSize:'0.85rem'}}>{fmt(percentile(d,10))}</div>
+                  <div style={{textAlign:'center',fontSize:'0.85rem',fontWeight:600}}>{fmt(percentile(d,50))}</div>
+                  <div style={{textAlign:'center',fontSize:'0.85rem'}}>{fmt(percentile(d,90))}</div>
+                  <div style={{textAlign:'center',fontSize:'0.85rem',color:'#6b7280'}}>{fmt(mean)}</div>
+                </React.Fragment>;
+              })}
+            </div>
+
+            <div className="chart-card" style={{background:'#f0f7ff',border:'1px solid #bfdbfe',marginBottom:16}}>
+              <h3 style={{fontSize:'1rem',marginBottom:8}}>Key Probability Statements</h3>
+              {(() => {
+                const pBcr1 = (mcResults.bcr.filter(v=>v>1).length/mcResults.bcr.length*100).toFixed(0);
+                const pBcr3 = (mcResults.bcr.filter(v=>v>3).length/mcResults.bcr.length*100).toFixed(0);
+                const medCostWellby = percentile(mcResults.costPerWellby, 50);
+                const loCostWellby = percentile(mcResults.costPerWellby, 10);
+                const hiCostWellby = percentile(mcResults.costPerWellby, 90);
+                return <div style={{fontSize:'0.95rem',lineHeight:1.8}}>
+                  <p>There is a <strong>{pBcr1}%</strong> probability the program returns more than $1 for every $1 spent (BCR &gt; 1&times;).</p>
+                  <p>There is a <strong>{pBcr3}%</strong> probability the program returns more than $3 for every $1 spent (BCR &gt; 3&times;).</p>
+                  <p>The median cost per WELLBY is <strong>${Math.round(medCostWellby).toLocaleString()}</strong> (90% range: ${Math.round(loCostWellby).toLocaleString()}&ndash;${Math.round(hiCostWellby).toLocaleString()}).</p>
+                </div>;
+              })()}
+            </div>
+
+            <div className="chart-card" style={{marginBottom:16}}>
+              <h3>Cumulative Distribution &mdash; {mcMetric==='bcr'?'BCR ($)':mcMetric==='costPerDaly'?'$/DALY':mcMetric==='wellbys'?'WELLBYs':'BCR (WELLBY)'}</h3>
+              <CDFChart data={mcResults[mcMetric]}
+                label={mcMetric==='bcr'?'Benefit-Cost Ratio ($)':mcMetric==='costPerDaly'?'$/DALY':mcMetric==='wellbys'?'WELLBYs per 1,000':'BCR (WELLBY)'}
+                width={900} height={280} />
+            </div>
+
+            <div className="chart-card">
+              <h3>Parameter Distributions</h3>
+              <table className="pathway-table" style={{fontSize:'0.82rem'}}>
+                <thead><tr><th>Parameter</th><th>Min</th><th>Mode (base)</th><th>Max</th><th>Distribution</th></tr></thead>
+                <tbody>{MC_PARAMS.map(p =>
+                  <tr key={p.id}><td>{p.label}</td><td>{p.min}</td><td style={{fontWeight:600}}>{p.mode}</td><td>{p.max}</td><td>Triangular</td></tr>
+                )}</tbody>
+              </table>
+            </div>
+          </div>}
         </div>
       </div>}
     </div>
