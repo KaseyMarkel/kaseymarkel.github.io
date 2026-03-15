@@ -18,7 +18,7 @@
 
 
   
-    🌱 Breeding Dashboard
+    Breeding Dashboard
     Enter password to access the dashboard">
   <meta name="author" content="Kasey Markel"/><script type="application/ld+json">
 {
@@ -68,9 +68,9 @@
     "name" : "Kasey Markel"
   },
   "headline": "Breeding Dashboard",
-  "description" : " 🌱 Breeding Dashboard Enter password to access the dashboard\n",
+  "description" : " Breeding Dashboard Enter password to access the dashboard\n",
   "inLanguage" : "en",
-  "wordCount":  16 ,
+  "wordCount":  20 ,
   "datePublished" : "0001-01-01T00:00:00\u002b00:00",
   "dateModified" : "0001-01-01T00:00:00\u002b00:00",
   "image" : "https:\/\/kaseymarkel.com\/",
@@ -95,7 +95,7 @@
 
 
   
-    🌱 Breeding Dashboard
+    Breeding Dashboard
     Enter password to access the dashboard">
 <meta property="og:url" content="https://kaseymarkel.com/page/dashboard/" />
 <meta property="og:type" content="website" />
@@ -163,7 +163,7 @@
         
           
             <li>
-              <a title="Dashboard" href="/page/dashboard">Dashboard</a>
+              <a title="Private Projects" href="/page/private-projects">Private Projects</a>
             </li>
           
         
@@ -273,15 +273,9 @@
       <article role="main" class="blog-post">
         
 <style>
-/* Hide entire header section and add top spacing */
-.intro-header {
-  display: none !important;
-}
-.header-section.has-img {
-  display: none !important;
-}
+.intro-header { display: none !important; }
+.header-section.has-img { display: none !important; }
 
-/* Add top padding to main content to account for navigation bar */
 div[role="main"].container {
   padding-top: 80px !important;
   margin-top: 0 !important;
@@ -290,12 +284,8 @@ div[role="main"].container {
   padding-right: 0 !important;
 }
 
-/* Override footer for dashboard page */
-footer {
-  display: none !important;
-}
+footer { display: none !important; }
 
-/* Password gate styling */
 .password-gate {
   min-height: 80vh;
   display: flex;
@@ -315,43 +305,22 @@ footer {
   width: 90%;
 }
 
-.password-box h2 {
-  color: #333;
-  margin-bottom: 10px;
-  font-size: 1.5rem;
-}
-
-.password-box p {
-  color: #666;
-  margin-bottom: 25px;
-  font-size: 0.95rem;
-}
+.password-box h2 { color: #333; margin-bottom: 10px; font-size: 1.5rem; }
+.password-box p { color: #666; margin-bottom: 25px; font-size: 0.95rem; }
 
 .password-box input[type="password"] {
-  width: 100%;
-  padding: 12px 16px;
-  border: 2px solid #e0e0e0;
-  border-radius: 8px;
-  font-size: 1rem;
-  margin-bottom: 15px;
-  transition: border-color 0.2s;
+  width: 100%; padding: 12px 16px; border: 2px solid #e0e0e0;
+  border-radius: 8px; font-size: 1rem; margin-bottom: 15px;
+  transition: border-color 0.2s; box-sizing: border-box;
 }
 
-.password-box input[type="password"]:focus {
-  outline: none;
-  border-color: #667eea;
-}
+.password-box input[type="password"]:focus { outline: none; border-color: #667eea; }
 
 .password-box button {
-  width: 100%;
-  padding: 12px;
+  width: 100%; padding: 12px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
+  color: white; border: none; border-radius: 8px;
+  font-size: 1rem; font-weight: 600; cursor: pointer;
   transition: transform 0.2s, box-shadow 0.2s;
 }
 
@@ -360,29 +329,26 @@ footer {
   box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
 }
 
-.password-error {
-  color: #ef4444;
+.password-error { color: #ef4444; font-size: 0.9rem; margin-top: 10px; display: none; }
+.password-error.show { display: block; }
+
+#dashboard-container { display: none; }
+#dashboard-container.unlocked { display: block; }
+
+.back-link {
+  display: inline-block;
+  padding: 8px 16px;
+  margin: 10px 20px;
+  color: #667eea;
+  text-decoration: none;
   font-size: 0.9rem;
-  margin-top: 10px;
-  display: none;
 }
-
-.password-error.show {
-  display: block;
-}
-
-#dashboard-container {
-  display: none;
-}
-
-#dashboard-container.unlocked {
-  display: block;
-}
+.back-link:hover { text-decoration: underline; }
 </style>
 
 <div id="password-gate" class="password-gate">
   <div class="password-box">
-    <h2>🌱 Breeding Dashboard</h2>
+    <h2>Breeding Dashboard</h2>
     <p>Enter password to access the dashboard</p>
     <input type="password" id="dashboard-password" placeholder="Enter password" onkeypress="if(event.key === 'Enter') checkPassword()">
     <button onclick="checkPassword()">Access Dashboard</button>
@@ -391,22 +357,21 @@ footer {
 </div>
 
 <div id="dashboard-container">
-  <iframe id="dashboard-frame" src="/breeding-dashboard/" style="width: 100%; height: calc(100vh - 60px); border: none;"></iframe>
+  <a class="back-link" href="/page/private-projects/">&larr; Back to Private Projects</a>
+  <iframe id="dashboard-frame" src="/breeding-dashboard/" style="width: 100%; height: calc(100vh - 100px); border: none;"></iframe>
 </div>
 
 <script>
 function checkPassword() {
-  const input = document.getElementById('dashboard-password');
-  const error = document.getElementById('password-error');
-  const gate = document.getElementById('password-gate');
-  const container = document.getElementById('dashboard-container');
+  var input = document.getElementById('dashboard-password');
+  var error = document.getElementById('password-error');
+  var gate = document.getElementById('password-gate');
+  var container = document.getElementById('dashboard-container');
 
-  // Simple password check - the password is "Semilla"
   if (input.value === 'Semilla') {
     gate.style.display = 'none';
     container.classList.add('unlocked');
-    // Store in session so refresh doesn't require re-entry
-    sessionStorage.setItem('dashboard-auth', 'true');
+    sessionStorage.setItem('private-projects-auth', 'true');
   } else {
     error.classList.add('show');
     input.value = '';
@@ -414,9 +379,8 @@ function checkPassword() {
   }
 }
 
-// Check if already authenticated in this session
 document.addEventListener('DOMContentLoaded', function() {
-  if (sessionStorage.getItem('dashboard-auth') === 'true') {
+  if (sessionStorage.getItem('private-projects-auth') === 'true') {
     document.getElementById('password-gate').style.display = 'none';
     document.getElementById('dashboard-container').classList.add('unlocked');
   }

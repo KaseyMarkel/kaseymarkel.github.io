@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Biofortified Maize CEA Dashboard</title>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f8f9fa; color: #1a1a2e; line-height: 1.5; }
+
+.tab-bar { display: flex; background: #fff; border-bottom: 2px solid #e5e7eb; padding: 0 24px; position: sticky; top: 0; z-index: 100; }
+.tab-btn { padding: 14px 24px; border: none; background: none; font-size: 0.95rem; font-weight: 500; color: #6b7280; cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -2px; transition: all 0.15s; }
+.tab-btn:hover { color: #374151; }
+.tab-btn.active { color: #4472C4; border-bottom-color: #4472C4; font-weight: 600; }
+
+.dash-header { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: white; padding: 28px 32px 20px; }
+.dash-header h1 { font-size: 1.5rem; font-weight: 700; margin-bottom: 4px; }
+.dash-header p { font-size: 0.9rem; opacity: 0.7; }
+
+.metric-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; padding: 24px; }
+.metric-card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+.metric-card .label { font-size: 0.8rem; color: #6b7280; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+.metric-card .value { font-size: 1.8rem; font-weight: 700; color: #1a1a2e; }
+.metric-card .sub { font-size: 0.8rem; color: #9ca3af; margin-top: 4px; }
+
+.secondary-metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; padding: 0 24px 24px; }
+.sec-metric { background: white; border-radius: 8px; padding: 14px 16px; box-shadow: 0 1px 2px rgba(0,0,0,0.06); }
+.sec-metric .label { font-size: 0.75rem; color: #6b7280; }
+.sec-metric .value { font-size: 1.1rem; font-weight: 600; }
+
+.pathway-table-wrap { padding: 0 24px 24px; overflow-x: auto; }
+.pathway-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+.pathway-table th { background: #f9fafb; padding: 10px 12px; text-align: left; font-weight: 600; color: #374151; border-bottom: 2px solid #e5e7eb; cursor: pointer; white-space: nowrap; user-select: none; }
+.pathway-table th:hover { background: #f3f4f6; }
+.pathway-table td { padding: 9px 12px; border-bottom: 1px solid #f3f4f6; }
+.pathway-table tr:hover td { background: #f9fafb; }
+.pathway-table tr.new-row td { background: #fef9ee; }
+
+.badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 0.7rem; font-weight: 600; }
+.badge-strong { background: #dcfce7; color: #166534; }
+.badge-moderate { background: #fef3c7; color: #92400e; }
+.badge-low-mod { background: #ffedd5; color: #9a3412; }
+.badge-weak { background: #fee2e2; color: #991b1b; }
+
+.idot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+
+.chart-section { padding: 0 24px 24px; }
+.chart-card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); margin-bottom: 20px; }
+.chart-card h3 { font-size: 1rem; font-weight: 600; color: #374151; margin-bottom: 16px; }
+
+.params-wrap { padding: 24px; max-width: 900px; margin: 0 auto; }
+.param-group { background: white; border-radius: 12px; padding: 20px 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); margin-bottom: 16px; }
+.param-group-header { display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; }
+.param-group-header h3 { font-size: 1rem; font-weight: 600; color: #374151; }
+.param-group-header .toggle { font-size: 0.8rem; color: #9ca3af; }
+.param-row { display: flex; align-items: center; gap: 16px; padding: 10px 0; border-bottom: 1px solid #f3f4f6; }
+.param-row:last-child { border-bottom: none; }
+.param-label { flex: 0 0 260px; font-size: 0.85rem; color: #4b5563; }
+.param-slider { flex: 1; -webkit-appearance: none; height: 6px; border-radius: 3px; background: #e5e7eb; outline: none; }
+.param-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: #4472C4; cursor: pointer; }
+.param-value { flex: 0 0 80px; text-align: right; font-size: 0.85rem; font-weight: 600; color: #1a1a2e; font-variant-numeric: tabular-nums; }
+.reset-btn { padding: 6px 14px; background: #f3f4f6; border: 1px solid #d1d5db; border-radius: 6px; font-size: 0.8rem; cursor: pointer; color: #4b5563; }
+.reset-btn:hover { background: #e5e7eb; }
+
+.tornado-wrap { padding: 24px; max-width: 1000px; margin: 0 auto; }
+
+.tooltip-box { position: absolute; background: white; padding: 8px 12px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); font-size: 0.78rem; pointer-events: none; z-index: 200; white-space: nowrap; }
+
+@media (max-width: 900px) {
+  .metric-cards { grid-template-columns: repeat(2, 1fr); }
+  .secondary-metrics { grid-template-columns: repeat(2, 1fr); }
+  .param-label { flex: 0 0 180px; }
+}
+@media (max-width: 600px) {
+  .metric-cards { grid-template-columns: 1fr; }
+  .secondary-metrics { grid-template-columns: 1fr; }
+  .param-row { flex-wrap: wrap; }
+  .param-label { flex: 1 1 100%; }
+}
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+const { useState, useMemo, useCallback, useRef } = React;
+
+// ─── NORMDIST ───
+function normcdf(x, mean, sd) {
+  const z = (x - mean) / sd;
+  const t = 1 / (1 + 0.2316419 * Math.abs(z));
+  const d = 0.3989422804 * Math.exp(-z * z / 2);
+  const p = d * t * (0.3193815 + t * (-0.3565638 + t * (1.781478 + t * (-1.8212560 + t * 1.3302744))));
+  return z > 0 ? 1 - p : p;
+}
+
+// ─── DEFAULT PARAMETERS ───
+const DEFAULTS = {
+  children_under_5: 140, working_age_adults: 580, pregnancies_per_yr: 27, children_0_24mo: 55,
+  farmers: 212, household_size: 4.72,
+  farmer_profit: 255, labor_earnings: 405, lifetime_earnings: 25000, value_per_daly: 5500,
+  cost_per_farmer: 121, vsly: 176000,
+  stunting_prevalence: 0.467, anemia_prevalence: 0.22, iron_def_children: 0.30, zinc_def_rural: 0.41,
+  mean_haz: -1.917, sd_haz: 1.0, haz_threshold: -2.0,
+  iq_per_sd: 15, earnings_per_iq: 0.02, raven_to_iq: 0.5,
+  discount_rate: 0.03,
+  guatemala_ls: 6.3, neutral_point: 1.0, ls_per_income_doubling: 0.20,
+  ls_depression: 1.5, ls_anxiety: 0.8, ls_mixed: 1.0, ls_per_01_haz: 0.01,
+  ls_acute_illness: 0.4, illness_duration_fraction: 0.02, ls_severe_preterm_disability: 2.0,
+  remaining_life_child: 65, guatemala_wellby_value: 1900,
+  protein_haz: 0.18, protein_iq_raven: 1.2, protein_work_pct: 3, protein_cvd_pct: 3, protein_immune_pct: 5,
+  food_haz: 0.05,
+  iron_iq_smd: 0.15, iron_work_pct: 5, iron_immune_pct: 10, iron_maternal_pct: 5, iron_infant_pct: 6, iron_mh_pct: 5,
+  zinc_diarrhea_pct: 12, zinc_pneumonia_pct: 10, zinc_haz: 0.03, zinc_preterm_pct: 1.3, zinc_mh_pct: 5,
+  yield_income: 108, income_healthcare_pct: 12, income_mh_sd: 0.06, income_nextgen: 0.0005,
+  stunting_dw: 0.4, preterm_dw: 3.0,
+  adoption_rate: 1.0,
+};
+
+const COLORS = { protein: '#4472C4', food: '#808080', iron: '#C55A11', zinc: '#548235', income: '#BF8F00', wellby: '#7030A0' };
+
+function computeModel(P) {
+  const wellbys_per_ly = P.guatemala_ls - P.neutral_point;
+  const pv = (yrs) => 1 / Math.pow(1 + P.discount_rate, yrs);
+  const adopt = P.adoption_rate;
+  const baseline_stunting = normcdf(P.haz_threshold, P.mean_haz, P.sd_haz);
+  function stuntingCases(haz_shift) {
+    const post = normcdf(P.haz_threshold, P.mean_haz + haz_shift, P.sd_haz);
+    return (baseline_stunting - post) * P.children_under_5;
+  }
+  const pathways = [];
+
+  // Row 4: Protein → Stunting
+  { const raw = stuntingCases(P.protein_haz) * adopt; const adj = raw;
+    const dalys = adj * P.stunting_dw; const dollars = adj * 3800;
+    const ls = P.ls_per_01_haz * P.protein_haz / 0.1;
+    pathways.push({ id:'protein_stunting', cat:'protein', intervention:'Protein quality', outcome:'Stunting', raw, overlap:0, adj, daly_wt:P.stunting_dw, pv_f:1.0, dalys, dollars, confidence:'Strong', ls, wellby_dur:40, wellbys: adj*ls*40, new_row:false }); }
+
+  // Row 5: Protein → Future Salary (IQ)
+  { const raw = P.children_0_24mo * adopt; const adj = raw;
+    const du = P.protein_iq_raven * P.raven_to_iq * P.earnings_per_iq * P.lifetime_earnings; const pvf = pv(18);
+    const dollars = adj * du * pvf;
+    const ig = P.protein_iq_raven * P.raven_to_iq * P.earnings_per_iq;
+    const ls = P.ls_per_income_doubling * Math.log(1+ig)/Math.log(2);
+    pathways.push({ id:'protein_iq', cat:'protein', intervention:'Protein quality', outcome:'Future salary (IQ)', raw, overlap:0, adj, daly_wt:null, pv_f:pvf, dalys:0, dollars, confidence:'Strong', ls, wellby_dur:40, wellbys: adj*ls*40*pvf, new_row:false }); }
+
+  // Row 6: Protein → Work Capacity
+  { const raw = P.working_age_adults * adopt; const adj = raw;
+    const du = (P.protein_work_pct/100)*P.labor_earnings; const dollars = adj*du;
+    const ls = P.ls_per_income_doubling * Math.log(1+P.protein_work_pct/100)/Math.log(2);
+    pathways.push({ id:'protein_work', cat:'protein', intervention:'Protein quality', outcome:'Work capacity', raw, overlap:0, adj, daly_wt:null, pv_f:1.0, dalys:0, dollars, confidence:'Moderate', ls, wellby_dur:1, wellbys: adj*ls, new_row:false }); }
+
+  // Row 7: Protein → CVD
+  { const raw = (P.protein_cvd_pct/100)*(80/1000)*P.children_0_24mo*adopt; const adj = raw; const pvf = pv(30);
+    const dalys = adj*5*pvf; const dollars = adj*5000*pvf; const ls = wellbys_per_ly*0.5;
+    pathways.push({ id:'protein_cvd', cat:'protein', intervention:'Protein quality', outcome:'CVD risk', raw, overlap:0, adj, daly_wt:5, pv_f:pvf, dalys, dollars, confidence:'Moderate', ls, wellby_dur:1, wellbys: adj*ls*pvf, new_row:false }); }
+
+  // Row 8: Protein → Immune
+  { const raw = (P.protein_immune_pct/100)*(800/1000)*P.children_under_5*adopt; const adj = raw;
+    const dalys = adj*0.05; const dollars = adj*50;
+    const ls = P.ls_acute_illness*P.illness_duration_fraction;
+    pathways.push({ id:'protein_immune', cat:'protein', intervention:'Protein quality', outcome:'Immune function', raw, overlap:0, adj, daly_wt:0.05, pv_f:1.0, dalys, dollars, confidence:'Moderate', ls, wellby_dur:1, wellbys: adj*ls, new_row:false }); }
+
+  // Row 9: Food → Stunting
+  { const raw = stuntingCases(P.food_haz)*adopt; const adj = raw*(1-0.15);
+    const dalys = adj*P.stunting_dw; const dollars = adj*3800;
+    const ls = P.ls_per_01_haz*P.food_haz/0.1;
+    pathways.push({ id:'food_stunting', cat:'food', intervention:'Total food', outcome:'Stunting', raw, overlap:0.15, adj, daly_wt:P.stunting_dw, pv_f:1.0, dalys, dollars, confidence:'Moderate', ls, wellby_dur:40, wellbys: adj*ls*40, new_row:false }); }
+
+  // Row 10: Iron → Future Salary (IQ)
+  { const raw = P.children_under_5*P.iron_def_children*adopt; const adj = raw*(1-0.25); const pvf = pv(15);
+    const du = P.iron_iq_smd*P.iq_per_sd*P.earnings_per_iq*P.lifetime_earnings; const dollars = adj*du*pvf;
+    const ig = P.iron_iq_smd*P.iq_per_sd*P.earnings_per_iq;
+    const ls = P.ls_per_income_doubling*Math.log(1+ig)/Math.log(2);
+    pathways.push({ id:'iron_iq', cat:'iron', intervention:'Iron', outcome:'Future salary (IQ)', raw, overlap:0.25, adj, daly_wt:null, pv_f:pvf, dalys:0, dollars, confidence:'Moderate', ls, wellby_dur:40, wellbys: adj*ls*40*pvf, new_row:false }); }
+
+  // Row 11: Iron → Work Capacity
+  { const raw = P.working_age_adults*P.anemia_prevalence*adopt; const adj = raw*(1-0.10);
+    const du = (P.iron_work_pct/100)*P.labor_earnings; const dollars = adj*du;
+    const ls = P.ls_per_income_doubling*Math.log(1+P.iron_work_pct/100)/Math.log(2);
+    pathways.push({ id:'iron_work', cat:'iron', intervention:'Iron', outcome:'Work capacity (Hb)', raw, overlap:0.10, adj, daly_wt:null, pv_f:1.0, dalys:0, dollars, confidence:'Strong', ls, wellby_dur:1, wellbys: adj*ls, new_row:false }); }
+
+  // Row 12: Iron → Immune
+  { const raw = (P.iron_immune_pct/100)*(400/1000)*P.children_under_5*adopt; const adj = raw*(1-0.10);
+    const dalys = adj*0.05; const dollars = adj*50;
+    const ls = P.ls_acute_illness*P.illness_duration_fraction;
+    pathways.push({ id:'iron_immune', cat:'iron', intervention:'Iron', outcome:'Immune function', raw, overlap:0.10, adj, daly_wt:0.05, pv_f:1.0, dalys, dollars, confidence:'Moderate', ls, wellby_dur:1, wellbys: adj*ls, new_row:false }); }
+
+  // Row 13: Iron → Maternal Mortality
+  { const raw = (P.iron_maternal_pct/100)*0.95*adopt; const adj = raw;
+    const dalys = adj*28; const dollars = adj*150000; const ls = wellbys_per_ly*35+7;
+    pathways.push({ id:'iron_maternal', cat:'iron', intervention:'Iron', outcome:'Maternal mortality', raw, overlap:0, adj, daly_wt:28, pv_f:1.0, dalys, dollars, confidence:'Moderate', ls, wellby_dur:1, wellbys: adj*ls, new_row:false }); }
+
+  // Row 14: Iron → Infant Survival
+  { const raw = (P.iron_infant_pct/100)*2.5*0.15*adopt; const adj = raw*(1-0.25);
+    const dalys = adj*32; const dollars = adj*P.vsly;
+    const ls = wellbys_per_ly*P.remaining_life_child+7;
+    pathways.push({ id:'iron_infant', cat:'iron', intervention:'Iron', outcome:'Infant survival', raw, overlap:0.25, adj, daly_wt:32, pv_f:1.0, dalys, dollars, confidence:'Moderate', ls, wellby_dur:1, wellbys: adj*ls, new_row:false }); }
+
+  // Row 15: Iron → Mental Health
+  { const subgroup = Math.round(P.working_age_adults*P.anemia_prevalence*0.20);
+    const raw = (P.iron_mh_pct/100)*subgroup*adopt; const adj = raw;
+    const dalys = adj*0.15; const dollars = dalys*P.value_per_daly;
+    const ls = P.ls_mixed;
+    pathways.push({ id:'iron_mh', cat:'iron', intervention:'Iron', outcome:'Mental health', raw, overlap:0, adj, daly_wt:0.15, pv_f:1.0, dalys, dollars, confidence:'Moderate', ls, wellby_dur:1, wellbys: adj*ls, new_row:false }); }
+
+  // Row 16: Zinc → Diarrhea
+  { const raw = (P.zinc_diarrhea_pct/100)*(300/1000)*P.children_under_5*adopt; const adj = raw;
+    const dalys = adj*0.08; const dollars = adj*30;
+    const ls = P.ls_acute_illness*P.illness_duration_fraction;
+    pathways.push({ id:'zinc_diarrhea', cat:'zinc', intervention:'Zinc', outcome:'Diarrhea', raw, overlap:0, adj, daly_wt:0.08, pv_f:1.0, dalys, dollars, confidence:'Strong', ls, wellby_dur:1, wellbys: adj*ls, new_row:false }); }
+
+  // Row 17: Zinc → Pneumonia
+  { const raw = (P.zinc_pneumonia_pct/100)*(150/1000)*P.children_under_5*adopt; const adj = raw;
+    const dalys = adj*0.25; const dollars = adj*200;
+    const ls = P.ls_acute_illness*P.illness_duration_fraction*2;
+    pathways.push({ id:'zinc_pneumonia', cat:'zinc', intervention:'Zinc', outcome:'Pneumonia', raw, overlap:0, adj, daly_wt:0.25, pv_f:1.0, dalys, dollars, confidence:'Strong', ls, wellby_dur:1, wellbys: adj*ls, new_row:false }); }
+
+  // Row 18: Zinc → Stunting (ZEROED)
+  { const raw = stuntingCases(P.zinc_haz)*adopt; const adj = raw*(1-1.0);
+    pathways.push({ id:'zinc_stunting', cat:'zinc', intervention:'Zinc', outcome:'Stunting (zeroed)', raw, overlap:1.0, adj:0, daly_wt:P.stunting_dw, pv_f:1.0, dalys:0, dollars:0, confidence:'Low-Mod', ls:0, wellby_dur:0, wellbys:0, new_row:false }); }
+
+  // Row 19: Zinc → Preterm Birth
+  { const raw = (P.zinc_preterm_pct/100)*(160/1000)*P.pregnancies_per_yr*adopt; const adj = raw;
+    const dalys = adj*P.preterm_dw; const dollars = dalys*P.value_per_daly;
+    const ls = 0.30*(wellbys_per_ly*P.remaining_life_child+7)+0.20*P.ls_severe_preterm_disability*P.remaining_life_child;
+    pathways.push({ id:'zinc_preterm', cat:'zinc', intervention:'Zinc', outcome:'Preterm birth', raw, overlap:0, adj, daly_wt:P.preterm_dw, pv_f:1.0, dalys, dollars, confidence:'Low-Mod', ls, wellby_dur:1, wellbys: adj*ls, new_row:true }); }
+
+  // Row 20: Zinc → Mental Health
+  { const subgroup = 20; const raw = (P.zinc_mh_pct/100)*subgroup*adopt; const adj = raw*(1-0.10);
+    const dalys = adj*0.13; const dollars = dalys*P.value_per_daly;
+    const ls = P.ls_mixed;
+    pathways.push({ id:'zinc_mh', cat:'zinc', intervention:'Zinc', outcome:'Mental health', raw, overlap:0.10, adj, daly_wt:0.13, pv_f:1.0, dalys, dollars, confidence:'Weak', ls, wellby_dur:1, wellbys: adj*ls, new_row:true }); }
+
+  // Row 21: Yield → Farmer Income
+  { const raw = P.farmers; const adj = raw;
+    const dollars = P.yield_income*adj;
+    const ls = P.ls_per_income_doubling*Math.log(1+P.yield_income/P.farmer_profit)/Math.log(2);
+    pathways.push({ id:'yield_income', cat:'income', intervention:'Yield', outcome:'Farmer income', raw, overlap:0, adj, daly_wt:null, pv_f:1.0, dalys:0, dollars, confidence:'Strong', ls, wellby_dur:1, wellbys: adj*ls, new_row:false }); }
+
+  // Row 22: Income → Healthcare
+  { const raw = (P.income_healthcare_pct/100)*200; const adj = raw;
+    const dollars = adj*150; const ls = 0.02;
+    pathways.push({ id:'income_healthcare', cat:'income', intervention:'Income', outcome:'Healthcare costs', raw, overlap:0, adj, daly_wt:null, pv_f:1.0, dalys:0, dollars, confidence:'Moderate', ls, wellby_dur:1, wellbys: adj*ls, new_row:false }); }
+
+  // Row 23: Income → Mental Health
+  { const raw = P.farmers; const adj = raw*(1-0.05);
+    const dalys = adj*P.income_mh_sd*0.1; const dollars = dalys*P.value_per_daly;
+    const ls = P.income_mh_sd*2;
+    pathways.push({ id:'income_mh', cat:'income', intervention:'Income', outcome:'Mental health', raw, overlap:0.05, adj, daly_wt:0.1, pv_f:1.0, dalys, dollars, confidence:'Moderate', ls, wellby_dur:1, wellbys: adj*ls, new_row:false }); }
+
+  // Row 24: Income → Future Salary (Next Gen)
+  { const subgroup = Math.round(P.farmers*P.household_size/2); const raw = subgroup; const adj = raw;
+    const pvf = pv(18); const dollars = P.income_nextgen*P.lifetime_earnings*adj*pvf;
+    const annual_inc = P.income_nextgen*P.lifetime_earnings/(40*P.labor_earnings);
+    const ls = P.ls_per_income_doubling*Math.log(1+annual_inc)/Math.log(2);
+    pathways.push({ id:'income_nextgen', cat:'income', intervention:'Income', outcome:'Future salary (next gen)', raw, overlap:0, adj, daly_wt:null, pv_f:pvf, dalys:0, dollars, confidence:'Weak', ls, wellby_dur:40, wellbys: adj*ls*40*pvf, new_row:false }); }
+
+  const cost = (1000/P.household_size)*P.cost_per_farmer;
+  const totalDalys = pathways.reduce((s,p) => s+p.dalys, 0);
+  const totalDollars = pathways.reduce((s,p) => s+p.dollars, 0);
+  const totalWellbys = pathways.reduce((s,p) => s+p.wellbys, 0);
+  const wellbyDollarValue = totalWellbys * P.guatemala_wellby_value;
+  return { pathways, cost, totalDalys, totalDollars, totalWellbys, wellbyDollarValue,
+    dollarPerDaly: totalDalys > 0 ? cost/totalDalys : Infinity,
+    dollarPerWellby: totalWellbys > 0 ? cost/totalWellbys : Infinity,
+    bcrDollar: cost > 0 ? totalDollars/cost : 0,
+    bcrWellby: cost > 0 ? wellbyDollarValue/cost : 0,
+  };
+}
+
+// ─── SVG STACKED BAR ───
+function StackedBar({ data, label, width }) {
+  const total = data.reduce((s,d) => s+d.value, 0);
+  if (total === 0) return null;
+  const barH = 32, h = barH + 4, w = width || 700;
+  let x = 80;
+  const barW = w - 100;
+  const [tip, setTip] = useState(null);
+  return (
+    <div style={{ position: 'relative' }}>
+      <svg width={w} height={h} style={{ display: 'block' }}>
+        <text x={0} y={barH/2+5} fontSize={13} fill="#374151" fontWeight={500}>{label}</text>
+        {data.map((d, i) => {
+          const segW = (d.value / total) * barW;
+          const sx = x; x += segW;
+          return <rect key={i} x={sx} y={2} width={Math.max(segW - 1, 0)} height={barH} rx={i===0?4:0}
+            fill={COLORS[d.cat] || '#888'}
+            onMouseEnter={(e) => setTip({ x: e.clientX, y: e.clientY, name: d.name, value: d.value, pct: (d.value/total*100).toFixed(1) })}
+            onMouseLeave={() => setTip(null)} style={{ cursor: 'pointer' }} />;
+        })}
+      </svg>
+      {tip && <div className="tooltip-box" style={{ left: tip.x + 10, top: tip.y - 40, position: 'fixed' }}>
+        <strong>{tip.name}</strong>: {tip.value.toFixed(2)} ({tip.pct}%)
+      </div>}
+    </div>
+  );
+}
+
+// ─── SVG TORNADO ───
+function TornadoChart({ data, baseBcr, width }) {
+  const w = width || 800;
+  const rowH = 34, labelW = 150, pad = 40;
+  const chartW = w - labelW - pad * 2;
+  const h = data.length * rowH + 50;
+
+  const allVals = data.flatMap(d => [d.low, d.high]);
+  const minV = Math.min(...allVals, baseBcr) * 0.9;
+  const maxV = Math.max(...allVals, baseBcr) * 1.1;
+  const scale = (v) => labelW + pad + ((v - minV) / (maxV - minV)) * chartW;
+  const baseX = scale(baseBcr);
+
+  const [tip, setTip] = useState(null);
+
+  return (
+    <div style={{ position: 'relative' }}>
+      <svg width={w} height={h} style={{ display: 'block' }}>
+        {/* Base line */}
+        <line x1={baseX} y1={10} x2={baseX} y2={h-30} stroke="#666" strokeDasharray="4 3" strokeWidth={1.5} />
+        <text x={baseX} y={h-12} textAnchor="middle" fontSize={11} fill="#666">{baseBcr.toFixed(1)}x (base)</text>
+
+        {/* Axis */}
+        {[minV, (minV+maxV)/2, maxV].map((v, i) => (
+          <text key={i} x={scale(v)} y={h-12} textAnchor="middle" fontSize={10} fill="#9ca3af">{v.toFixed(1)}x</text>
+        ))}
+
+        {data.map((d, i) => {
+          const y = 15 + i * rowH;
+          const x1 = scale(d.low);
+          const x2 = scale(d.high);
+          return (
+            <g key={i}>
+              <text x={labelW - 8} y={y + rowH/2 + 1} textAnchor="end" fontSize={12} fill="#374151">{d.name}</text>
+              {/* Low side bar */}
+              <rect x={Math.min(x1, baseX)} y={y+4} width={Math.abs(baseX - x1)} height={rowH-10}
+                fill="#93c5fd" rx={3}
+                onMouseEnter={(e) => setTip({ x: e.clientX, y: e.clientY, name: d.name, low: d.low, high: d.high })}
+                onMouseLeave={() => setTip(null)} style={{ cursor: 'pointer' }} />
+              {/* High side bar */}
+              <rect x={Math.min(x2, baseX)} y={y+4} width={Math.abs(x2 - baseX)} height={rowH-10}
+                fill="#4472C4" rx={3}
+                onMouseEnter={(e) => setTip({ x: e.clientX, y: e.clientY, name: d.name, low: d.low, high: d.high })}
+                onMouseLeave={() => setTip(null)} style={{ cursor: 'pointer' }} />
+            </g>
+          );
+        })}
+      </svg>
+      {tip && <div className="tooltip-box" style={{ left: tip.x + 10, top: tip.y - 40, position: 'fixed' }}>
+        <strong>{tip.name}</strong><br/>Low: {tip.low.toFixed(2)}x &nbsp; High: {tip.high.toFixed(2)}x &nbsp; Spread: {(tip.high-tip.low).toFixed(2)}
+      </div>}
+    </div>
+  );
+}
+
+// ─── SLIDER CONFIGS ───
+const EFFECT_SLIDERS = [
+  { key:'protein_haz', label:'Protein \u2192 Stunting (HAZ shift)', min:0, max:0.40, step:0.01, fmt:v=>v.toFixed(2) },
+  { key:'protein_iq_raven', label:'Protein \u2192 IQ (Raven pts)', min:0, max:3, step:0.1, fmt:v=>v.toFixed(1) },
+  { key:'protein_work_pct', label:'Protein \u2192 Work capacity (%)', min:0, max:10, step:0.5, fmt:v=>v.toFixed(1)+'%' },
+  { key:'food_haz', label:'Food \u2192 Stunting (HAZ)', min:0, max:0.15, step:0.01, fmt:v=>v.toFixed(2) },
+  { key:'iron_iq_smd', label:'Iron \u2192 IQ (SMD)', min:0, max:0.50, step:0.01, fmt:v=>v.toFixed(2) },
+  { key:'iron_work_pct', label:'Iron \u2192 Work capacity (%)', min:0, max:15, step:0.5, fmt:v=>v.toFixed(1)+'%' },
+  { key:'iron_maternal_pct', label:'Iron \u2192 Maternal mortality (%)', min:0, max:15, step:0.5, fmt:v=>v.toFixed(1)+'%' },
+  { key:'iron_infant_pct', label:'Iron \u2192 Infant survival (%)', min:0, max:15, step:0.5, fmt:v=>v.toFixed(1)+'%' },
+  { key:'iron_mh_pct', label:'Iron \u2192 Mental health (%)', min:0, max:15, step:0.5, fmt:v=>v.toFixed(1)+'%' },
+  { key:'zinc_diarrhea_pct', label:'Zinc \u2192 Diarrhea (%)', min:0, max:25, step:1, fmt:v=>v.toFixed(0)+'%' },
+  { key:'zinc_pneumonia_pct', label:'Zinc \u2192 Pneumonia (%)', min:0, max:25, step:1, fmt:v=>v.toFixed(0)+'%' },
+  { key:'zinc_preterm_pct', label:'Zinc \u2192 Preterm birth (%)', min:0, max:5, step:0.1, fmt:v=>v.toFixed(1)+'%' },
+  { key:'zinc_mh_pct', label:'Zinc \u2192 Mental health (%)', min:0, max:15, step:0.5, fmt:v=>v.toFixed(1)+'%' },
+  { key:'yield_income', label:'Yield \u2192 Income (USD)', min:0, max:300, step:5, fmt:v=>'$'+v.toFixed(0) },
+  { key:'income_mh_sd', label:'Income \u2192 MH (SD improvement)', min:0, max:0.15, step:0.005, fmt:v=>v.toFixed(3) },
+];
+const DEMO_SLIDERS = [
+  { key:'children_under_5', label:'Children <5 per 1000', min:50, max:300, step:5, fmt:v=>v.toFixed(0) },
+  { key:'working_age_adults', label:'Working-age adults', min:400, max:700, step:10, fmt:v=>v.toFixed(0) },
+  { key:'pregnancies_per_yr', label:'Pregnancies/yr per 1000', min:15, max:40, step:1, fmt:v=>v.toFixed(0) },
+  { key:'children_0_24mo', label:'Children 0-24mo', min:30, max:80, step:1, fmt:v=>v.toFixed(0) },
+];
+const DALY_SLIDERS = [
+  { key:'stunting_dw', label:'Stunting disability weight', min:0.1, max:1.0, step:0.05, fmt:v=>v.toFixed(2) },
+  { key:'preterm_dw', label:'Preterm disability weight', min:0.5, max:10, step:0.5, fmt:v=>v.toFixed(1) },
+];
+const WELLBY_SLIDERS = [
+  { key:'guatemala_ls', label:'Guatemala avg life satisfaction', min:4, max:8, step:0.1, fmt:v=>v.toFixed(1) },
+  { key:'ls_per_income_doubling', label:'LS per income doubling', min:0.05, max:0.40, step:0.01, fmt:v=>v.toFixed(2) },
+  { key:'ls_depression', label:'LS impact of depression', min:0.5, max:3.0, step:0.1, fmt:v=>v.toFixed(1) },
+];
+const METHOD_SLIDERS = [
+  { key:'discount_rate', label:'Discount rate', min:0, max:0.06, step:0.005, fmt:v=>(v*100).toFixed(1)+'%' },
+  { key:'adoption_rate', label:'Adoption/compliance', min:0.30, max:1.0, step:0.05, fmt:v=>(v*100).toFixed(0)+'%' },
+  { key:'cost_per_farmer', label:'Cost per farmer (USD)', min:50, max:250, step:5, fmt:v=>'$'+v.toFixed(0) },
+];
+
+const TORNADO_PARAMS = [
+  { key:'protein_haz', label:'Protein HAZ shift', lo:0.05, hi:0.35 },
+  { key:'iron_iq_smd', label:'Iron IQ (SMD)', lo:0, hi:0.40 },
+  { key:'yield_income', label:'Farmer income (USD)', lo:50, hi:200 },
+  { key:'stunting_dw', label:'Stunting DW', lo:0.23, hi:0.6 },
+  { key:'adoption_rate', label:'Adoption rate', lo:0.50, hi:1.0 },
+  { key:'discount_rate', label:'Discount rate', lo:0, hi:0.05 },
+  { key:'cost_per_farmer', label:'Cost per farmer', lo:80, hi:180 },
+  { key:'income_mh_sd', label:'Income MH (SD)', lo:0.02, hi:0.10 },
+  { key:'iron_maternal_pct', label:'Iron maternal mort (%)', lo:1, hi:12 },
+  { key:'zinc_preterm_pct', label:'Zinc preterm (%)', lo:0.3, hi:3.0 },
+];
+
+function fmt$(v) { return '$' + Math.round(v).toLocaleString(); }
+
+function Slider({ config, value, onChange }) {
+  return (
+    <div className="param-row">
+      <div className="param-label">{config.label}</div>
+      <input type="range" className="param-slider" min={config.min} max={config.max} step={config.step}
+        value={value} onChange={e => onChange(config.key, parseFloat(e.target.value))} />
+      <div className="param-value">{config.fmt(value)}</div>
+    </div>
+  );
+}
+
+function ParamGroup({ title, sliders, params, onChange, defaultOpen }) {
+  const [open, setOpen] = useState(defaultOpen !== false);
+  return (
+    <div className="param-group">
+      <div className="param-group-header" onClick={() => setOpen(!open)}>
+        <h3>{title}</h3>
+        <span className="toggle">{open ? '\u25BC' : '\u25B6'}</span>
+      </div>
+      {open && sliders.map(s => <Slider key={s.key} config={s} value={params[s.key]} onChange={onChange} />)}
+    </div>
+  );
+}
+
+function ConfBadge({ conf }) {
+  const cls = conf==='Strong'?'badge-strong':conf==='Moderate'?'badge-moderate':conf==='Low-Mod'?'badge-low-mod':'badge-weak';
+  return <span className={'badge '+cls}>{conf}</span>;
+}
+
+function App() {
+  const [tab, setTab] = useState('summary');
+  const [params, setParams] = useState({...DEFAULTS});
+  const [sortCol, setSortCol] = useState(null);
+  const [sortDir, setSortDir] = useState(1);
+
+  const handleParam = useCallback((key, val) => { setParams(prev => ({...prev, [key]: val})); }, []);
+  const resetParams = useCallback(() => setParams({...DEFAULTS}), []);
+  const model = useMemo(() => computeModel(params), [params]);
+
+  const sortedPathways = useMemo(() => {
+    if (!sortCol) return model.pathways;
+    return [...model.pathways].sort((a,b) => {
+      const av = typeof a[sortCol]==='string' ? a[sortCol] : (a[sortCol]??0);
+      const bv = typeof b[sortCol]==='string' ? b[sortCol] : (b[sortCol]??0);
+      if (typeof av === 'string') return av.localeCompare(bv)*sortDir;
+      return (av-bv)*sortDir;
+    });
+  }, [model.pathways, sortCol, sortDir]);
+
+  function handleSort(col) {
+    if (sortCol===col) setSortDir(d=>-d);
+    else { setSortCol(col); setSortDir(-1); }
+  }
+
+  const tornadoData = useMemo(() => {
+    return TORNADO_PARAMS.map(tp => {
+      const lo_bcr = computeModel({...params, [tp.key]: tp.lo}).bcrDollar;
+      const hi_bcr = computeModel({...params, [tp.key]: tp.hi}).bcrDollar;
+      return { name: tp.label, low: Math.min(lo_bcr, hi_bcr), high: Math.max(lo_bcr, hi_bcr), range: Math.abs(hi_bcr-lo_bcr) };
+    }).sort((a,b) => b.range-a.range);
+  }, [params]);
+
+  const dalyBarData = model.pathways.filter(p=>p.dalys>0).map(p=>({ name: p.intervention+' \u2192 '+p.outcome, value: p.dalys, cat: p.cat }));
+  const wellbyBarData = model.pathways.filter(p=>p.wellbys>0).map(p=>({ name: p.intervention+' \u2192 '+p.outcome, value: p.wellbys, cat: p.cat }));
+
+  return (
+    <div>
+      <div className="dash-header">
+        <h1>Semilla Nueva Biofortified Maize — Interactive CEA Dashboard</h1>
+        <p>Per 1,000 farming family members reached</p>
+      </div>
+      <div className="tab-bar">
+        <button className={'tab-btn '+(tab==='summary'?'active':'')} onClick={()=>setTab('summary')}>Summary</button>
+        <button className={'tab-btn '+(tab==='params'?'active':'')} onClick={()=>setTab('params')}>Parameters</button>
+        <button className={'tab-btn '+(tab==='sensitivity'?'active':'')} onClick={()=>setTab('sensitivity')}>Sensitivity</button>
+      </div>
+
+      {tab==='summary' && <div>
+        <div className="metric-cards">
+          <div className="metric-card"><div className="label">Total DALYs Averted</div><div className="value">{model.totalDalys.toFixed(1)}</div><div className="sub">per 1,000 pop</div></div>
+          <div className="metric-card"><div className="label">Total WELLBYs</div><div className="value" style={{color:COLORS.wellby}}>{model.totalWellbys.toFixed(1)}</div><div className="sub">per 1,000 pop</div></div>
+          <div className="metric-card"><div className="label">Benefit-Cost Ratio ($)</div><div className="value">{model.bcrDollar.toFixed(1)}&times;</div><div className="sub">{fmt$(model.totalDollars)} benefit</div></div>
+          <div className="metric-card"><div className="label">Benefit-Cost Ratio (WELLBY)</div><div className="value" style={{color:COLORS.wellby}}>{model.bcrWellby.toFixed(1)}&times;</div><div className="sub">{fmt$(model.wellbyDollarValue)} value</div></div>
+        </div>
+        <div className="secondary-metrics">
+          <div className="sec-metric"><div className="label">$/DALY</div><div className="value">{fmt$(model.dollarPerDaly)}</div></div>
+          <div className="sec-metric"><div className="label">$/WELLBY</div><div className="value">{fmt$(model.dollarPerWellby)}</div></div>
+          <div className="sec-metric"><div className="label">Total $ Benefit</div><div className="value">{fmt$(model.totalDollars)}</div></div>
+          <div className="sec-metric"><div className="label">Cost per 1,000 pop</div><div className="value">{fmt$(model.cost)}</div></div>
+        </div>
+        <div className="chart-section">
+          <div className="chart-card">
+            <h3>Pathway Composition</h3>
+            <StackedBar data={dalyBarData} label="DALYs" width={750} />
+            <div style={{height:12}}></div>
+            <StackedBar data={wellbyBarData} label="WELLBYs" width={750} />
+            <div style={{display:'flex', gap:16, justifyContent:'center', marginTop:14, fontSize:'0.8rem'}}>
+              {Object.entries(COLORS).filter(([k])=>k!=='wellby').map(([k,c]) =>
+                <span key={k} style={{display:'flex',alignItems:'center',gap:4}}>
+                  <span className="idot" style={{background:c}}></span>{k.charAt(0).toUpperCase()+k.slice(1)}
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
+        <div className="pathway-table-wrap">
+          <table className="pathway-table">
+            <thead><tr>
+              <th onClick={()=>handleSort('intervention')}>Intervention</th>
+              <th onClick={()=>handleSort('outcome')}>Outcome</th>
+              <th onClick={()=>handleSort('adj')}>Adj. Cases</th>
+              <th onClick={()=>handleSort('dalys')}>DALYs</th>
+              <th onClick={()=>handleSort('wellbys')}>WELLBYs</th>
+              <th onClick={()=>handleSort('dollars')}>$ Benefit</th>
+              <th onClick={()=>handleSort('confidence')}>Confidence</th>
+            </tr></thead>
+            <tbody>
+              {sortedPathways.map(p => <tr key={p.id} className={p.new_row?'new-row':''}>
+                <td><span className="idot" style={{background:COLORS[p.cat]||'#888'}}></span>{p.intervention}</td>
+                <td>{p.outcome}</td>
+                <td>{p.adj.toFixed(1)}</td>
+                <td>{p.dalys.toFixed(2)}</td>
+                <td>{p.wellbys.toFixed(1)}</td>
+                <td>{fmt$(p.dollars)}</td>
+                <td><ConfBadge conf={p.confidence} /></td>
+              </tr>)}
+              <tr style={{fontWeight:700, background:'#f9fafb'}}>
+                <td colSpan={2}>Total</td><td></td>
+                <td>{model.totalDalys.toFixed(2)}</td>
+                <td>{model.totalWellbys.toFixed(1)}</td>
+                <td>{fmt$(model.totalDollars)}</td><td></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>}
+
+      {tab==='params' && <div className="params-wrap">
+        <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:16}}>
+          <div>
+            <span style={{fontSize:'0.85rem',color:'#6b7280'}}>BCR ($): <strong>{model.bcrDollar.toFixed(1)}&times;</strong></span>
+            <span style={{fontSize:'0.85rem',color:'#6b7280',marginLeft:20}}>BCR (WELLBY): <strong style={{color:COLORS.wellby}}>{model.bcrWellby.toFixed(1)}&times;</strong></span>
+          </div>
+          <button className="reset-btn" onClick={resetParams}>Reset to defaults</button>
+        </div>
+        <ParamGroup title="Effect Sizes" sliders={EFFECT_SLIDERS} params={params} onChange={handleParam} />
+        <ParamGroup title="Demographics" sliders={DEMO_SLIDERS} params={params} onChange={handleParam} defaultOpen={false} />
+        <ParamGroup title="DALY Weights" sliders={DALY_SLIDERS} params={params} onChange={handleParam} defaultOpen={false} />
+        <ParamGroup title="WELLBY Parameters" sliders={WELLBY_SLIDERS} params={params} onChange={handleParam} defaultOpen={false} />
+        <ParamGroup title="Methodological" sliders={METHOD_SLIDERS} params={params} onChange={handleParam} defaultOpen={false} />
+      </div>}
+
+      {tab==='sensitivity' && <div className="tornado-wrap">
+        <div className="chart-card">
+          <h3>Tornado Chart — $ Benefit-Cost Ratio Sensitivity</h3>
+          <p style={{fontSize:'0.82rem',color:'#6b7280',marginBottom:16}}>Each bar shows BCR range when parameter varies from 5th to 95th percentile. Base BCR: {model.bcrDollar.toFixed(1)}&times;</p>
+          <TornadoChart data={tornadoData} baseBcr={model.bcrDollar} width={850} />
+        </div>
+        <div className="chart-card" style={{marginTop:16}}>
+          <h3>Parameter Ranges</h3>
+          <table className="pathway-table" style={{fontSize:'0.82rem'}}>
+            <thead><tr><th>Parameter</th><th>5th %ile</th><th>95th %ile</th><th>BCR (low)</th><th>BCR (high)</th><th>Spread</th></tr></thead>
+            <tbody>{tornadoData.map(d => {
+              const tp = TORNADO_PARAMS.find(t=>t.label===d.name);
+              return <tr key={d.name}><td>{d.name}</td><td>{tp?.lo}</td><td>{tp?.hi}</td><td>{d.low.toFixed(2)}&times;</td><td>{d.high.toFixed(2)}&times;</td><td>{d.range.toFixed(2)}</td></tr>;
+            })}</tbody>
+          </table>
+        </div>
+      </div>}
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

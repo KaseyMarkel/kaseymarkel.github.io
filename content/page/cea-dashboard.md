@@ -1,5 +1,5 @@
 ---
-title: "Breeding Dashboard"
+title: "Biofortified Maize CEA Dashboard"
 socialShare: false
 ---
 
@@ -64,8 +64,8 @@ footer { display: none !important; }
 .password-error { color: #ef4444; font-size: 0.9rem; margin-top: 10px; display: none; }
 .password-error.show { display: block; }
 
-#dashboard-container { display: none; }
-#dashboard-container.unlocked { display: block; }
+#cea-container { display: none; }
+#cea-container.unlocked { display: block; }
 
 .back-link {
   display: inline-block;
@@ -80,25 +80,25 @@ footer { display: none !important; }
 
 <div id="password-gate" class="password-gate">
   <div class="password-box">
-    <h2>Breeding Dashboard</h2>
-    <p>Enter password to access the dashboard</p>
-    <input type="password" id="dashboard-password" placeholder="Enter password" onkeypress="if(event.key === 'Enter') checkPassword()">
-    <button onclick="checkPassword()">Access Dashboard</button>
-    <p id="password-error" class="password-error">Incorrect password. Please try again.</p>
+    <h2>CEA Dashboard</h2>
+    <p>Enter password to access</p>
+    <input type="password" id="cea-password" placeholder="Enter password" onkeypress="if(event.key === 'Enter') checkCEAPassword()">
+    <button onclick="checkCEAPassword()">Access Dashboard</button>
+    <p id="cea-error" class="password-error">Incorrect password. Please try again.</p>
   </div>
 </div>
 
-<div id="dashboard-container">
+<div id="cea-container">
   <a class="back-link" href="/page/private-projects/">&larr; Back to Private Projects</a>
-  <iframe id="dashboard-frame" src="/breeding-dashboard/" style="width: 100%; height: calc(100vh - 100px); border: none;"></iframe>
+  <iframe id="cea-frame" src="/cea-dashboard/" style="width: 100%; height: calc(100vh - 100px); border: none;"></iframe>
 </div>
 
 <script>
-function checkPassword() {
-  var input = document.getElementById('dashboard-password');
-  var error = document.getElementById('password-error');
+function checkCEAPassword() {
+  var input = document.getElementById('cea-password');
+  var error = document.getElementById('cea-error');
   var gate = document.getElementById('password-gate');
-  var container = document.getElementById('dashboard-container');
+  var container = document.getElementById('cea-container');
 
   if (input.value === 'Semilla') {
     gate.style.display = 'none';
@@ -114,7 +114,7 @@ function checkPassword() {
 document.addEventListener('DOMContentLoaded', function() {
   if (sessionStorage.getItem('private-projects-auth') === 'true') {
     document.getElementById('password-gate').style.display = 'none';
-    document.getElementById('dashboard-container').classList.add('unlocked');
+    document.getElementById('cea-container').classList.add('unlocked');
   }
 });
 </script>

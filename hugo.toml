@@ -94,7 +94,7 @@ pygmentsCodefencesGuessSyntax = true
     weight = 5
 
 [[menu.main]]
-    name = "Dashboard"
-    url = "page/dashboard"
+    name = "Private Projects"
+    url = "page/private-projects"
     weight = 6
 
