@@ -2,46 +2,46 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>http://localhost:1313/</loc>
+    <loc>http://localhost:49361/</loc>
   </url><url>
-    <loc>http://localhost:1313/page/academia/</loc>
+    <loc>http://localhost:49361/page/academia/</loc>
   </url><url>
-    <loc>http://localhost:1313/page/cea-dashboard/</loc>
+    <loc>http://localhost:49361/page/cea-dashboard/</loc>
   </url><url>
-    <loc>http://localhost:1313/page/dashboard/</loc>
+    <loc>http://localhost:49361/page/dashboard/</loc>
   </url><url>
-    <loc>http://localhost:1313/categories/</loc>
+    <loc>http://localhost:49361/categories/</loc>
   </url><url>
-    <loc>http://localhost:1313/page/essays/correlation-and-causation/</loc>
+    <loc>http://localhost:49361/page/essays/correlation-and-causation/</loc>
   </url><url>
-    <loc>http://localhost:1313/page/cv/</loc>
+    <loc>http://localhost:49361/page/cv/</loc>
   </url><url>
-    <loc>http://localhost:1313/page/essays/</loc>
+    <loc>http://localhost:49361/page/essays/</loc>
   </url><url>
-    <loc>http://localhost:1313/page/gallery/</loc>
+    <loc>http://localhost:49361/page/gallery/</loc>
   </url><url>
-    <loc>http://localhost:1313/page/glass/</loc>
+    <loc>http://localhost:49361/page/glass/</loc>
   </url><url>
-    <loc>http://localhost:1313/page/thing-4/</loc>
+    <loc>http://localhost:49361/page/thing-4/</loc>
   </url><url>
-    <loc>http://localhost:1313/page/living-wall/</loc>
+    <loc>http://localhost:49361/page/living-wall/</loc>
   </url><url>
-    <loc>http://localhost:1313/page/mandarin/</loc>
+    <loc>http://localhost:49361/page/mandarin/</loc>
   </url><url>
-    <loc>http://localhost:1313/page/origin/</loc>
+    <loc>http://localhost:49361/page/origin/</loc>
   </url><url>
-    <loc>http://localhost:1313/page/</loc>
+    <loc>http://localhost:49361/page/</loc>
   </url><url>
-    <loc>http://localhost:1313/page/private-projects/</loc>
+    <loc>http://localhost:49361/page/private-projects/</loc>
   </url><url>
-    <loc>http://localhost:1313/page/recreation/</loc>
+    <loc>http://localhost:49361/page/recreation/</loc>
   </url><url>
-    <loc>http://localhost:1313/tags/</loc>
+    <loc>http://localhost:49361/tags/</loc>
   </url><url>
-    <loc>http://localhost:1313/page/essays/the-basketball-cube/</loc>
+    <loc>http://localhost:49361/page/essays/the-basketball-cube/</loc>
   </url><url>
-    <loc>http://localhost:1313/page/essays/the-vibe-card/</loc>
+    <loc>http://localhost:49361/page/essays/the-vibe-card/</loc>
   </url><url>
-    <loc>http://localhost:1313/page/wing-watchers-perch/</loc>
+    <loc>http://localhost:49361/page/wing-watchers-perch/</loc>
   </url>
 </urlset>
