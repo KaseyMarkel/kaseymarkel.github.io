@@ -182,6 +182,27 @@ const MC_BOTEC_OVERRIDES = {
   food_haz: { min:0, mode:0, max:0 },
 };
 
+// Katie Model MC: QPM stunting dominates; Rwanda demographics
+const MC_KATIE_OVERRIDES = {
+  protein_haz: { min:0.30, mode:0.51, max:0.75 },  // Lower/central/upper from Katie model
+  adoption_rate: { min:0.30, mode:0.60, max:0.80 },
+  stunting_dw: { min:2.0, mode:3.8, max:5.5 },
+  discount_rate: { min:0.02, mode:0.03, max:0.05 },
+  market_spillover: { min:0, mode:0, max:0 },
+  iron_iq_smd: { min:0, mode:0, max:0 },
+  protein_work_pct: { min:0, mode:0, max:0 },
+  iron_work_pct: { min:0, mode:0, max:0 },
+  iron_maternal_pct: { min:0, mode:0, max:0 },
+  iron_mh_pct: { min:0, mode:0, max:0 },
+  zinc_preterm_pct: { min:0, mode:0, max:0 },
+  zinc_mh_pct: { min:0, mode:0, max:0 },
+  protein_iq_raven: { min:0, mode:0, max:0 },
+  income_mh_sd: { min:0, mode:0, max:0 },
+  farmer_income: { min:0, mode:0, max:0 },
+  dollar_per_stunting: { min:2000, mode:3800, max:5500 },
+  food_haz: { min:0, mode:0, max:0 },
+};
+
 function getMCParams(version) {
   if (version === 'v8') {
     return MC_PARAMS_BASE.map(p => MC_V8_OVERRIDES[p.key] ? {...p, ...MC_V8_OVERRIDES[p.key]} : p)
@@ -192,6 +213,10 @@ function getMCParams(version) {
   }
   if (version === 'botec2024') {
     return MC_PARAMS_BASE.map(p => MC_BOTEC_OVERRIDES[p.key] ? {...p, ...MC_BOTEC_OVERRIDES[p.key]} : p)
+      .filter(p => !(p.min === 0 && p.mode === 0 && p.max === 0));
+  }
+  if (version === 'katie') {
+    return MC_PARAMS_BASE.map(p => MC_KATIE_OVERRIDES[p.key] ? {...p, ...MC_KATIE_OVERRIDES[p.key]} : p)
       .filter(p => !(p.min === 0 && p.mode === 0 && p.max === 0));
   }
   return MC_PARAMS_BASE;
@@ -277,6 +302,53 @@ const BOTEC_2024_DEFAULTS = {
   discount_rate: 0.04,       // BOTEC: ~4% (GiveWell 2019 CEA)
   market_spillover: 0,       // Not modeled
   iron_iq_include: false,    // Not modeled
+};
+
+// Katie Model: Rwanda national-level CEA (March 2026)
+// Rwanda demographics, QPM protein quality HAZ shift = 0.51 (Gunaratna meta-analysis adjusted
+// for local DIAAS ratio and maize share of energy supply). Zinc diarrhea from deficiency
+// prevalence reduction. Iron/income pathways not modeled. 60% adoption (2031 steady state).
+const KATIE_DEFAULTS = {
+  ...DEFAULTS,
+  // Rwanda demographics
+  children_under_5: 114,     // Rwanda: 1.87M / 16.3M × 1000
+  working_age_adults: 550,   // Rwanda estimate
+  pregnancies_per_yr: 28,    // Rwanda CBR (World Bank)
+  children_0_24mo: 46,       // Rwanda estimate
+  farmers: 238,              // 1000 / 4.2 hh size
+  household_size: 4.2,       // Rwanda average
+  mean_haz: -1.5,            // Rwanda DHS 2019
+  // QPM growth pathway
+  protein_haz: 0.51,         // Central: Gunaratna meta × DIAAS × maize share adjustments
+  protein_iq_raven: 0,       // Not modeled
+  protein_work_pct: 0,       // Not modeled
+  protein_cvd_pct: 0,        // Not modeled
+  protein_immune_pct: 0,     // Not modeled
+  food_haz: 0,               // Not modeled separately
+  // Iron — negligible per-1000 in Katie's framework
+  iron_iq_smd: 0,
+  iron_work_pct: 0,
+  iron_immune_pct: 0,
+  iron_maternal_pct: 0,
+  iron_infant_pct: 0,
+  iron_mh_pct: 0,
+  // Zinc — small diarrhea effect from deficiency prevalence reduction
+  zinc_diarrhea_pct: 1,      // ~288 DALYs nationally at 60% adoption
+  zinc_pneumonia_pct: 0,
+  zinc_preterm_pct: 0,
+  zinc_mh_pct: 0,
+  // Income — not modeled (national policy model)
+  yield_income: 0,
+  income_healthcare_pct: 0,
+  income_mh_sd: 0,
+  income_nextgen: 0,
+  // DALY/methodology
+  stunting_dw: 3.8,          // DW 0.057 × 66.5yr (life expectancy − onset)
+  dollar_per_stunting: 3800,
+  adoption_rate: 0.60,       // 2031 steady-state
+  discount_rate: 0.03,
+  market_spillover: 0,
+  iron_iq_include: false,
 };
 
 // Combined model: integrates QPM Growth Pathway V3 + Iron Evidence Workbook V2
@@ -915,6 +987,7 @@ function App() {
     if (v === 'v8') return {...V8_DEFAULTS};
     if (v === 'combined') return {...COMBINED_DEFAULTS};
     if (v === 'botec2024') return {...BOTEC_2024_DEFAULTS};
+    if (v === 'katie') return {...KATIE_DEFAULTS};
     return {...DEFAULTS};
   }, []);
   const handleVersionChange = useCallback((v) => {
@@ -977,6 +1050,7 @@ function App() {
                 <button className={modelVersion==='v8'?'active':''} onClick={()=>handleVersionChange('v8')}>V8</button>
                 <button className={modelVersion==='v10'?'active':''} onClick={()=>handleVersionChange('v10')}>V12</button>
                 <button className={modelVersion==='combined'?'active':''} onClick={()=>handleVersionChange('combined')}>Combined</button>
+                <button className={modelVersion==='katie'?'active':''} onClick={()=>handleVersionChange('katie')}>Katie</button>
               </div>
             </div>
             <div style={{display:'flex', alignItems:'center', gap:8, justifyContent:'flex-end'}}>
@@ -988,6 +1062,7 @@ function App() {
             </div>
             <div style={{fontSize:'0.7rem', opacity:0.6, color:'white', maxWidth:300, textAlign:'right'}}>
               {modelVersion==='botec2024' ? 'Original 2024 spreadsheet, 2 pathways only' :
+               modelVersion==='katie' ? 'Rwanda CEA, QPM HAZ 0.51, 60% adoption, zinc + stunting' :
                modelVersion==='v8' ? 'Annual, no discounting, 19 pathways' :
                modelVersion==='combined' ? 'QPM V3 + Iron V2 evidence, GBD DALY wt, 22 pathways' :
                'DW 3.5, 98% adoption, market spillover, 22 pathways'}
