@@ -162,6 +162,26 @@ const MC_COMBINED_OVERRIDES = {
   food_haz: { min:0.01, mode:0.03, max:0.06 },           // Conservative
 };
 
+// BOTEC 2024 MC overrides: only farmer income, stunting, cost vary meaningfully
+const MC_BOTEC_OVERRIDES = {
+  protein_haz: { min:0.4, mode:0.9, max:1.5 },
+  adoption_rate: { min:0.90, mode:1.0, max:1.0 },
+  stunting_dw: { min:3.0, mode:6.1, max:8.0 },
+  discount_rate: { min:0.03, mode:0.04, max:0.06 },
+  market_spillover: { min:0, mode:0, max:0 },
+  iron_iq_smd: { min:0, mode:0, max:0 },
+  protein_work_pct: { min:0, mode:0, max:0 },
+  iron_work_pct: { min:0, mode:0, max:0 },
+  iron_maternal_pct: { min:0, mode:0, max:0 },
+  iron_mh_pct: { min:0, mode:0, max:0 },
+  zinc_preterm_pct: { min:0, mode:0, max:0 },
+  zinc_mh_pct: { min:0, mode:0, max:0 },
+  protein_iq_raven: { min:0, mode:0, max:0 },
+  income_mh_sd: { min:0, mode:0, max:0 },
+  dollar_per_stunting: { min:2000, mode:3800, max:5500 },
+  food_haz: { min:0, mode:0, max:0 },
+};
+
 function getMCParams(version) {
   if (version === 'v8') {
     return MC_PARAMS_BASE.map(p => MC_V8_OVERRIDES[p.key] ? {...p, ...MC_V8_OVERRIDES[p.key]} : p)
@@ -169,6 +189,10 @@ function getMCParams(version) {
   }
   if (version === 'combined') {
     return MC_PARAMS_BASE.map(p => MC_COMBINED_OVERRIDES[p.key] ? {...p, ...MC_COMBINED_OVERRIDES[p.key]} : p);
+  }
+  if (version === 'botec2024') {
+    return MC_PARAMS_BASE.map(p => MC_BOTEC_OVERRIDES[p.key] ? {...p, ...MC_BOTEC_OVERRIDES[p.key]} : p)
+      .filter(p => !(p.min === 0 && p.mode === 0 && p.max === 0));
   }
   return MC_PARAMS_BASE;
 }
@@ -221,6 +245,38 @@ const V8_DEFAULTS = {
   children_under_5: 500, working_age_adults: 600, children_0_24mo: 40, pregnancies_per_yr: 21,
   stunting_dw: 6.1, discount_rate: 0, adoption_rate: 1.0, iron_iq_include: true, dollar_per_stunting: 3800,
   market_spillover: 0,
+};
+
+// 2024 BOTEC: Semilla Nueva's original cost-effectiveness spreadsheet (Nov 2024)
+// Only models 3 pathways: farmer income, stunting (via market penetration), food supply
+// All other pathways zeroed. protein_haz=0.009 back-calculated to approximate BOTEC's
+// national market-penetration stunting methodology (0.108% of Guatemala maize supply).
+const BOTEC_2024_DEFAULTS = {
+  ...DEFAULTS,
+  protein_haz: 0.9,           // Approx: BOTEC uses market-penetration (~1,100 DALYs/$100k)
+  protein_iq_raven: 0,       // Not modeled in BOTEC
+  protein_work_pct: 0,       // Not modeled
+  protein_cvd_pct: 0,        // Not modeled
+  protein_immune_pct: 0,     // Not modeled
+  food_haz: 0,               // BOTEC food supply ≠ HAZ-based nutrition pathway
+  iron_iq_smd: 0,            // Not modeled
+  iron_work_pct: 0,          // Not modeled
+  iron_immune_pct: 0,        // Not modeled
+  iron_maternal_pct: 0,      // Not modeled
+  iron_infant_pct: 0,        // Not modeled
+  iron_mh_pct: 0,            // Not modeled
+  zinc_diarrhea_pct: 0,      // Not modeled
+  zinc_pneumonia_pct: 0,     // Not modeled
+  zinc_preterm_pct: 0,       // Not modeled
+  zinc_mh_pct: 0,            // Not modeled
+  income_healthcare_pct: 0,  // Not modeled
+  income_mh_sd: 0,           // Not modeled
+  income_nextgen: 0,         // Not modeled
+  stunting_dw: 6.1,          // BOTEC value (GiveWell moral weight)
+  adoption_rate: 1.0,        // BOTEC assumes full adoption
+  discount_rate: 0.04,       // BOTEC: ~4% (GiveWell 2019 CEA)
+  market_spillover: 0,       // Not modeled
+  iron_iq_include: false,    // Not modeled
 };
 
 // Combined model: integrates QPM Growth Pathway V3 + Iron Evidence Workbook V2
@@ -845,6 +901,7 @@ function CDFChart({ data, label, width, height }) {
 function App() {
   const [tab, setTab] = useState('summary');
   const [modelVersion, setModelVersion] = useState('v10');
+  const [impactUnit, setImpactUnit] = useState('per1k'); // 'per1k' or 'per100k'
   const [params, setParams] = useState({...DEFAULTS});
   const [sortCol, setSortCol] = useState(null);
   const [sortDir, setSortDir] = useState(1);
@@ -854,12 +911,18 @@ function App() {
   const [mcIterations, setMcIterations] = useState(5000);
   const [mcMetric, setMcMetric] = useState('bcr');
 
+  const getDefaultsForVersion = useCallback((v) => {
+    if (v === 'v8') return {...V8_DEFAULTS};
+    if (v === 'combined') return {...COMBINED_DEFAULTS};
+    if (v === 'botec2024') return {...BOTEC_2024_DEFAULTS};
+    return {...DEFAULTS};
+  }, []);
   const handleVersionChange = useCallback((v) => {
     setModelVersion(v);
-    setParams(v === 'v8' ? {...V8_DEFAULTS} : v === 'combined' ? {...COMBINED_DEFAULTS} : {...DEFAULTS});
-  }, []);
+    setParams(getDefaultsForVersion(v));
+  }, [getDefaultsForVersion]);
   const handleParam = useCallback((key, val) => { setParams(prev => ({...prev, [key]: val})); }, []);
-  const resetParams = useCallback(() => setParams(modelVersion === 'v8' ? {...V8_DEFAULTS} : modelVersion === 'combined' ? {...COMBINED_DEFAULTS} : {...DEFAULTS}), [modelVersion]);
+  const resetParams = useCallback(() => setParams(getDefaultsForVersion(modelVersion)), [modelVersion, getDefaultsForVersion]);
   const handleRunMC = useCallback(() => {
     setMcRunning(true);
     setTimeout(() => {
@@ -869,6 +932,8 @@ function App() {
     }, 50);
   }, [params, modelVersion, mcIterations]);
   const model = useMemo(() => computeModel(params, modelVersion), [params, modelVersion]);
+  const impactScale = impactUnit === 'per100k' ? (100000 / model.cost) : 1;
+  const impactLabel = impactUnit === 'per100k' ? 'per $100k donated' : 'per 1,000 pop';
 
   const sortedPathways = useMemo(() => {
     if (!sortCol) return model.pathways;
@@ -893,8 +958,8 @@ function App() {
     }).sort((a,b) => b.range-a.range);
   }, [params, modelVersion]);
 
-  const dalyBarData = model.pathways.filter(p=>p.dalys>0).map(p=>({ name: p.intervention+' \u2192 '+p.outcome, value: p.dalys, cat: p.cat }));
-  const wellbyBarData = model.pathways.filter(p=>p.wellbys>0).map(p=>({ name: p.intervention+' \u2192 '+p.outcome, value: p.wellbys, cat: p.cat }));
+  const dalyBarData = model.pathways.filter(p=>p.dalys>0).map(p=>({ name: p.intervention+' \u2192 '+p.outcome, value: p.dalys*impactScale, cat: p.cat }));
+  const wellbyBarData = model.pathways.filter(p=>p.wellbys>0).map(p=>({ name: p.intervention+' \u2192 '+p.outcome, value: p.wellbys*impactScale, cat: p.cat }));
 
   return (
     <div>
@@ -902,16 +967,28 @@ function App() {
         <div style={{display:'flex', justifyContent:'space-between', alignItems:'flex-start'}}>
           <div>
             <h1>Semilla Nueva Biofortified Maize &mdash; Interactive CEA Dashboard</h1>
-            <p>Per 1,000 farming family members reached</p>
+            <p>{impactLabel === 'per $100k donated' ? 'Per $100,000 donated' : 'Per 1,000 farming family members reached'}</p>
           </div>
-          <div style={{textAlign:'right'}}>
-            <div className="view-toggle" style={{marginBottom:4}}>
-              <button className={modelVersion==='v8'?'active':''} onClick={()=>handleVersionChange('v8')}>V8</button>
-              <button className={modelVersion==='v10'?'active':''} onClick={()=>handleVersionChange('v10')}>V12</button>
-              <button className={modelVersion==='combined'?'active':''} onClick={()=>handleVersionChange('combined')}>Combined</button>
+          <div style={{textAlign:'right', display:'flex', flexDirection:'column', gap:8}}>
+            <div style={{display:'flex', alignItems:'center', gap:8, justifyContent:'flex-end'}}>
+              <span style={{fontSize:'0.75rem', opacity:0.6, color:'white'}}>Model</span>
+              <div className="view-toggle" style={{marginBottom:0}}>
+                <button className={modelVersion==='botec2024'?'active':''} onClick={()=>handleVersionChange('botec2024')}>2024 BOTEC</button>
+                <button className={modelVersion==='v8'?'active':''} onClick={()=>handleVersionChange('v8')}>V8</button>
+                <button className={modelVersion==='v10'?'active':''} onClick={()=>handleVersionChange('v10')}>V12</button>
+                <button className={modelVersion==='combined'?'active':''} onClick={()=>handleVersionChange('combined')}>Combined</button>
+              </div>
             </div>
-            <div style={{fontSize:'0.7rem', opacity:0.6, color:'white', maxWidth:280}}>
-              {modelVersion==='v8' ? 'Annual, no discounting, 19 pathways' :
+            <div style={{display:'flex', alignItems:'center', gap:8, justifyContent:'flex-end'}}>
+              <span style={{fontSize:'0.75rem', opacity:0.6, color:'white'}}>Impact units</span>
+              <div className="view-toggle" style={{marginBottom:0}}>
+                <button className={impactUnit==='per1k'?'active':''} onClick={()=>setImpactUnit('per1k')}>Per 1k people</button>
+                <button className={impactUnit==='per100k'?'active':''} onClick={()=>setImpactUnit('per100k')}>Per $100k</button>
+              </div>
+            </div>
+            <div style={{fontSize:'0.7rem', opacity:0.6, color:'white', maxWidth:300, textAlign:'right'}}>
+              {modelVersion==='botec2024' ? 'Original 2024 spreadsheet, 2 pathways only' :
+               modelVersion==='v8' ? 'Annual, no discounting, 19 pathways' :
                modelVersion==='combined' ? 'QPM V3 + Iron V2 evidence, GBD DALY wt, 22 pathways' :
                'DW 3.5, 98% adoption, market spillover, 22 pathways'}
             </div>
@@ -927,16 +1004,16 @@ function App() {
 
       {tab==='summary' && <div>
         <div className="metric-cards">
-          <div className="metric-card"><div className="label">Total DALYs Averted</div><div className="value">{model.totalDalys.toFixed(1)}</div><div className="sub">per 1,000 pop</div></div>
-          <div className="metric-card"><div className="label">Total WELLBYs</div><div className="value" style={{color:COLORS.wellby}}>{model.totalWellbys.toFixed(1)}</div><div className="sub">per 1,000 pop</div></div>
-          <div className="metric-card"><div className="label">Benefit-Cost Ratio ($)</div><div className="value">{model.bcrDollar.toFixed(1)}&times;</div><div className="sub">{fmt$(model.totalDollars)} benefit</div></div>
-          <div className="metric-card"><div className="label">Benefit-Cost Ratio (WELLBY)</div><div className="value" style={{color:COLORS.wellby}}>{model.bcrWellby.toFixed(1)}&times;</div><div className="sub">{fmt$(model.wellbyDollarValue)} value</div></div>
+          <div className="metric-card"><div className="label">Total DALYs Averted</div><div className="value">{(model.totalDalys*impactScale).toFixed(1)}</div><div className="sub">{impactLabel}</div></div>
+          <div className="metric-card"><div className="label">Total WELLBYs</div><div className="value" style={{color:COLORS.wellby}}>{(model.totalWellbys*impactScale).toFixed(1)}</div><div className="sub">{impactLabel}</div></div>
+          <div className="metric-card"><div className="label">Benefit-Cost Ratio ($)</div><div className="value">{model.bcrDollar.toFixed(1)}&times;</div><div className="sub">{fmt$(model.totalDollars*impactScale)} benefit</div></div>
+          <div className="metric-card"><div className="label">Benefit-Cost Ratio (WELLBY)</div><div className="value" style={{color:COLORS.wellby}}>{model.bcrWellby.toFixed(1)}&times;</div><div className="sub">{fmt$(model.wellbyDollarValue*impactScale)} value</div></div>
         </div>
         <div className="secondary-metrics">
           <div className="sec-metric"><div className="label">$/DALY</div><div className="value">{fmt$(model.dollarPerDaly)}</div></div>
           <div className="sec-metric"><div className="label">$/WELLBY</div><div className="value">{fmt$(model.dollarPerWellby)}</div></div>
-          <div className="sec-metric"><div className="label">Total $ Benefit</div><div className="value">{fmt$(model.totalDollars)}</div></div>
-          <div className="sec-metric"><div className="label">Cost per 1,000 pop</div><div className="value">{fmt$(model.cost)}</div></div>
+          <div className="sec-metric"><div className="label">Total $ Benefit</div><div className="value">{fmt$(model.totalDollars*impactScale)}</div></div>
+          <div className="sec-metric"><div className="label">{impactUnit==='per100k' ? 'Donation amount' : 'Cost per 1,000 pop'}</div><div className="value">{impactUnit==='per100k' ? '$100,000' : fmt$(model.cost)}</div></div>
         </div>
         <div className="chart-section">
           <div className="chart-card">
@@ -1002,12 +1079,12 @@ function App() {
                 <td className={detailView?'col-group-border':''}>{p.adj.toFixed(1)}</td>
                 {detailView && <td>{p.daly_wt !== null ? p.daly_wt : '\u2014'}</td>}
                 {detailView && <td>{p.pv_f < 1 ? p.pv_f.toFixed(3) : '1.0'}</td>}
-                <td>{p.dalys.toFixed(2)}</td>
+                <td>{(p.dalys*impactScale).toFixed(2)}</td>
                 {detailView && <td className="col-group-border">{p.dollar_per_unit !== null ? fmt$(p.dollar_per_unit) : '\u2014'}</td>}
-                <td>{fmt$(p.dollars)}</td>
+                <td>{fmt$(p.dollars*impactScale)}</td>
                 {detailView && <td className="col-group-border">{p.ls ? p.ls.toFixed(4) : '\u2014'}</td>}
                 {detailView && <td>{p.wellby_dur || '\u2014'}</td>}
-                <td>{p.wellbys.toFixed(1)}</td>
+                <td>{(p.wellbys*impactScale).toFixed(1)}</td>
                 <td><ConfBadge conf={p.confidence} /></td>
                 {detailView && <td style={{color:'#6b7280',fontSize:'0.68rem',maxWidth:180,whiteSpace:'normal'}}>{p.formula_note}</td>}
                 <td><SourceLinks sources={SOURCES[p.id]} /></td>
@@ -1018,11 +1095,11 @@ function App() {
                 {detailView && <td colSpan={7}></td>}
                 <td className={detailView?'col-group-border':''}></td>
                 {detailView && <td colSpan={2}></td>}
-                <td>{model.totalDalys.toFixed(2)}</td>
+                <td>{(model.totalDalys*impactScale).toFixed(2)}</td>
                 {detailView && <td className="col-group-border"></td>}
-                <td>{fmt$(model.totalDollars)}</td>
+                <td>{fmt$(model.totalDollars*impactScale)}</td>
                 {detailView && <td className="col-group-border" colSpan={2}></td>}
-                <td>{model.totalWellbys.toFixed(1)}</td>
+                <td>{(model.totalWellbys*impactScale).toFixed(1)}</td>
                 <td></td>
                 {detailView && <td></td>}
                 <td></td>
