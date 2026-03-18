@@ -148,10 +148,27 @@ const MC_V8_OVERRIDES = {
   market_spillover: { min:0.0, mode:0.0, max:0.0 },
 };
 
+// Combined model MC overrides: centered on evidence-integrated defaults
+const MC_COMBINED_OVERRIDES = {
+  protein_haz: { min:0.02, mode:0.11, max:0.22 },       // QPM V3: 5th/central/95th from pooled RE
+  protein_iq_raven: { min:0.3, mode:0.8, max:1.5 },     // Reduced from V12
+  stunting_dw: { min:0.5, mode:1.5, max:3.5 },           // GBD 2019 range to V12 upper
+  iron_iq_smd: { min:0, mode:0.08, max:0.20 },           // Dose-response adjusted
+  iron_work_pct: { min:1, mode:3, max:6 },               // Biofort dose-adjusted
+  iron_immune_pct: { min:0, mode:0, max:0 },             // Zeroed: evidence of harm
+  iron_mh_pct: { min:0, mode:2, max:5 },                 // Evidence quality discount
+  zinc_preterm_pct: { min:0, mode:0.5, max:1.5 },        // Cochrane 2024
+  market_spillover: { min:0.10, mode:0.30, max:0.50 },   // Conservative
+  food_haz: { min:0.01, mode:0.03, max:0.06 },           // Conservative
+};
+
 function getMCParams(version) {
   if (version === 'v8') {
     return MC_PARAMS_BASE.map(p => MC_V8_OVERRIDES[p.key] ? {...p, ...MC_V8_OVERRIDES[p.key]} : p)
       .filter(p => !(p.key === 'market_spillover' && p.mode === 0));
+  }
+  if (version === 'combined') {
+    return MC_PARAMS_BASE.map(p => MC_COMBINED_OVERRIDES[p.key] ? {...p, ...MC_COMBINED_OVERRIDES[p.key]} : p);
   }
   return MC_PARAMS_BASE;
 }
@@ -204,6 +221,23 @@ const V8_DEFAULTS = {
   children_under_5: 500, working_age_adults: 600, children_0_24mo: 40, pregnancies_per_yr: 21,
   stunting_dw: 6.1, discount_rate: 0, adoption_rate: 1.0, iron_iq_include: true, dollar_per_stunting: 3800,
   market_spillover: 0,
+};
+
+// Combined model: integrates QPM Growth Pathway V3 + Iron Evidence Workbook V2
+// QPM V3: protein_haz corrected 0.18→0.11 (pooled RE, k=2 extracted-Z studies), DW informed by GBD 2019
+// Iron V2: dose-response chains show biofort ~50% of supplement effect, immune harm signal, Cochrane 2024 updates
+const COMBINED_DEFAULTS = {
+  ...DEFAULTS,
+  protein_haz: 0.11,         // QPM V3 C1: pooled RE from k=2 extracted-Z studies (was 0.18)
+  protein_iq_raven: 0.8,     // QPM V3: conservative, smaller protein quality effect
+  stunting_dw: 1.5,          // GBD 2019 informed: DW 0.10 × ~15yr impact (was 3.5)
+  iron_iq_smd: 0.08,         // Iron V2: biofort dose ~50% of supplement; non-anemic effect ≈ 0
+  iron_work_pct: 3,          // Iron V2: biofort Hb change smaller than supplement trials
+  iron_immune_pct: 0,        // Iron V2: diarrhea IRR 1.11 (harm!), respiratory NS — zeroed
+  iron_mh_pct: 2,            // Iron V2: d=0.34 but evidence quality discount ×0.5
+  zinc_preterm_pct: 0.5,     // Iron V2 / Cochrane 2024: preterm birth reduction NS
+  market_spillover: 0.30,    // More conservative spillover estimate
+  food_haz: 0.03,            // Conservative food security channel
 };
 
 const COLORS = { protein: '#4472C4', food: '#808080', iron: '#C55A11', zinc: '#548235', income: '#BF8F00', wellby: '#7030A0' };
@@ -822,10 +856,10 @@ function App() {
 
   const handleVersionChange = useCallback((v) => {
     setModelVersion(v);
-    setParams(v === 'v8' ? {...V8_DEFAULTS} : {...DEFAULTS});
+    setParams(v === 'v8' ? {...V8_DEFAULTS} : v === 'combined' ? {...COMBINED_DEFAULTS} : {...DEFAULTS});
   }, []);
   const handleParam = useCallback((key, val) => { setParams(prev => ({...prev, [key]: val})); }, []);
-  const resetParams = useCallback(() => setParams(modelVersion === 'v8' ? {...V8_DEFAULTS} : {...DEFAULTS}), [modelVersion]);
+  const resetParams = useCallback(() => setParams(modelVersion === 'v8' ? {...V8_DEFAULTS} : modelVersion === 'combined' ? {...COMBINED_DEFAULTS} : {...DEFAULTS}), [modelVersion]);
   const handleRunMC = useCallback(() => {
     setMcRunning(true);
     setTimeout(() => {
@@ -874,9 +908,12 @@ function App() {
             <div className="view-toggle" style={{marginBottom:4}}>
               <button className={modelVersion==='v8'?'active':''} onClick={()=>handleVersionChange('v8')}>V8</button>
               <button className={modelVersion==='v10'?'active':''} onClick={()=>handleVersionChange('v10')}>V12</button>
+              <button className={modelVersion==='combined'?'active':''} onClick={()=>handleVersionChange('combined')}>Combined</button>
             </div>
-            <div style={{fontSize:'0.7rem', opacity:0.6, color:'white', maxWidth:220}}>
-              {modelVersion==='v8' ? 'Annual, no discounting, 19 pathways' : 'DW 3.5, 98% adoption, market spillover, 22 pathways'}
+            <div style={{fontSize:'0.7rem', opacity:0.6, color:'white', maxWidth:280}}>
+              {modelVersion==='v8' ? 'Annual, no discounting, 19 pathways' :
+               modelVersion==='combined' ? 'QPM V3 + Iron V2 evidence, GBD DALY wt, 22 pathways' :
+               'DW 3.5, 98% adoption, market spillover, 22 pathways'}
             </div>
           </div>
         </div>
