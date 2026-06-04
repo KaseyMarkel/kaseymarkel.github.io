@@ -1,0 +1,72 @@
+---
+title: "Anchor Builder"
+socialShare: false
+---
+
+{{< rawhtml >}}
+<style>
+.intro-header { display: none !important; }
+.header-section.has-img { display: none !important; }
+
+div[role="main"].container {
+  padding-top: 90px !important;
+  margin-top: 0 !important;
+  max-width: 100% !important;
+}
+
+.ab-intro {
+  max-width: 820px;
+  margin: 0 auto 18px;
+  padding: 0 20px;
+}
+.ab-intro p { font-size: 0.98rem; line-height: 1.55; }
+
+.ab-actions {
+  max-width: 820px;
+  margin: 0 auto 14px;
+  padding: 0 20px;
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.ab-play {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #0085a1;
+  color: #fff;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+}
+.ab-play:hover { background-color: #006d85; color: #fff; text-decoration: none; }
+.ab-repo { color: #0085a1; text-decoration: none; font-size: 0.92rem; }
+
+.ab-frame-wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 20px 40px;
+}
+.ab-frame-wrap iframe {
+  width: 100%;
+  height: calc(100vh - 230px);
+  min-height: 520px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  background: #0e1320;
+}
+</style>
+
+<div class="ab-intro">
+  <p><strong>Anchor Builder</strong> is a trad climbing anchor-building simulator I built as a training tool. Procedurally generated crack systems run down a granite face; against a draining pump clock you pick gear off a real Black Diamond rack, position it over the crack, and place three pieces. For cams, hold <strong>SPACE</strong> to pull the trigger — the lobes rotate inward so you can seat it, just like the real thing. A fall test then decides whether your anchor holds. Click the game to focus it before playing; it plays best in fullscreen.</p>
+</div>
+
+<div class="ab-actions">
+  <a class="ab-play" href="/anchor-builder/" target="_blank" rel="noopener">▶ Play fullscreen</a>
+  <a class="ab-repo" href="https://github.com/KaseyMarkel/Anchor-builder" target="_blank" rel="noopener">Source on GitHub ↗</a>
+</div>
+
+<div class="ab-frame-wrap">
+  <iframe src="/anchor-builder/" title="Anchor Builder game" loading="lazy"></iframe>
+</div>
+{{< /rawhtml >}}

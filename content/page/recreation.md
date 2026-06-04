@@ -199,6 +199,7 @@ I enjoy working with my hands and creating things, whether it's woodworking, ele
   <a href="/page/glass/" class="thing-button">Glass</a>
   <a href="/page/gallery/" class="thing-button">Pour Paintings</a>
   <a href="/page/mandarin/" class="thing-button">Zhōngpath</a>
+  <a href="/page/anchor-builder/" class="thing-button">Anchor Builder</a>
 </div>
 {{< /rawhtml >}}
 
