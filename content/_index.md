@@ -160,8 +160,21 @@ body {
 /* Responsive adjustments */
 @media only screen and (max-width: 768px) {
   .well {
-    padding: 20px 25px !important;
+    padding: 18px 20px !important;
   }
+  /* Shrink the intro text so it fits a phone screen comfortably */
+  .well p {
+    font-size: 15px !important;
+    line-height: 1.55 !important;
+    margin-bottom: 12px;
+  }
+  div[role="main"].container {
+    max-width: 100% !important;
+  }
+}
+@media only screen and (max-width: 400px) {
+  .well { padding: 15px 17px !important; }
+  .well p { font-size: 14px !important; line-height: 1.5 !important; margin-bottom: 10px; }
 }
 </style>
 {{< /rawhtml >}}
