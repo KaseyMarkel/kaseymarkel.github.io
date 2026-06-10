@@ -58,15 +58,17 @@ div[role="main"].container {
 
 .ab-mobile-note { display: none; }
 
-/* On phones the embedded frame is cramped — play fullscreen instead. */
+/* On phones the inline frame is a little cramped, so we suggest fullscreen — but
+   the game still plays right here inline (rotate to landscape). */
 @media (max-width: 768px) {
-  .ab-frame-wrap { display: none; }
   .ab-actions { flex-direction: column; align-items: stretch; }
   .ab-play { text-align: center; font-size: 1.05rem; padding: 14px 20px; }
+  .ab-frame-wrap { padding: 0 12px 30px; }
+  .ab-frame-wrap iframe { height: calc(100vh - 200px); min-height: 420px; }
   .ab-mobile-note {
     display: block;
     max-width: 820px;
-    margin: 2px auto 30px;
+    margin: 2px auto 16px;
     padding: 0 20px;
     color: #777;
     font-size: 0.9rem;
@@ -75,14 +77,14 @@ div[role="main"].container {
 </style>
 
 <div class="ab-intro">
-  <p><strong>Anchor Builder</strong> is a trad climbing anchor-building simulator I built as a training tool. Procedurally generated crack systems run down a granite face; against a draining pump clock you pick gear off a real Black Diamond rack, position it over the crack, and place three pieces. To seat a cam you retract its lobes to fit — on desktop hold <strong>SPACE</strong>, on a phone <strong>pinch with two fingers</strong> — just like pulling the trigger on the real thing. A fall test then decides whether your anchor holds. It plays best fullscreen (on a phone, in landscape).</p>
+  <p><strong>Anchor Builder</strong> is a trad climbing anchor-building simulator I built as a training tool. Procedurally generated crack systems run down a granite face; against a draining pump clock you pick gear off a real Black Diamond rack, position it over the crack, and place three pieces. To seat a cam you retract its lobes to fit — on desktop hold <strong>SPACE</strong>, on a phone rest your <strong>thumb</strong> below the cam and pull <strong>two fingers</strong> down toward it — just like pulling the trigger on the real thing. A fall test then decides whether your anchor holds. It plays best fullscreen (on a phone, in landscape), but you can play it right here too.</p>
 </div>
 
 <div class="ab-actions">
   <a class="ab-play" href="/anchor-builder/" target="_blank" rel="noopener">▶ Play fullscreen</a>
   <a class="ab-repo" href="https://github.com/KaseyMarkel/Anchor-builder" target="_blank" rel="noopener">Source on GitHub ↗</a>
 </div>
-<p class="ab-mobile-note">On mobile, tap Play and rotate your phone to landscape for the best experience.</p>
+<p class="ab-mobile-note">Or just play below — rotate your phone to landscape. Fullscreen is roomier, but optional.</p>
 
 <div class="ab-frame-wrap">
   <iframe src="/anchor-builder/" title="Anchor Builder game" loading="lazy"></iframe>
