@@ -1562,8 +1562,7 @@ div[role="main"].container {
  thermal you circle fences off a little disc, and whenever separate cross&amp;#8209;country flights
  cross to enclose a triangle or polygon, that land counts too. Each flight is drawn in its own
  colour, so you can see when it took &lt;em>several&lt;/em> flights, together, to surround a patch of
- ground. Drop your files into the window below to get started &amp;mdash; or explore the demo
- (my own 112 flights, from California to the Alps to Colombia).&lt;/p></description></item><item><title>Projects</title><link>https://kaseymarkel.com/page/projects/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://kaseymarkel.com/page/projects/</guid><description>&lt;style>
+ ground. Drop your files into the window below to get started &amp;mdash; or explore the demo.&lt;/p></description></item><item><title>Projects</title><link>https://kaseymarkel.com/page/projects/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://kaseymarkel.com/page/projects/</guid><description>&lt;style>
 .intro-header { display: none !important; }
 .header-section.has-img { display: none !important; }
 div[role="main"].container {
@@ -1651,7 +1650,7 @@ div[role="main"].container {
 &lt;div class="proj-wrap">
  &lt;div class="proj-lead">
  &lt;h1>Projects&lt;/h1>
- &lt;p>Things I&amp;rsquo;ve made &amp;mdash; interactive toys and software, and objects built out of wood, glass, concrete, and plants. A couple are playable right in the browser.&lt;/p></description></item><item><title>Recreation</title><link>https://kaseymarkel.com/page/recreation/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://kaseymarkel.com/page/recreation/</guid><description>&lt;style>
+ &lt;p>Things I&amp;rsquo;ve made &amp;mdash; some out of atoms (glass, concrete, wood, and plants), some out of bits (browser toys and software). A couple are playable right here.&lt;/p></description></item><item><title>Recreation</title><link>https://kaseymarkel.com/page/recreation/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://kaseymarkel.com/page/recreation/</guid><description>&lt;style>
 /* Hide entire header section and add top spacing */
 .intro-header {
  display: none !important;

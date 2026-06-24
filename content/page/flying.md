@@ -46,8 +46,7 @@ div[role="main"].container {
   thermal you circle fences off a little disc, and whenever separate cross&#8209;country flights
   cross to enclose a triangle or polygon, that land counts too. Each flight is drawn in its own
   colour, so you can see when it took <em>several</em> flights, together, to surround a patch of
-  ground. Drop your files into the window below to get started &mdash; or explore the demo
-  (my own 112 flights, from California to the Alps to Colombia).</p>
+  ground. Drop your files into the window below to get started &mdash; or explore the demo.</p>
 </div>
 
 <div class="ct-actions">

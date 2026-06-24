@@ -5,9 +5,9 @@
 const map = L.map('map', { preferCanvas: true, zoomControl: true, worldCopyJump: true })
   .setView([37.5, -121.9], 9);
 
-L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-  subdomains: 'abcd', maxZoom: 20, detectRetina: true,
-  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
+L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+  subdomains: 'abc', maxZoom: 19, maxNativeZoom: 17,  // overzoom past native res for thermal detail
+  attribution: 'map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="https://viewfinderpanoramas.org">SRTM</a> &middot; style &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (CC-BY-SA)'
 }).addTo(map);
 
 L.control.scale({ imperial: true, metric: true, position: 'bottomleft' }).addTo(map);
@@ -128,20 +128,28 @@ function updateStats(areaM2) {
       `${CT.prettyDate(dates[0])} – ${CT.prettyDate(dates[dates.length - 1])}`;
 }
 
-/* ============================================================ PIPELINE */
-async function rebuild(fitView) {
+/* ============================================================ PIPELINE
+ * `precomputed` ({areaM2, feature}) is supplied for the baked demo so it
+ * renders instantly; uploads pass nothing and the capture is computed live. */
+async function rebuild(fitView, precomputed) {
   veil(true, 'Drawing flight tracks…');
-  CT.assignColors(flights);
+  if (!precomputed) CT.assignColors(flights);   // demo colours are baked into flights.json
   renderTracks();
   buildSiteBounds();
   if (fitView) gotoSite(0);   // open on the busiest site; "World" button fits everything
   await sleep(30);
-  veil(true, 'Computing captured territory…');
-  const cap = await CT.computeCapture(flights, (i, n) =>
-    veilMsg(`Computing captured territory… site ${i}/${n}`));
-  setTerritory(cap.feature);
-  updateStats(cap.areaM2);
-  veil(false);
+  if (precomputed) {
+    setTerritory(precomputed.feature);
+    updateStats(precomputed.areaM2);
+    veil(false);
+  } else {
+    veil(true, 'Computing captured territory…');
+    const cap = await CT.computeCapture(flights, (i, n) =>
+      veilMsg(`Computing captured territory… site ${i}/${n}`));
+    setTerritory(cap.feature);
+    updateStats(cap.areaM2);
+    veil(false);
+  }
 }
 
 /* ============================================================ VEIL */
@@ -170,22 +178,23 @@ function hideWelcome() { welcomeEl.classList.add('gone'); }
 function freshMode() { return flights.length === 0 || isDemo; }  // replace demo/empty, else append
 function updateBadge() {
   const b = document.getElementById('dataset');
-  if (isDemo) { b.textContent = 'Demo · 112 flights by Kasey Markel'; b.className = 'badge demo'; }
+  if (isDemo) { b.textContent = `Demo · ${flights.length} flights by Kasey Markel`; b.className = 'badge demo'; }
   else { b.textContent = `Your flights · ${flights.length.toLocaleString()}`; b.className = 'badge'; }
 }
 
 async function loadDemo(applyHash) {
   hideWelcome();
-  veil(true, 'Loading demo flights…');
+  veil(true, 'Loading demo…');
+  let data;
   try {
-    const data = await (await fetch('flights.json')).json();
-    flights = data.flights.map((f, i) => ({ ...f, id: i }));
+    data = await (await fetch('flights.json')).json();
+    flights = data.flights.map((f, i) => ({ ...f, id: i }));  // includes baked .color
     isDemo = true;
   } catch (e) {
     veil(true, 'Could not load the demo — try uploading your own IGC files.'); return;
   }
   const m = applyHash && location.hash.match(HASH_RE);
-  await rebuild(!m);
+  await rebuild(!m, data.capture || null);   // baked capture -> instant
   if (m) map.setView([+m[1], +m[2]], +m[3]);
   updateBadge();
 }

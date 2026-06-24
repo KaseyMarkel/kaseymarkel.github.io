@@ -113,7 +113,7 @@ Outside of work, I'm passionate about outdoor adventure sports and creative purs
   <div class="recreation-text">
     <h2>Paragliding</h2>
     <p>Flying through the air with nothing but a wing and harness is an incredible experience. Paragliding offers a unique perspective on the world below and the freedom of flight. It's an aircraft that fits in a backpack - what more could you want?</p>
-    <p><a href="/page/flying/" style="display:inline-block;margin-top:4px;padding:9px 16px;background:#0085a1;color:#fff;border-radius:8px;text-decoration:none;font-weight:600;">🪂 Paraglide Go — map your flights and capture territory →</a></p>
+    <p><a href="/page/flying/" style="display:inline-block;margin-top:4px;padding:9px 16px;background:#0085a1;color:#fff;border-radius:8px;text-decoration:none;font-weight:600;">🪂 My Paragliding Flights →</a></p>
   </div>
   <div class="recreation-image">
     <div class="recreation-image-wrapper">
@@ -155,8 +155,4 @@ Outside of work, I'm passionate about outdoor adventure sports and creative purs
   </div>
 </div>
 {{< /rawhtml >}}
-
-## Making Things
-
-I also love building things with my hands and in code — benches, glass, a living wall, browser games, and more. Those have moved to their own home: see the **[Projects page](/page/projects/)**.
 

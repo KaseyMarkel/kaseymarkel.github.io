@@ -94,26 +94,10 @@ div[role="main"].container {
 <div class="proj-wrap">
   <div class="proj-lead">
     <h1>Projects</h1>
-    <p>Things I&rsquo;ve made &mdash; interactive toys and software, and objects built out of wood, glass, concrete, and plants. A couple are playable right in the browser.</p>
+    <p>Things I&rsquo;ve made &mdash; some out of atoms (glass, concrete, wood, and plants), some out of bits (browser toys and software). A couple are playable right here.</p>
   </div>
 
-  <div class="proj-section-label">Interactive</div>
-  <div class="proj-grid">
-    <a class="proj-card feature" href="/page/flying/">
-      <div class="proj-icon">🪂</div>
-      <h3>Paraglide&nbsp;Go</h3>
-      <p>Upload your paragliding flights and see how much of the planet you&rsquo;ve &ldquo;captured&rdquo; &mdash; every thermal you circle and every triangle your cross&#8209;country flights enclose becomes territory. Bring your own IGC files, or explore the demo.</p>
-      <div class="proj-tags"><span class="proj-tag t-play">Interactive</span><span class="proj-tag t-new">New</span></div>
-    </a>
-    <a class="proj-card feature" href="/page/anchor-builder/">
-      <div class="proj-icon">⚓</div>
-      <h3>Anchor Builder</h3>
-      <p>A trad-climbing anchor-building simulator and training game. Read the rock, pick gear off a real rack, and place a three-piece anchor against a draining pump clock &mdash; then fall-test it.</p>
-      <div class="proj-tags"><span class="proj-tag t-play">Game</span></div>
-    </a>
-  </div>
-
-  <div class="proj-section-label">Making &amp; tinkering</div>
+  <div class="proj-section-label">The World of Atoms</div>
   <div class="proj-grid">
     <a class="proj-card" href="/page/glass/">
       <div class="proj-icon">🔥</div>
@@ -138,6 +122,22 @@ div[role="main"].container {
       <h3>Pour Paintings</h3>
       <p>Real acrylic pour paintings I&rsquo;ve made &mdash; most hang in my garage, but here they live in a virtual gallery.</p>
       <div class="proj-tags"><span class="proj-tag t-art">Art</span></div>
+    </a>
+  </div>
+
+  <div class="proj-section-label">The World of Bits</div>
+  <div class="proj-grid">
+    <a class="proj-card" href="/page/flying/">
+      <div class="proj-icon">🪂</div>
+      <h3>Paraglide&nbsp;Go</h3>
+      <p>Upload your paragliding flights and see how much of the planet you&rsquo;ve &ldquo;captured&rdquo; &mdash; every thermal you circle and every triangle your cross&#8209;country flights enclose becomes territory. Bring your own IGC files, or explore the demo.</p>
+      <div class="proj-tags"><span class="proj-tag t-play">Interactive</span><span class="proj-tag t-new">New</span></div>
+    </a>
+    <a class="proj-card" href="/page/anchor-builder/">
+      <div class="proj-icon">⚓</div>
+      <h3>Anchor Builder</h3>
+      <p>A trad-climbing anchor-building simulator and training game. Read the rock, pick gear off a real rack, and place a three-piece anchor against a draining pump clock &mdash; then fall-test it.</p>
+      <div class="proj-tags"><span class="proj-tag t-play">Game</span></div>
     </a>
     <a class="proj-card" href="/page/mandarin/">
       <div class="proj-icon">🀄</div>
