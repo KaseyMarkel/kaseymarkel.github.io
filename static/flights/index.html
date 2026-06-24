@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Captured Territory — flights of Kasey Markel</title>
+<link rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin="" />
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+  <div id="map"></div>
+
+  <!-- Title / summary card -->
+  <div id="panel" class="panel">
+    <div class="panel-head">
+      <h1>Captured&nbsp;Territory</h1>
+      <p class="sub">Every flight I&rsquo;ve logged, and the ground I&rsquo;ve drawn a closed
+        loop around. Fly a thermal and you fence off a little circle; string big
+        cross-country legs into a triangle and you fence off the land between.
+        This is all of it, stitched together.</p>
+    </div>
+
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-num" id="s-climb">&mdash;</div>
+        <div class="stat-lab">climbed</div>
+        <div class="stat-note" id="s-climb-note"></div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" id="s-dist">&mdash;</div>
+        <div class="stat-lab">flown (track log)</div>
+        <div class="stat-note" id="s-dist-note"></div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" id="s-area">&mdash;</div>
+        <div class="stat-lab">captured</div>
+        <div class="stat-note" id="s-area-note"></div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" id="s-flights">&mdash;</div>
+        <div class="stat-lab">flights</div>
+        <div class="stat-note" id="s-flights-note"></div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <label class="toggle"><input type="checkbox" id="t-terr" checked> Captured territory</label>
+      <label class="toggle"><input type="checkbox" id="t-track" checked> Flight tracks</label>
+      <label class="upload-btn">
+        + Add IGC files
+        <input type="file" id="upload" accept=".igc,.IGC" multiple hidden>
+      </label>
+    </div>
+    <div class="viewnav">
+      <button id="nav-home" title="Busiest flying site">⌂ Home</button>
+      <button id="nav-prev" title="Previous site">◂</button>
+      <span id="nav-label">site 1 / 1</span>
+      <button id="nav-next" title="Next site">▸</button>
+      <button id="nav-world" title="Fit every flight">🌍 World</button>
+    </div>
+    <div class="hint" id="hint">Drag &amp; drop your own <code>.igc</code> files anywhere to add them.</div>
+  </div>
+
+  <!-- Flight readout on hover -->
+  <div id="readout" class="readout hidden"></div>
+
+  <!-- Loading veil -->
+  <div id="veil" class="veil">
+    <div class="veil-inner">
+      <div class="spinner"></div>
+      <div id="veil-msg">Loading flights&hellip;</div>
+    </div>
+  </div>
+
+  <!-- Drop overlay -->
+  <div id="drop" class="drop hidden"><div>Drop IGC files to add them to the map</div></div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+        crossorigin=""></script>
+<script src="https://cdn.jsdelivr.net/npm/d3-array@3"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3-contour@4"></script>
+<script src="pipeline.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
