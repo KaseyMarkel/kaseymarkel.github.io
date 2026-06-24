@@ -113,7 +113,7 @@ Outside of work, I'm passionate about outdoor adventure sports and creative purs
   <div class="recreation-text">
     <h2>Paragliding</h2>
     <p>Flying through the air with nothing but a wing and harness is an incredible experience. Paragliding offers a unique perspective on the world below and the freedom of flight. It's an aircraft that fits in a backpack - what more could you want?</p>
-    <p><a href="/page/flying/" style="display:inline-block;margin-top:4px;padding:9px 16px;background:#0085a1;color:#fff;border-radius:8px;text-decoration:none;font-weight:600;">⛰ Captured Territory — map of all my flights →</a></p>
+    <p><a href="/page/flying/" style="display:inline-block;margin-top:4px;padding:9px 16px;background:#0085a1;color:#fff;border-radius:8px;text-decoration:none;font-weight:600;">🪂 Paraglide Go — map your flights and capture territory →</a></p>
   </div>
   <div class="recreation-image">
     <div class="recreation-image-wrapper">
@@ -158,49 +158,5 @@ Outside of work, I'm passionate about outdoor adventure sports and creative purs
 
 ## Making Things
 
-I enjoy working with my hands and creating things, whether it's woodworking, electronics projects, or other DIY endeavors. There's satisfaction in bringing an idea from concept to reality.
-
-{{< rawhtml >}}
-<style>
-.things-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
-  margin-top: 30px;
-  margin-bottom: 40px;
-}
-.thing-button {
-  display: block;
-  padding: 20px;
-  text-align: center;
-  background-color: #f5f5f5;
-  border: 2px solid #0085a1;
-  border-radius: 8px;
-  color: #0085a1;
-  text-decoration: none;
-  font-weight: 600;
-  transition: all 0.3s ease;
-}
-.thing-button:hover {
-  background-color: #0085a1;
-  color: white;
-  text-decoration: none;
-}
-@media (max-width: 768px) {
-  .things-grid {
-    grid-template-columns: 1fr;
-  }
-}
-</style>
-
-<div class="things-grid">
-  <a href="/page/wing-watchers-perch/" class="thing-button">Wing Watcher's Perch</a>
-  <a href="/page/living-wall/" class="thing-button">Living Wall</a>
-  <a href="/page/origin/" class="thing-button">Origin</a>
-  <a href="/page/glass/" class="thing-button">Glass</a>
-  <a href="/page/gallery/" class="thing-button">Pour Paintings</a>
-  <a href="/page/mandarin/" class="thing-button">Zhōngpath</a>
-  <a href="/page/anchor-builder/" class="thing-button">Anchor Builder</a>
-</div>
-{{< /rawhtml >}}
+I also love building things with my hands and in code — benches, glass, a living wall, browser games, and more. Those have moved to their own home: see the **[Projects page](/page/projects/)**.
 

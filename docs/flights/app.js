@@ -161,21 +161,59 @@ document.getElementById('t-track').addEventListener('change', e => {
   });
 });
 
+/* ============================================================ DATASET STATE */
+let isDemo = false;
+const welcomeEl = document.getElementById('welcome');
+const HASH_RE = /@(-?[\d.]+),(-?[\d.]+),(\d+(?:\.\d+)?)/;
+function showWelcome() { welcomeEl.classList.remove('gone'); }
+function hideWelcome() { welcomeEl.classList.add('gone'); }
+function freshMode() { return flights.length === 0 || isDemo; }  // replace demo/empty, else append
+function updateBadge() {
+  const b = document.getElementById('dataset');
+  if (isDemo) { b.textContent = 'Demo · 112 flights by Kasey Markel'; b.className = 'badge demo'; }
+  else { b.textContent = `Your flights · ${flights.length.toLocaleString()}`; b.className = 'badge'; }
+}
+
+async function loadDemo(applyHash) {
+  hideWelcome();
+  veil(true, 'Loading demo flights…');
+  try {
+    const data = await (await fetch('flights.json')).json();
+    flights = data.flights.map((f, i) => ({ ...f, id: i }));
+    isDemo = true;
+  } catch (e) {
+    veil(true, 'Could not load the demo — try uploading your own IGC files.'); return;
+  }
+  const m = applyHash && location.hash.match(HASH_RE);
+  await rebuild(!m);
+  if (m) map.setView([+m[1], +m[2]], +m[3]);
+  updateBadge();
+}
+
 /* ---- uploads ---- */
-async function ingestFiles(fileList) {
+async function ingestFiles(fileList, fresh) {
   const files = [...fileList].filter(f => /\.igc$/i.test(f.name));
   if (!files.length) return;
+  hideWelcome();
+  if (fresh) { flights = []; isDemo = false; }
   veil(true, `Reading ${files.length} file${files.length > 1 ? 's' : ''}…`);
-  let added = 0;
   for (const file of files) {
     try {
       const parsed = CT.parseIGC(await file.text(), file.name.replace(/\.igc$/i, ''));
-      if (parsed) { parsed.id = flights.length; flights.push(parsed); added++; }
+      if (parsed) { parsed.id = flights.length; flights.push(parsed); }
     } catch (e) {}
   }
-  if (added) { await rebuild(false); fitWorld(); } else veil(false);
+  if (flights.length) { isDemo = false; await rebuild(false); fitWorld(); updateBadge(); }
+  else { veil(false); showWelcome(); }
 }
-document.getElementById('upload').addEventListener('change', e => ingestFiles(e.target.files));
+
+document.getElementById('w-demo').addEventListener('click', () => loadDemo(false));
+document.getElementById('w-upload').addEventListener('click', () => document.getElementById('upload').click());
+document.getElementById('restart').addEventListener('click', e => { e.preventDefault(); showWelcome(); });
+document.getElementById('upload').addEventListener('change', e => {
+  ingestFiles(e.target.files, freshMode());
+  e.target.value = '';  // let the same file be re-selected later
+});
 
 const dropEl = document.getElementById('drop');
 let dragDepth = 0;
@@ -184,24 +222,18 @@ window.addEventListener('dragover', e => e.preventDefault());
 window.addEventListener('dragleave', e => { e.preventDefault(); if (--dragDepth <= 0) { dragDepth = 0; dropEl.classList.add('hidden'); } });
 window.addEventListener('drop', e => {
   e.preventDefault(); dragDepth = 0; dropEl.classList.add('hidden');
-  if (e.dataTransfer && e.dataTransfer.files.length) ingestFiles(e.dataTransfer.files);
+  if (e.dataTransfer && e.dataTransfer.files.length) ingestFiles(e.dataTransfer.files, freshMode());
+});
+
+/* persist the current view in the URL while exploring the demo (shareable links) */
+map.on('moveend', () => {
+  if (!isDemo) return;
+  const c = map.getCenter();
+  history.replaceState(null, '', `#@${c.lat.toFixed(5)},${c.lng.toFixed(5)},${map.getZoom()}`);
 });
 
 /* ============================================================ BOOT */
-(async function boot() {
-  try {
-    const data = await (await fetch('flights.json')).json();
-    flights = data.flights.map((f, i) => ({ ...f, id: i }));
-  } catch (e) {
-    veilMsg('Could not load flights.json — drop in your own IGC files to begin.');
-    return;
-  }
-  // deep-link support: #@lat,lng,zoom  (shareable view)
-  const m = location.hash.match(/@(-?[\d.]+),(-?[\d.]+),(\d+(?:\.\d+)?)/);
-  await rebuild(!m);
-  if (m) map.setView([+m[1], +m[2]], +m[3]);
-  map.on('moveend', () => {
-    const c = map.getCenter();
-    history.replaceState(null, '', `#@${c.lat.toFixed(5)},${c.lng.toFixed(5)},${map.getZoom()}`);
-  });
-})();
+// A shared deep-link (#@lat,lng,zoom) jumps straight into the demo at that view;
+// otherwise greet the user with the upload-first welcome screen.
+if (HASH_RE.test(location.hash)) loadDemo(true);
+else showWelcome();

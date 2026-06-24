@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<title>Captured Territory — flights of Kasey Markel</title>
+<title>Paraglide Go — capture the sky</title>
 <link rel="stylesheet"
       href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
@@ -17,11 +17,11 @@
   <!-- Title / summary card -->
   <div id="panel" class="panel">
     <div class="panel-head">
-      <h1>Captured&nbsp;Territory</h1>
-      <p class="sub">Every flight I&rsquo;ve logged, and the ground I&rsquo;ve drawn a closed
-        loop around. Fly a thermal and you fence off a little circle; string big
-        cross-country legs into a triangle and you fence off the land between.
-        This is all of it, stitched together.</p>
+      <h1>Paraglide&nbsp;Go</h1>
+      <span id="dataset" class="badge"></span>
+      <p class="sub">Each flight in its own colour. The ground you&rsquo;ve drawn a closed loop
+        around &mdash; a thermal circled, or a triangle enclosed by several flights &mdash; is
+        captured territory.</p>
     </div>
 
     <div class="stats">
@@ -62,14 +62,36 @@
       <button id="nav-next" title="Next site">▸</button>
       <button id="nav-world" title="Fit every flight">🌍 World</button>
     </div>
-    <div class="hint" id="hint">Drag &amp; drop your own <code>.igc</code> files anywhere to add them.</div>
+    <div class="hint" id="hint"><a id="restart" href="#">↻ Start over</a> &middot; drag &amp; drop <code>.igc</code> files anywhere to add more.</div>
   </div>
 
   <!-- Flight readout on hover -->
   <div id="readout" class="readout hidden"></div>
 
+  <!-- Welcome / onboarding (shown first) -->
+  <div id="welcome" class="welcome">
+    <div class="welcome-card">
+      <div class="welcome-kicker">🪂 Paraglide&nbsp;Go</div>
+      <h2>See how much of the planet you&rsquo;ve captured.</h2>
+      <p>Every flight is a line. Every thermal you circle &mdash; and every triangle your
+         cross-country flights enclose together &mdash; becomes captured territory, like
+         claiming ground in a game. Upload your tracks and watch your map fill in.</p>
+      <ol class="welcome-steps">
+        <li><b>1</b> Export <code>.igc</code> tracks from your vario, XCTrack, or flying site</li>
+        <li><b>2</b> Add them below &mdash; it all runs in your browser, nothing is uploaded anywhere</li>
+        <li><b>3</b> Explore your tracks, your captured area, and your totals</li>
+      </ol>
+      <div class="welcome-actions">
+        <button id="w-upload" class="w-btn primary">⬆ Upload your IGC files</button>
+        <button id="w-demo" class="w-btn ghost">Explore the demo →</button>
+      </div>
+      <p class="welcome-demo-note">The demo is my own 112 flights &mdash; the Bay Area, the
+        Sierra, Utah, the Alps, and Roldanillo, Colombia.</p>
+    </div>
+  </div>
+
   <!-- Loading veil -->
-  <div id="veil" class="veil">
+  <div id="veil" class="veil gone">
     <div class="veil-inner">
       <div class="spinner"></div>
       <div id="veil-msg">Loading flights&hellip;</div>

@@ -1,5 +1,5 @@
 ---
-title: "Captured Territory"
+title: "Paraglide Go"
 socialShare: false
 ---
 
@@ -40,18 +40,18 @@ div[role="main"].container {
 </style>
 
 <div class="ct-intro">
-  <p><strong>Captured Territory</strong> maps every paragliding flight I&rsquo;ve logged and
-  asks a playful question: how much of the planet have I drawn a closed loop around? Like
-  capturing ground in a strategy game, every thermal I circle fences off a little disc, and
-  whenever separate cross&#8209;country flights cross to enclose a triangle or polygon, that
-  land counts too. Each flight is drawn in its own colour, chosen so neighbouring flights
-  stay distinct &mdash; so you can see when it took <em>several</em> flights, together, to
-  surround a patch of ground. Hover a track for its stats; drop in your own
-  <code>.igc</code> files to add them to the map.</p>
+  <p><strong>Paraglide Go</strong> turns your flight logs into a map of conquered ground.
+  Upload your <code>.igc</code> tracks and it asks a playful question: how much of the planet
+  have you drawn a closed loop around? Like capturing territory in a strategy game, every
+  thermal you circle fences off a little disc, and whenever separate cross&#8209;country flights
+  cross to enclose a triangle or polygon, that land counts too. Each flight is drawn in its own
+  colour, so you can see when it took <em>several</em> flights, together, to surround a patch of
+  ground. Drop your files into the window below to get started &mdash; or explore the demo
+  (my own 112 flights, from California to the Alps to Colombia).</p>
 </div>
 
 <div class="ct-actions">
-  <a class="ct-play" href="/flights/" target="_blank" rel="noopener">⛰ Open fullscreen</a>
+  <a class="ct-play" href="/flights/" target="_blank" rel="noopener">🪂 Open fullscreen</a>
 </div>
 
 <div class="ct-frame-wrap">

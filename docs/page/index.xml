@@ -335,50 +335,7 @@ footer { display: none !important; }
 &lt;div id="password-gate" class="password-gate">
  &lt;div class="password-box">
  &lt;h2>Breeding Dashboard&lt;/h2>
- &lt;p>Enter password to access the dashboard&lt;/p></description></item><item><title>Captured Territory</title><link>https://kaseymarkel.com/page/flying/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://kaseymarkel.com/page/flying/</guid><description>&lt;style>
-.intro-header { display: none !important; }
-.header-section.has-img { display: none !important; }
-
-div[role="main"].container {
- padding-top: 90px !important;
- margin-top: 0 !important;
- max-width: 100% !important;
-}
-
-.ct-intro { max-width: 820px; margin: 0 auto 16px; padding: 0 20px; }
-.ct-intro p { font-size: 0.98rem; line-height: 1.55; }
-
-.ct-actions {
- max-width: 820px; margin: 0 auto 14px; padding: 0 20px;
- display: flex; gap: 14px; flex-wrap: wrap; align-items: center;
-}
-.ct-play {
- display: inline-block; padding: 10px 20px; background-color: #0085a1;
- color: #fff; border-radius: 8px; text-decoration: none; font-weight: 600;
-}
-.ct-play:hover { background-color: #006d85; color: #fff; text-decoration: none; }
-
-.ct-frame-wrap { max-width: 1200px; margin: 0 auto; padding: 0 20px 40px; }
-.ct-frame-wrap iframe {
- width: 100%; height: calc(100vh - 210px); min-height: 560px;
- border: 1px solid #ddd; border-radius: 10px; background: #eef1f3;
-}
-
-@media (max-width: 768px) {
- .ct-frame-wrap { padding: 0 12px 30px; }
- .ct-frame-wrap iframe { height: calc(100vh - 170px); min-height: 460px; }
-}
-&lt;/style>
-
-&lt;div class="ct-intro">
- &lt;p>&lt;strong>Captured Territory&lt;/strong> maps every paragliding flight I&amp;rsquo;ve logged and
- asks a playful question: how much of the planet have I drawn a closed loop around? Like
- capturing ground in a strategy game, every thermal I circle fences off a little disc, and
- whenever separate cross&amp;#8209;country flights cross to enclose a triangle or polygon, that
- land counts too. Each flight is drawn in its own colour, chosen so neighbouring flights
- stay distinct &amp;mdash; so you can see when it took &lt;em>several&lt;/em> flights, together, to
- surround a patch of ground. Hover a track for its stats; drop in your own
- &lt;code>.igc&lt;/code> files to add them to the map.&lt;/p></description></item><item><title>Correlation Does in Fact Imply Causation</title><link>https://kaseymarkel.com/page/essays/correlation-and-causation/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://kaseymarkel.com/page/essays/correlation-and-causation/</guid><description>&lt;style>
+ &lt;p>Enter password to access the dashboard&lt;/p></description></item><item><title>Correlation Does in Fact Imply Causation</title><link>https://kaseymarkel.com/page/essays/correlation-and-causation/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://kaseymarkel.com/page/essays/correlation-and-causation/</guid><description>&lt;style>
 /* Hide entire header section and add top spacing */
 .intro-header {
  display: none !important;
@@ -1563,189 +1520,138 @@ div[role="main"].container { padding-top: 120px !important; margin-top: 0 !impor
 
 
 &lt;p>The world of atoms holds a special place in my heart, surely at least in part because my academic training and current job force me to spend quite a lot of time in the world of bits.&lt;/p>
-&lt;p>Nonetheless, I wanted to highlight at least one project made of bits here, something that I wouldn&amp;rsquo;t have had the time and dedication to make manually, and for which I&amp;rsquo;m extremely grateful for modern AI systems that make building in the world of bits easier than it once was.&lt;/p></description></item><item><title>Private Projects</title><link>https://kaseymarkel.com/page/private-projects/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://kaseymarkel.com/page/private-projects/</guid><description>&lt;style>
+&lt;p>Nonetheless, I wanted to highlight at least one project made of bits here, something that I wouldn&amp;rsquo;t have had the time and dedication to make manually, and for which I&amp;rsquo;m extremely grateful for modern AI systems that make building in the world of bits easier than it once was.&lt;/p></description></item><item><title>Paraglide Go</title><link>https://kaseymarkel.com/page/flying/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://kaseymarkel.com/page/flying/</guid><description>&lt;style>
 .intro-header { display: none !important; }
 .header-section.has-img { display: none !important; }
 
 div[role="main"].container {
- padding-top: 80px !important;
+ padding-top: 90px !important;
  margin-top: 0 !important;
  max-width: 100% !important;
- padding-left: 0 !important;
- padding-right: 0 !important;
 }
 
-footer { display: none !important; }
+.ct-intro { max-width: 820px; margin: 0 auto 16px; padding: 0 20px; }
+.ct-intro p { font-size: 0.98rem; line-height: 1.55; }
 
-.password-gate {
- min-height: 80vh;
- display: flex;
- align-items: center;
- justify-content: center;
- background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+.ct-actions {
+ max-width: 820px; margin: 0 auto 14px; padding: 0 20px;
+ display: flex; gap: 14px; flex-wrap: wrap; align-items: center;
+}
+.ct-play {
+ display: inline-block; padding: 10px 20px; background-color: #0085a1;
+ color: #fff; border-radius: 8px; text-decoration: none; font-weight: 600;
+}
+.ct-play:hover { background-color: #006d85; color: #fff; text-decoration: none; }
+
+.ct-frame-wrap { max-width: 1200px; margin: 0 auto; padding: 0 20px 40px; }
+.ct-frame-wrap iframe {
+ width: 100%; height: calc(100vh - 210px); min-height: 560px;
+ border: 1px solid #ddd; border-radius: 10px; background: #eef1f3;
 }
 
-.password-box {
- background: rgba(255, 255, 255, 0.95);
- backdrop-filter: blur(10px);
- border-radius: 16px;
- padding: 40px;
- box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
- text-align: center;
- max-width: 400px;
- width: 90%;
-}
-
-.password-box h2 {
- color: #333;
- margin-bottom: 10px;
- font-size: 1.5rem;
-}
-
-.password-box p {
- color: #666;
- margin-bottom: 25px;
- font-size: 0.95rem;
-}
-
-.password-box input[type="password"] {
- width: 100%;
- padding: 12px 16px;
- border: 2px solid #e0e0e0;
- border-radius: 8px;
- font-size: 1rem;
- margin-bottom: 15px;
- transition: border-color 0.2s;
- box-sizing: border-box;
-}
-
-.password-box input[type="password"]:focus {
- outline: none;
- border-color: #667eea;
-}
-
-.password-box button {
- width: 100%;
- padding: 12px;
- background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
- color: white;
- border: none;
- border-radius: 8px;
- font-size: 1rem;
- font-weight: 600;
- cursor: pointer;
- transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.password-box button:hover {
- transform: translateY(-2px);
- box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-}
-
-.password-error {
- color: #ef4444;
- font-size: 0.9rem;
- margin-top: 10px;
- display: none;
-}
-
-.password-error.show { display: block; }
-
-/* Project listing styles */
-#projects-container {
- display: none;
- min-height: 80vh;
- background: #f8f9fa;
- padding: 60px 20px;
-}
-
-#projects-container.unlocked { display: block; }
-
-.projects-header {
- text-align: center;
- margin-bottom: 50px;
-}
-
-.projects-header h1 {
- font-size: 2rem;
- color: #333;
- margin-bottom: 8px;
-}
-
-.projects-header p {
- color: #666;
- font-size: 1.1rem;
-}
-
-.projects-grid {
- display: flex;
- flex-wrap: wrap;
- gap: 30px;
- justify-content: center;
- max-width: 900px;
- margin: 0 auto;
-}
-
-.project-card {
- background: white;
- border-radius: 16px;
- padding: 36px;
- box-shadow: 0 4px 20px rgba(0,0,0,0.08);
- width: 380px;
- text-decoration: none;
- color: inherit;
- transition: transform 0.2s, box-shadow 0.2s;
- display: block;
-}
-
-.project-card:hover {
- transform: translateY(-4px);
- box-shadow: 0 8px 30px rgba(0,0,0,0.12);
- text-decoration: none;
- color: inherit;
-}
-
-.project-card .card-icon {
- font-size: 2.5rem;
- margin-bottom: 16px;
-}
-
-.project-card h3 {
- font-size: 1.3rem;
- color: #333;
- margin-bottom: 10px;
-}
-
-.project-card p {
- color: #666;
- font-size: 0.95rem;
- line-height: 1.5;
-}
-
-.project-card .card-tag {
- display: inline-block;
- padding: 4px 12px;
- border-radius: 20px;
- font-size: 0.8rem;
- font-weight: 600;
- margin-top: 16px;
-}
-
-.tag-live {
- background: #dcfce7;
- color: #166534;
-}
-
-.tag-new {
- background: #fef3c7;
- color: #92400e;
+@media (max-width: 768px) {
+ .ct-frame-wrap { padding: 0 12px 30px; }
+ .ct-frame-wrap iframe { height: calc(100vh - 170px); min-height: 460px; }
 }
 &lt;/style>
 
-&lt;div id="password-gate" class="password-gate">
- &lt;div class="password-box">
- &lt;h2>Private Projects&lt;/h2>
- &lt;p>Enter password to access&lt;/p></description></item><item><title>Recreation</title><link>https://kaseymarkel.com/page/recreation/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://kaseymarkel.com/page/recreation/</guid><description>&lt;style>
+&lt;div class="ct-intro">
+ &lt;p>&lt;strong>Paraglide Go&lt;/strong> turns your flight logs into a map of conquered ground.
+ Upload your &lt;code>.igc&lt;/code> tracks and it asks a playful question: how much of the planet
+ have you drawn a closed loop around? Like capturing territory in a strategy game, every
+ thermal you circle fences off a little disc, and whenever separate cross&amp;#8209;country flights
+ cross to enclose a triangle or polygon, that land counts too. Each flight is drawn in its own
+ colour, so you can see when it took &lt;em>several&lt;/em> flights, together, to surround a patch of
+ ground. Drop your files into the window below to get started &amp;mdash; or explore the demo
+ (my own 112 flights, from California to the Alps to Colombia).&lt;/p></description></item><item><title>Projects</title><link>https://kaseymarkel.com/page/projects/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://kaseymarkel.com/page/projects/</guid><description>&lt;style>
+.intro-header { display: none !important; }
+.header-section.has-img { display: none !important; }
+div[role="main"].container {
+ padding-top: 100px !important;
+ margin-top: 0 !important;
+ max-width: 100% !important;
+}
+
+.proj-wrap { max-width: 1040px; margin: 0 auto; padding: 0 22px 60px; }
+.proj-lead { margin: 0 0 6px; }
+.proj-lead h1 { font-size: 2rem; letter-spacing: -0.02em; margin: 0; }
+.proj-lead p { color: #666; font-size: 1.02rem; margin: 8px 0 0; max-width: 720px; }
+
+.proj-section-label {
+ font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.1em;
+ color: #9aa7ae; font-weight: 700; margin: 42px 0 16px;
+ border-bottom: 1px solid #eee; padding-bottom: 8px;
+}
+
+.proj-grid {
+ display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+ gap: 20px;
+}
+.proj-card {
+ background: #fff; border: 1px solid #ececec; border-radius: 16px;
+ padding: 24px 24px 22px; text-decoration: none; color: inherit; display: block;
+ box-shadow: 0 2px 14px rgba(0,0,0,0.05);
+ transition: transform .18s, box-shadow .18s, border-color .18s;
+}
+.proj-card:hover {
+ transform: translateY(-4px); box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+ text-decoration: none; color: inherit; border-color: #d7e7eb;
+}
+.proj-card.feature {
+ grid-column: span 1;
+ background: linear-gradient(180deg, #f7fbfc 0%, #ffffff 60%);
+ border-color: #d7e7eb;
+}
+.proj-icon { font-size: 2.1rem; line-height: 1; margin-bottom: 14px; }
+.proj-card h3 { font-size: 1.22rem; margin: 0 0 8px; color: #2a2f35; letter-spacing: -0.01em; }
+.proj-card p { font-size: 0.92rem; line-height: 1.5; color: #667; margin: 0; }
+.proj-tags { margin-top: 16px; display: flex; gap: 8px; flex-wrap: wrap; }
+.proj-tag {
+ font-size: 0.72rem; font-weight: 700; padding: 3px 10px; border-radius: 20px;
+ letter-spacing: 0.02em;
+}
+.t-play { background: #e0f3f7; color: #0d6c82; }
+.t-new { background: #fef3c7; color: #92400e; }
+.t-build{ background: #e9ecef; color: #495057; }
+.t-craft{ background: #fde2e2; color: #9b2c2c; }
+.t-art { background: #ede7f6; color: #5e35b1; }
+.t-code { background: #e3f0e5; color: #2f6f3e; }
+
+/* private subsection */
+.pp-box {
+ background: #f7f8fa; border: 1px solid #ececec; border-radius: 16px;
+ padding: 26px; margin-top: 4px;
+}
+.pp-locked { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.pp-locked .pp-text { flex: 1; min-width: 240px; }
+.pp-locked h3 { margin: 0 0 4px; font-size: 1.12rem; color: #2a2f35; }
+.pp-locked p { margin: 0; color: #777; font-size: 0.9rem; }
+.pp-form { display: flex; gap: 10px; }
+.pp-form input {
+ padding: 10px 14px; border: 2px solid #e0e0e0; border-radius: 9px; font-size: 0.95rem;
+ width: 180px;
+}
+.pp-form input:focus { outline: none; border-color: #0085a1; }
+.pp-form button {
+ padding: 10px 18px; background: #0085a1; color: #fff; border: none; border-radius: 9px;
+ font-weight: 600; cursor: pointer; transition: background .15s;
+}
+.pp-form button:hover { background: #006d85; }
+.pp-error { color: #ef4444; font-size: 0.85rem; margin-top: 10px; display: none; }
+.pp-error.show { display: block; }
+#pp-unlocked { display: none; margin-top: 20px; }
+#pp-unlocked.show { display: block; }
+
+@media (max-width: 600px) {
+ .pp-form { width: 100%; }
+ .pp-form input { flex: 1; width: auto; }
+}
+&lt;/style>
+
+&lt;div class="proj-wrap">
+ &lt;div class="proj-lead">
+ &lt;h1>Projects&lt;/h1>
+ &lt;p>Things I&amp;rsquo;ve made &amp;mdash; interactive toys and software, and objects built out of wood, glass, concrete, and plants. A couple are playable right in the browser.&lt;/p></description></item><item><title>Recreation</title><link>https://kaseymarkel.com/page/recreation/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://kaseymarkel.com/page/recreation/</guid><description>&lt;style>
 /* Hide entire header section and add top spacing */
 .intro-header {
  display: none !important;
