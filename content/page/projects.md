@@ -21,9 +21,9 @@ div[role="main"].container {
 .proj-lead p { color: #666; font-size: 1.02rem; margin: 8px 0 0; max-width: 720px; }
 
 .proj-section-label {
-  font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.1em;
-  color: #9aa7ae; font-weight: 700; margin: 42px 0 16px;
-  border-bottom: 1px solid #eee; padding-bottom: 8px;
+  font-size: 2rem; letter-spacing: -0.02em;
+  color: #2a2f35; font-weight: 700; margin: 48px 0 18px;
+  border-bottom: 1px solid #eee; padding-bottom: 10px;
 }
 
 .proj-grid {

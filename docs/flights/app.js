@@ -7,6 +7,7 @@ const map = L.map('map', { preferCanvas: true, zoomControl: true, worldCopyJump:
 
 L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
   subdomains: 'abc', maxZoom: 19, maxNativeZoom: 17,  // overzoom past native res for thermal detail
+  className: 'topo-muted',  // CSS desaturates the basemap so flights + territory pop
   attribution: 'map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="https://viewfinderpanoramas.org">SRTM</a> &middot; style &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (CC-BY-SA)'
 }).addTo(map);
 
@@ -67,12 +68,12 @@ function renderTracks() {
   trackLayers = [];
   for (const f of flights) {
     const halo = L.polyline(f.pts, { renderer: rHalo, pane: 'halo', color: '#ffffff',
-      weight: 4, opacity: 0.55, lineJoin: 'round', lineCap: 'round', interactive: false }).addTo(map);
+      weight: 4.5, opacity: 0.7, lineJoin: 'round', lineCap: 'round', interactive: false }).addTo(map);
     const line = L.polyline(f.pts, { renderer: rTrack, pane: 'track', color: f.color,
-      weight: 2.1, opacity: 0.9, lineJoin: 'round', lineCap: 'round' }).addTo(map);
-    line.on('mouseover', () => { line.setStyle({ weight: 4.5, opacity: 1 }); showReadout(f); });
+      weight: 2.5, opacity: 0.95, lineJoin: 'round', lineCap: 'round' }).addTo(map);
+    line.on('mouseover', () => { line.setStyle({ weight: 5.5, opacity: 1 }); showReadout(f); });
     line.on('mousemove', e => moveReadout(e));
-    line.on('mouseout', () => { line.setStyle({ weight: 2.1, opacity: 0.9 }); hideReadout(); });
+    line.on('mouseout', () => { line.setStyle({ weight: 2.5, opacity: 0.95 }); hideReadout(); });
     trackLayers.push({ flight: f, halo, line });
   }
 }
@@ -81,7 +82,7 @@ function setTerritory(feature) {
   if (!feature || !feature.geometry.coordinates.length) return;
   terrLayer = L.geoJSON(feature, {
     renderer: rTerr, pane: 'terr', interactive: false,
-    style: { color: '#c85a25', weight: 1, opacity: 0.5, fillColor: '#e8842f', fillOpacity: 0.2, fillRule: 'evenodd' }
+    style: { color: '#b8431a', weight: 1, opacity: 0.6, fillColor: '#f07d24', fillOpacity: 0.33, fillRule: 'evenodd' }
   }).addTo(map);
   if (!document.getElementById('t-terr').checked) map.removeLayer(terrLayer);
 }
@@ -199,21 +200,34 @@ async function loadDemo(applyHash) {
   updateBadge();
 }
 
-/* ---- uploads ---- */
+/* ---- uploads ----
+ * Parse into a temp list first so a bad/unreadable file never wipes what's on
+ * screen. On success we drop the demo's shareable #@hash so a later reload of
+ * this (possibly embedded) page can't snap back to the demo. */
 async function ingestFiles(fileList, fresh) {
   const files = [...fileList].filter(f => /\.igc$/i.test(f.name));
   if (!files.length) return;
   hideWelcome();
-  if (fresh) { flights = []; isDemo = false; }
   veil(true, `Reading ${files.length} file${files.length > 1 ? 's' : ''}…`);
+  const parsed = [];
   for (const file of files) {
     try {
-      const parsed = CT.parseIGC(await file.text(), file.name.replace(/\.igc$/i, ''));
-      if (parsed) { parsed.id = flights.length; flights.push(parsed); }
+      const p = CT.parseIGC(await file.text(), file.name.replace(/\.igc$/i, ''));
+      if (p) parsed.push(p);
     } catch (e) {}
   }
-  if (flights.length) { isDemo = false; await rebuild(false); fitWorld(); updateBadge(); }
-  else { veil(false); showWelcome(); }
+  if (!parsed.length) {                       // nothing readable — keep current view intact
+    if (flights.length) { veil(true, 'No readable IGC tracks in those files.'); await sleep(2200); veil(false); }
+    else { veil(false); showWelcome(); }
+    return;
+  }
+  if (fresh) flights = [];                     // replace demo/empty; otherwise append
+  for (const p of parsed) { p.id = flights.length; flights.push(p); }
+  isDemo = false;
+  history.replaceState(null, '', location.pathname + location.search);  // drop stale demo #@hash
+  await rebuild(false);
+  fitWorld();
+  updateBadge();
 }
 
 document.getElementById('w-demo').addEventListener('click', () => loadDemo(false));
