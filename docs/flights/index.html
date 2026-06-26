@@ -62,8 +62,8 @@
       <label class="toggle"><input type="checkbox" id="t-terr" checked> Captured territory</label>
       <label class="toggle"><input type="checkbox" id="t-track" checked> Flight tracks</label>
       <label class="upload-btn">
-        + Add IGC files
-        <input type="file" id="upload" accept=".igc,.IGC" multiple hidden>
+        + Add IGC / ZIP
+        <input type="file" id="upload" accept=".igc,.IGC,.zip,.ZIP" multiple hidden>
       </label>
     </div>
     <div class="viewnav">
@@ -73,7 +73,7 @@
       <button id="nav-next" title="Next site">▸</button>
       <button id="nav-world" title="Fit every flight">🌍 World</button>
     </div>
-    <div class="hint" id="hint"><a id="restart" href="#">↻ Start over</a> &middot; drag &amp; drop <code>.igc</code> files anywhere to add more.</div>
+    <div class="hint" id="hint"><a id="restart" href="#">↻ Start over</a> &middot; drag &amp; drop <code>.igc</code> files or an XContest ZIP anywhere to add more.</div>
   </div>
 
   <!-- Flight readout on hover -->
@@ -85,13 +85,25 @@
       <div class="welcome-kicker">🪂 Paraglide&nbsp;Go</div>
       <h2>See how much of the planet you&rsquo;ve captured.</h2>
       <ol class="welcome-steps">
-        <li><b>1</b> Export <code>.igc</code> tracks from your vario, XCTrack, or XContest</li>
-        <li><b>2</b> Add them below &mdash; it all runs in your browser, nothing is uploaded anywhere</li>
+        <li><b>1</b> Grab your tracks: <code>.igc</code> files from your vario or XCTrack, or a ZIP from XContest</li>
+        <li><b>2</b> Drop them in below &mdash; it all runs in your browser, nothing is uploaded anywhere</li>
         <li><b>3</b> Explore your tracks, your captured area, and your totals</li>
       </ol>
       <div class="welcome-actions">
-        <button id="w-upload" class="w-btn primary">⬆ Upload your IGC files</button>
+        <button id="w-upload" class="w-btn primary">⬆ Upload IGC or ZIP</button>
         <button id="w-demo" class="w-btn ghost">Explore the demo →</button>
+      </div>
+      <div class="welcome-xc">
+        <div class="welcome-xc-head">
+          <span>Coming from <strong>XContest</strong>? Grab all your tracks at once:</span>
+          <a class="w-xc-link" href="https://www.xcontest.org/world/en/" target="_blank" rel="noopener">Open XContest ↗</a>
+        </div>
+        <ol class="welcome-xc-steps">
+          <li>Log in, then open <strong>My&nbsp;Flights</strong> (your flight list)</li>
+          <li>Pick a season — or <em>All</em> — with the season selector</li>
+          <li>Click <strong>Download&nbsp;: IGC</strong> to get a ZIP of every listed flight</li>
+          <li>Drop that ZIP here &mdash; no need to unzip it</li>
+        </ol>
       </div>
     </div>
   </div>
@@ -109,7 +121,7 @@
   <div id="toast" class="toast hidden"></div>
 
   <!-- Drop overlay -->
-  <div id="drop" class="drop hidden"><div>Drop IGC files to add them to the map</div></div>
+  <div id="drop" class="drop hidden"><div>Drop IGC files or an XContest ZIP to add them to the map</div></div>
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
@@ -117,6 +129,7 @@
         crossorigin=""></script>
 <script src="https://cdn.jsdelivr.net/npm/d3-array@3"></script>
 <script src="https://cdn.jsdelivr.net/npm/d3-contour@4"></script>
+<script src="https://cdn.jsdelivr.net/npm/fflate@0.8.2/umd/index.js"></script>
 <script src="pipeline.js"></script>
 <script src="app.js"></script>
 </body>

@@ -197,6 +197,7 @@ body{
   max-width:520px;width:100%;background:#fff;border:1px solid var(--card-line);
   border-radius:20px;box-shadow:0 18px 60px rgba(20,40,60,0.22);
   padding:30px 32px 26px;
+  max-height:calc(100vh - 40px);overflow-y:auto;
 }
 .welcome-kicker{
   font-size:0.82rem;font-weight:700;color:var(--accent-d);letter-spacing:0.02em;margin-bottom:8px;
@@ -226,6 +227,20 @@ body{
 .w-btn.ghost{background:#fff;color:var(--accent-d);border-color:rgba(0,133,161,0.35);}
 .w-btn.ghost:hover{background:rgba(0,133,161,0.07);}
 .welcome-demo-note{margin:14px 0 0;font-size:0.74rem;color:#9aa7ae;line-height:1.4;}
+
+.welcome-xc{
+  margin-top:18px;padding-top:16px;border-top:1px solid var(--card-line);
+  font-size:0.82rem;color:var(--ink-soft);line-height:1.45;
+}
+.welcome-xc-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;}
+.w-xc-link{
+  font-weight:600;color:#fff;background:var(--accent);text-decoration:none;
+  padding:4px 10px;border-radius:7px;font-size:0.78rem;white-space:nowrap;
+}
+.w-xc-link:hover{background:var(--accent-d);}
+.welcome-xc-steps{margin:10px 0 0;padding-left:20px;}
+.welcome-xc-steps li{margin:3px 0;}
+.welcome-xc-steps code,.welcome-steps code{background:rgba(0,0,0,0.05);padding:1px 5px;border-radius:4px;font-size:0.82em;}
 
 @media (max-width:640px){
   .panel{top:10px;left:10px;right:10px;width:auto;padding:14px;}

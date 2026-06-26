@@ -249,20 +249,47 @@ async function loadDemo(applyHash) {
 }
 
 /* ---- uploads ----
- * Parse into a temp list first so a bad/unreadable file never wipes what's on
- * screen. On success we drop the demo's shareable #@hash so a later reload of
- * this (possibly embedded) page can't snap back to the demo. */
-async function ingestFiles(fileList, fresh) {
-  const files = [...fileList].filter(f => /\.igc$/i.test(f.name));
-  if (!files.length) return;
-  hideWelcome();
-  veil(true, `Reading ${files.length} file${files.length > 1 ? 's' : ''}…`);
-  const parsed = [];
-  for (const file of files) {
+ * Accepts .igc files and .zip archives (e.g. XContest's "Download: IGC" bulk
+ * export — unzipped client-side with fflate). Parse into a temp list first so a
+ * bad/unreadable file never wipes what's on screen. On success we drop the demo's
+ * shareable #@hash so a later reload of this (embedded) page can't snap back. */
+function unzipIgc(buf) {
+  return new Promise(resolve => {
+    if (!window.fflate || !fflate.unzip) { resolve([]); return; }
+    fflate.unzip(buf, { filter: f => /\.igc$/i.test(f.name) }, (err, files) => {
+      if (err || !files) { resolve([]); return; }
+      const dec = new TextDecoder();
+      const out = [];
+      for (const path in files) {
+        const base = path.split('/').pop().replace(/\.igc$/i, '');
+        out.push({ name: base, text: dec.decode(files[path]) });
+      }
+      resolve(out);
+    });
+  });
+}
+async function collectIgcTexts(fileList) {
+  const out = [];
+  for (const f of [...fileList]) {
     try {
-      const p = CT.parseIGC(await file.text(), file.name.replace(/\.igc$/i, ''));
-      if (p) parsed.push(p);
+      if (/\.igc$/i.test(f.name)) {
+        out.push({ name: f.name.replace(/\.igc$/i, ''), text: await f.text() });
+      } else if (/\.zip$/i.test(f.name)) {
+        const entries = await unzipIgc(new Uint8Array(await f.arrayBuffer()));
+        out.push(...entries);
+      }
     } catch (e) {}
+  }
+  return out;
+}
+async function ingestFiles(fileList, fresh) {
+  if (![...fileList].some(f => /\.(igc|zip)$/i.test(f.name))) return;
+  hideWelcome();
+  veil(true, 'Reading files…');
+  const texts = await collectIgcTexts(fileList);
+  const parsed = [];
+  for (const t of texts) {
+    try { const p = CT.parseIGC(t.text, t.name); if (p) parsed.push(p); } catch (e) {}
   }
   if (!parsed.length) {                       // nothing readable — keep current view intact
     if (flights.length) { veil(true, 'No readable IGC tracks in those files.'); await sleep(2200); veil(false); }
