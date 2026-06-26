@@ -81,8 +81,9 @@
         const lonD = +line.slice(15, 18), lonM = +line.slice(18, 20) + +line.slice(20, 23) / 1000;
         let lon = lonD + lonM / 60; if (line[23] === 'W' || line[23] === 'w') lon = -lon;
         const baro = +line.slice(25, 30), gps = +line.slice(30, 35);
+        const t = +line.slice(1, 3) * 3600 + +line.slice(3, 5) * 60 + +line.slice(5, 7);
         if (!isFinite(lat) || !isFinite(lon) || (lat === 0 && lon === 0)) continue;
-        fixes.push([lat, lon, baro, gps]);
+        fixes.push([lat, lon, baro, gps, t]);
       }
     }
     if (fixes.length < 10) return null;
@@ -103,11 +104,14 @@
     let climb = 0;
     for (let i = 1; i < sm.length; i++) { const d = sm[i] - sm[i - 1]; if (d > 0.4) climb += d; }
     const maxAlt = Math.max.apply(null, alt);
+    let dur = fixes[fixes.length - 1][4] - fixes[0][4];  // airtime, handle midnight wrap
+    if (dur < 0) dur += 86400;
     const latlon = fixes.map(f => [f[0], f[1]]);
     const pts = rdp(latlon, 3 / 111320).map(p => [+p[0].toFixed(5), +p[1].toFixed(5)]);
     return {
       date, name, lengthM: +length.toFixed(1), climbM: +climb.toFixed(1),
-      maxAltM: +maxAlt.toFixed(1), takeoff: [+latlon[0][0].toFixed(5), +latlon[0][1].toFixed(5)], pts
+      maxAltM: +maxAlt.toFixed(1), durationSec: dur,
+      takeoff: [+latlon[0][0].toFixed(5), +latlon[0][1].toFixed(5)], pts
     };
   }
 

@@ -103,9 +103,24 @@ function moveReadout(e) {
 function hideReadout() { readout.classList.add('hidden'); }
 
 /* ============================================================ STATS */
+function fmtDuration(sec) {
+  const h = sec / 3600;
+  if (h >= 48) return (h / 24).toFixed(1) + ' days';
+  return h >= 10 ? Math.round(h) + ' h' : h.toFixed(1) + ' h';
+}
+function peakCompare(m) {
+  const peaks = [['Half Dome', 2693], ['the Matterhorn', 4478], ['Mont Blanc', 4808],
+    ['Denali', 6190], ['Aconcagua', 6961], ['Everest', 8849]];
+  let below = null;
+  for (const p of peaks) if (m >= p[1]) below = p;
+  return below ? `higher than ${below[0]} (${below[1].toLocaleString()} m)`
+    : `${(m / CT.EVEREST_M * 100).toFixed(0)}% of Everest&rsquo;s height`;
+}
 function updateStats(areaM2) {
   const climbM = flights.reduce((s, f) => s + f.climbM, 0);
   const distM = flights.reduce((s, f) => s + f.lengthM, 0);
+  const airSec = flights.reduce((s, f) => s + (f.durationSec || 0), 0);
+  const maxAlt = flights.reduce((m, f) => Math.max(m, f.maxAltM || 0), 0);
   const dates = flights.map(f => f.date).filter(Boolean).sort();
 
   document.getElementById('s-climb').textContent = CT.fmtKm(climbM);
@@ -123,10 +138,17 @@ function updateStats(areaM2) {
   document.getElementById('s-area-note').innerHTML =
     `${Math.round(areaM2).toLocaleString()} m² &middot; ${pctStr} of the globe<br>${CT.landmarkCompare(km2)}`;
 
+  document.getElementById('s-air').textContent = fmtDuration(airSec);
+  document.getElementById('s-air-note').innerHTML =
+    `&approx; ${Math.round(airSec / 3600 / 2).toLocaleString()} feature films back&#8209;to&#8209;back`;
+
   document.getElementById('s-flights').textContent = flights.length.toLocaleString();
   if (dates.length)
     document.getElementById('s-flights-note').textContent =
       `${CT.prettyDate(dates[0])} – ${CT.prettyDate(dates[dates.length - 1])}`;
+
+  document.getElementById('s-high').textContent = Math.round(maxAlt).toLocaleString() + ' m';
+  document.getElementById('s-high-note').innerHTML = peakCompare(maxAlt);
 }
 
 /* ============================================================ PIPELINE
@@ -134,6 +156,8 @@ function updateStats(areaM2) {
  * renders instantly; uploads pass nothing and the capture is computed live. */
 async function rebuild(fitView, precomputed) {
   veil(true, 'Drawing flight tracks…');
+  showProgress(!precomputed);
+  setProgress(0.06);
   if (!precomputed) CT.assignColors(flights);   // demo colours are baked into flights.json
   renderTracks();
   buildSiteBounds();
@@ -142,23 +166,47 @@ async function rebuild(fitView, precomputed) {
   if (precomputed) {
     setTerritory(precomputed.feature);
     updateStats(precomputed.areaM2);
+    showProgress(false);
     veil(false);
   } else {
-    veil(true, 'Computing captured territory…');
-    const cap = await CT.computeCapture(flights, (i, n) =>
-      veilMsg(`Computing captured territory… site ${i}/${n}`));
+    veil(true, 'Mapping your captured territory…');
+    const cap = await CT.computeCapture(flights, (i, n) => {
+      veilMsg(`Mapping captured territory… ${i}/${n} sites`);
+      setProgress(0.1 + 0.9 * i / n);
+    });
     setTerritory(cap.feature);
     updateStats(cap.areaM2);
+    setProgress(1);
+    showProgress(false);
     veil(false);
+    showToast(`✓ Mapped <span class="t-accent">${flights.length}</span> flight${flights.length > 1 ? 's' : ''} &middot; <span class="t-accent">${CT.fmtArea(cap.areaM2)}</span> captured`);
   }
 }
 
-/* ============================================================ VEIL */
+/* ============================================================ VEIL + TOAST */
 const veilEl = document.getElementById('veil'), veilMsgEl = document.getElementById('veil-msg');
+const veilBar = document.querySelector('.veil-bar'), veilFill = document.getElementById('veil-fill');
 function veil(on, msg) { if (msg) veilMsgEl.textContent = msg; veilEl.classList.toggle('gone', !on); }
 function veilMsg(m) { veilMsgEl.textContent = m; }
+function showProgress(on) { veilBar.style.display = on ? 'block' : 'none'; if (!on) veilFill.style.width = '0%'; }
+function setProgress(frac) { veilFill.style.width = Math.round(Math.max(0, Math.min(1, frac)) * 100) + '%'; }
+
+const toastEl = document.getElementById('toast');
+let toastTimer = null;
+function showToast(html, ms = 4500) {
+  toastEl.innerHTML = html;
+  toastEl.classList.remove('hidden');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toastEl.classList.add('hidden'), ms);
+}
 
 /* ============================================================ CONTROLS */
+document.getElementById('panel-min').addEventListener('click', () => {
+  const collapsed = document.getElementById('panel').classList.toggle('collapsed');
+  const btn = document.getElementById('panel-min');
+  btn.textContent = collapsed ? '+' : '–';
+  btn.title = collapsed ? 'Expand' : 'Minimize';
+});
 document.getElementById('t-terr').addEventListener('change', e => {
   if (!terrLayer) return;
   if (e.target.checked) terrLayer.addTo(map); else map.removeLayer(terrLayer);

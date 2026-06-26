@@ -16,6 +16,7 @@
 
   <!-- Title / summary card -->
   <div id="panel" class="panel">
+    <button id="panel-min" class="panel-min" title="Minimize" aria-label="Minimize panel">–</button>
     <div class="panel-head">
       <h1>Paraglide&nbsp;Go</h1>
       <span id="dataset" class="badge"></span>
@@ -41,9 +42,19 @@
         <div class="stat-note" id="s-area-note"></div>
       </div>
       <div class="stat">
+        <div class="stat-num" id="s-air">&mdash;</div>
+        <div class="stat-lab">airtime</div>
+        <div class="stat-note" id="s-air-note"></div>
+      </div>
+      <div class="stat">
         <div class="stat-num" id="s-flights">&mdash;</div>
         <div class="stat-lab">flights</div>
         <div class="stat-note" id="s-flights-note"></div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" id="s-high">&mdash;</div>
+        <div class="stat-lab">highest point</div>
+        <div class="stat-note" id="s-high-note"></div>
       </div>
     </div>
 
@@ -90,8 +101,12 @@
     <div class="veil-inner">
       <div class="spinner"></div>
       <div id="veil-msg">Loading flights&hellip;</div>
+      <div class="veil-bar"><div id="veil-fill"></div></div>
     </div>
   </div>
+
+  <!-- Completion toast -->
+  <div id="toast" class="toast hidden"></div>
 
   <!-- Drop overlay -->
   <div id="drop" class="drop hidden"><div>Drop IGC files to add them to the map</div></div>

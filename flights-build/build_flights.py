@@ -52,12 +52,23 @@ def parse_igc(path):
                         lon = -lon
                     baro = int(line[25:30])
                     gps = int(line[30:35])
+                    t = int(line[1:3]) * 3600 + int(line[3:5]) * 60 + int(line[5:7])
                 except ValueError:
                     continue
                 if lat == 0 and lon == 0:
                     continue
-                fixes.append((lat, lon, baro, gps))
+                fixes.append((lat, lon, baro, gps, t))
     return date_iso, fixes
+
+
+def duration_sec(fixes):
+    """Airtime from first to last B-record timestamp (handles midnight wrap)."""
+    if len(fixes) < 2:
+        return 0
+    d = fixes[-1][4] - fixes[0][4]
+    if d < 0:
+        d += 86400
+    return d
 
 
 # ---------------------------------------------------------------- geometry
@@ -159,9 +170,7 @@ def main():
         climb = total_climb(fixes)
         alts = [f[2] if f[2] > 30 else f[3] for f in fixes]
         max_alt = max(alts) if alts else 0
-        # duration: B-records are ~1/sec; estimate from fix count is unreliable,
-        # so we approximate airtime as (n_fixes) seconds only if cadence ~1Hz.
-        # We instead leave duration unknown-ish; the page shows count + length.
+        dur = duration_sec(fixes)  # real airtime from B-record timestamps
         latlon = [(f[0], f[1]) for f in fixes]
         simplified = rdp(latlon, eps)
         # round to 5 dp (~1.1 m) to shrink JSON
@@ -174,12 +183,14 @@ def main():
             "lengthM": round(length, 1),
             "climbM": round(climb, 1),
             "maxAltM": round(max_alt, 1),
+            "durationSec": dur,
             "nFix": len(fixes),
             "takeoff": [round(latlon[0][0], 5), round(latlon[0][1], 5)],
             "pts": pts,
         })
         tot_climb += climb
         tot_len += length
+        tot_air += dur
 
     flights.sort(key=lambda f: f["date"])
     for i, f in enumerate(flights):
@@ -191,6 +202,7 @@ def main():
             "flights": len(flights),
             "climbM": round(tot_climb, 1),
             "lengthM": round(tot_len, 1),
+            "durationSec": int(tot_air),
         },
         "flights": flights,
     }
