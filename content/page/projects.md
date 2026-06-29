@@ -151,6 +151,12 @@ div[role="main"].container {
       <p>A project made of bits rather than atoms &mdash; something I wouldn&rsquo;t have had the time to build by hand, made possible by modern AI.</p>
       <div class="proj-tags"><span class="proj-tag t-code">Bits</span></div>
     </a>
+    <a class="proj-card" href="/page/traffic/">
+      <div class="proj-icon">📈</div>
+      <h3>Site Traffic 🔒</h3>
+      <p>A little password-protected analytics dashboard for this site &mdash; total visits, traffic over time, top pages, and where visitors come from. Built on privacy-friendly GoatCounter.</p>
+      <div class="proj-tags"><span class="proj-tag t-code">Software</span><span class="proj-tag t-build">Private</span></div>
+    </a>
   </div>
 
   <div class="proj-section-label">Private projects</div>

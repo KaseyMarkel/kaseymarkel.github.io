@@ -1,0 +1,32 @@
+name: Traffic Snapshot
+
+on:
+  schedule:
+    - cron: '17 6 * * *'  # daily, 06:17 UTC
+  workflow_dispatch:
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Fetch GoatCounter stats (public counter, no token)
+        env:
+          GOATCOUNTER_CODE: kaseymarkel
+        run: python scripts/fetch_traffic.py
+
+      - name: Commit snapshot
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git pull --rebase origin main
+          git add data/traffic-history.json static/traffic-data.json docs/traffic-data.json
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Update traffic snapshot [skip ci]" && git push)
+        continue-on-error: true
