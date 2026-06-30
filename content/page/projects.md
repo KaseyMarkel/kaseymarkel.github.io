@@ -18,7 +18,7 @@ div[role="main"].container {
 .proj-wrap { max-width: 1040px; margin: 0 auto; padding: 0 22px 60px; }
 .proj-lead { margin: 0 0 6px; }
 .proj-lead h1 { font-size: 2rem; letter-spacing: -0.02em; margin: 0; }
-.proj-lead p { color: #666; font-size: 1.02rem; margin: 8px 0 0; max-width: 720px; }
+.proj-lead p { color: #666; font-size: 18px; margin: 8px 0 0; max-width: 720px; }
 
 .proj-section-label {
   font-size: 2rem; letter-spacing: -0.02em;
@@ -47,7 +47,7 @@ div[role="main"].container {
 }
 .proj-icon { font-size: 2.1rem; line-height: 1; margin-bottom: 14px; }
 .proj-card h3 { font-size: 1.22rem; margin: 0 0 8px; color: #2a2f35; letter-spacing: -0.01em; }
-.proj-card p { font-size: 0.92rem; line-height: 1.5; color: #667; margin: 0; }
+.proj-card p { font-size: 18px; line-height: 1.5; color: #667; margin: 0; }
 .proj-tags { margin-top: 16px; display: flex; gap: 8px; flex-wrap: wrap; }
 .proj-tag {
   font-size: 0.72rem; font-weight: 700; padding: 3px 10px; border-radius: 20px;
@@ -68,7 +68,7 @@ div[role="main"].container {
 .pp-locked { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
 .pp-locked .pp-text { flex: 1; min-width: 240px; }
 .pp-locked h3 { margin: 0 0 4px; font-size: 1.12rem; color: #2a2f35; }
-.pp-locked p { margin: 0; color: #777; font-size: 0.9rem; }
+.pp-locked p { margin: 0; color: #777; font-size: 18px; }
 .pp-form { display: flex; gap: 10px; }
 .pp-form input {
   padding: 10px 14px; border: 2px solid #e0e0e0; border-radius: 9px; font-size: 0.95rem;
