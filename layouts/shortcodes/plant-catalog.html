@@ -1,0 +1,88 @@
+{{- /* Living-wall plant catalog. Reads data/living_wall.yaml and renders a
+       click-to-expand list of plant cards, grouped by row. Each card supports
+       a long note and any number of photos. */ -}}
+<style>
+.lw-catalog { border:1px solid #c9d3c2; border-radius:12px; margin:34px 0; background:#f7f9f4; overflow:hidden; }
+.lw-catalog > summary {
+  cursor:pointer; list-style:none; padding:18px 22px; font-family:'Lora','Times New Roman',serif;
+  font-size:20px; font-weight:700; color:#1f3b2c; display:flex; align-items:center;
+  justify-content:space-between; gap:12px; user-select:none;
+}
+.lw-catalog > summary::-webkit-details-marker { display:none; }
+.lw-catalog > summary::after { content:"\25B8"; color:#5a7a52; font-size:17px; transition:transform .2s ease; }
+.lw-catalog[open] > summary::after { transform:rotate(90deg); }
+.lw-catalog > summary:hover { background:#eef3e9; }
+.lw-count { font-family:"Helvetica Neue",system-ui,sans-serif; font-size:12px; font-weight:600;
+  letter-spacing:0.14em; text-transform:uppercase; color:#5a7a52; }
+.lw-body { padding:4px 22px 24px; border-top:1px solid #e4ebde; }
+
+.lw-row-label { display:flex; align-items:baseline; gap:14px; margin:26px 0 10px; }
+.lw-row-label .n { font-family:'Lora',serif; font-size:13px; color:#5a7a52;
+  letter-spacing:0.16em; text-transform:uppercase; }
+.lw-row-label .rule { flex:1; height:1px; background:#c9d3c2; }
+
+.lw-card { display:flex; gap:18px; padding:14px 0; border-bottom:1px solid #e4ebde; align-items:flex-start; }
+.lw-card:last-child { border-bottom:none; }
+.lw-photos { flex:0 0 auto; display:flex; flex-wrap:wrap; gap:6px; width:198px; }
+.lw-photos a { display:block; line-height:0; }
+.lw-photos img { height:84px; width:auto; max-width:94px; object-fit:cover; border-radius:6px;
+  border:1px solid #c9d3c2; display:block; }
+.lw-ph { width:84px; height:84px; border-radius:6px; border:1px solid #c9d3c2;
+  background:linear-gradient(150deg,#dfe8d8,#cdddc4);
+  display:flex; align-items:center; justify-content:center; color:#5a7a52; }
+.lw-ph svg { width:30px; height:30px; opacity:.55; }
+
+.lw-text { flex:1; min-width:0; }
+.lw-common { font-family:'Lora',serif; font-size:20px; line-height:1.2; color:#1f3b2c; }
+.lw-qual { font-size:14px; color:#54684c; }
+.lw-latin { font-family:'Lora',serif; font-style:italic; color:#5a7a52; font-size:15px; margin-top:2px; }
+.lw-tag { display:inline-block; font-family:"Helvetica Neue",system-ui,sans-serif; font-size:10px;
+  letter-spacing:0.12em; text-transform:uppercase; color:#5a7a52; border:1px solid #c9d3c2;
+  border-radius:999px; padding:2px 9px; margin:6px 6px 0 0; white-space:nowrap; }
+.lw-note { font-size:16px; line-height:1.55; color:#3a5042; margin-top:8px; max-width:62ch; }
+
+.lw-card.firefly { background:rgba(143,224,74,0.07); border-radius:8px; padding-left:12px; padding-right:12px; }
+.lw-card.firefly .lw-ph { background:radial-gradient(circle at 50% 45%,#1f3b2c,#0c1a12); border-color:#3a5a2a; }
+.lw-card.firefly .lw-ph svg { color:#8fe04a; opacity:1; filter:drop-shadow(0 0 6px #8fe04a);
+  animation:lwpulse 3.4s ease-in-out infinite; }
+.lw-card.firefly .lw-tag { color:#3f6a1e; border-color:#8fe04a; background:rgba(143,224,74,0.12); }
+@keyframes lwpulse { 0%,100%{ filter:drop-shadow(0 0 4px #8fe04a); } 50%{ filter:drop-shadow(0 0 11px #8fe04a); } }
+
+@media (max-width:600px) {
+  .lw-card { flex-direction:column; gap:12px; }
+  .lw-photos { width:100%; }
+}
+@media (prefers-reduced-motion:reduce) {
+  .lw-card.firefly .lw-ph svg { animation:none; }
+}
+</style>
+
+<details class="lw-catalog">
+  <summary><span>List of plants</span><span class="lw-count">{{ len .Site.Data.living_wall }} plants</span></summary>
+  <div class="lw-body">
+    {{- $lastRow := "" -}}
+    {{- range $p := .Site.Data.living_wall -}}
+      {{- if ne $p.row $lastRow }}
+      <div class="lw-row-label"><span class="n">{{ $p.row }}</span><span class="rule"></span></div>
+      {{- $lastRow = $p.row -}}
+      {{- end }}
+      <div class="lw-card{{ if $p.firefly }} firefly{{ end }}">
+        <div class="lw-photos">
+          {{- with $p.photos }}
+            {{- range . }}
+            <a href="{{ . }}" target="_blank" rel="noopener"><img src="{{ . }}" alt="{{ $p.common }}" loading="lazy"></a>
+            {{- end }}
+          {{- else }}
+            <div class="lw-ph"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C7 6 4 9 4 14a8 8 0 0016 0c0-5-3-8-8-12z"/></svg></div>
+          {{- end }}
+        </div>
+        <div class="lw-text">
+          <div class="lw-common">{{ $p.common }}{{ with $p.qualifier }} <span class="lw-qual">{{ . }}</span>{{ end }}</div>
+          {{- with $p.latin }}<div class="lw-latin">{{ . }}</div>{{ end }}
+          {{- range $p.tags }}<span class="lw-tag">{{ . }}</span>{{ end }}
+          {{- with $p.notes }}<div class="lw-note">{{ . }}</div>{{ end }}
+        </div>
+      </div>
+    {{- end }}
+  </div>
+</details>

@@ -1,0 +1,185 @@
+# Living-wall plant catalog — renders as cards in the "List of plants"
+# expandable section on /page/living-wall/.
+#
+# To add photos: drop files in static/img/living-wall/ and list their paths
+#   under `photos:` (as many as you like). Example:
+#     photos:
+#       - /img/living-wall/pothos-overview.jpg
+#       - /img/living-wall/pothos-leaf-detail.jpg
+# `notes` can be as long as you want. `qualifier` and `tags` are optional.
+# Order in this file = display order (grouped by `row`).
+
+- row: "Bottom row"
+  common: "Pothos"
+  latin: "Epipremnum aureum"
+  notes: "Trailing vine, glossy heart-shaped leaves."
+  photos: []
+
+- row: "Bottom row"
+  common: "Umbrella plant"
+  qualifier: "(long petioles)"
+  latin: "Schefflera actinophylla"
+  notes: "The tall-stemmed one with stretched leaf stalks."
+  photos: []
+
+- row: "Bottom row"
+  common: "Maidenhair Fern"
+  latin: "Adiantum sp."
+  notes: "Delicate fan-shaped fronds on dark wiry stems."
+  photos: []
+
+- row: "Bottom row"
+  common: '"Oval Fern"'
+  latin: "Unidentified fern"
+  tags: ["ID to confirm"]
+  notes: "My placeholder name — small ovate leaflets."
+  photos: []
+
+- row: "Bottom row"
+  common: "Dwarf Umbrella plant"
+  qualifier: "(short petioles)"
+  latin: "Schefflera arboricola"
+  notes: "Same family, more compact leaf stalks."
+  photos: []
+
+- row: "Row 2"
+  common: "Croton"
+  qualifier: "(round-leaf form)"
+  latin: "Codiaeum variegatum"
+  notes: "Bold orange/yellow/green variegation."
+  photos: []
+
+- row: "Row 2"
+  common: "Silver Brake Fern"
+  latin: "Pteris argyraea"
+  notes: "The stunner — white/silver stripe down each frond center."
+  photos: []
+
+- row: "Row 2"
+  common: "Spider Plant"
+  latin: "Chlorophytum comosum"
+  notes: "Arching striped leaves; throws plantlets."
+  photos: []
+
+- row: "Row 3"
+  common: "Polka Dot Begonia"
+  latin: "Begonia maculata"
+  notes: "Silver-spotted angel-wing leaves, red undersides."
+  photos: []
+
+- row: "Row 3"
+  common: "Polka Dot Plant"
+  latin: "Hypoestes phyllostachya"
+  notes: "Pink-freckled small leaves."
+  photos: []
+
+- row: "Row 3"
+  common: "Neon Pothos"
+  latin: "Epipremnum aureum 'Neon'"
+  notes: "The bright chartreuse pothos in this row."
+  photos: []
+
+- row: "Row 3"
+  common: "Arrowhead Plant"
+  latin: "Syngonium podophyllum"
+  notes: "A whole cluster of them."
+  photos: []
+
+- row: "Row 3"
+  common: "Umbrella plant"
+  latin: "Schefflera sp."
+  notes: "Yet another umbrella."
+  photos: []
+
+- row: "Row 3"
+  common: "Small-leaf Philodendron"
+  latin: "Philodendron sp."
+  tags: ["ID to confirm"]
+  notes: "Round-ish, quite small leaves."
+  photos: []
+
+- row: "Row 3"
+  common: "Tradescantia"
+  latin: "Tradescantia sp."
+  tags: ["ID to confirm"]
+  notes: "Possibly 'Nanouk' / 'Marina' — variety to confirm."
+  photos: []
+
+- row: "Row 3"
+  common: "Baby Rubber Plant"
+  latin: "Peperomia obtusifolia"
+  notes: "Thick, glossy, spoon-shaped leaves."
+  photos: []
+
+- row: "Row 3"
+  common: "Unknown fern"
+  qualifier: "(large bluish leaves)"
+  latin: "Unidentified fern"
+  tags: ["ID to confirm"]
+  notes: "A big blue-green one I haven't identified yet."
+  photos: []
+
+- row: "Row 4"
+  common: "Pothos"
+  qualifier: "(new, in moss)"
+  latin: "Epipremnum aureum"
+  notes: "The fresh batch rooted into the moss system."
+  photos: []
+
+- row: "Row 5"
+  common: "Purple Shamrock"
+  latin: "Oxalis triangularis"
+  notes: "Deep purple, three triangular leaflets."
+  photos: []
+
+- row: "Row 5"
+  common: "Oyster Plant"
+  latin: "Tradescantia spathacea"
+  notes: "Moses-in-the-cradle — the longer, blade-like Tradescantia."
+  photos: []
+
+- row: "Row 5"
+  common: "Mother of Thousands"
+  latin: "Kalanchoe daigremontiana"
+  notes: "Succulent; the flowering one from Home Depot."
+  photos: []
+
+- row: "Row 6"
+  common: "Purple Passion"
+  latin: "Gynura aurantiaca"
+  notes: "The new one — velvety purple-haired leaves."
+  photos: []
+
+- row: "Row 6"
+  common: "Monstera"
+  latin: "Monstera sp."
+  tags: ["ID to confirm"]
+  notes: "Exact species/variety not yet confirmed."
+  photos: []
+
+- row: "Row 6"
+  common: "Unknown fern"
+  latin: "Unidentified fern"
+  tags: ["ID to confirm"]
+  notes: "Another unplaced fern."
+  photos: []
+
+- row: "Row 6"
+  common: "Bird's Nest Fern"
+  latin: "Asplenium nidus"
+  notes: "Glossy, ripple-edged fronds in a rosette."
+  photos: []
+
+- row: "Row 6"
+  common: "Spikemoss"
+  latin: "Selaginella sp."
+  notes: "Low, mossy, fern-ally ground cover."
+  photos: []
+
+- row: "Top — center"
+  common: "Firefly Petunia"
+  latin: "Petunia 'Firefly' · Light Bio"
+  tags: ["Bioluminescent"]
+  firefly: true
+  notes: "The glowing centerpiece. The rest of the top row repeats species already listed below."
+  photos: []

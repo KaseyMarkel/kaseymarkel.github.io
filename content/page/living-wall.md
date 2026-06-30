@@ -83,3 +83,5 @@ The wall has matured nicely. Here are some close-ups of the plants thriving in t
 </div>
 {{< /rawhtml >}}
 
+{{< plant-catalog >}}
+
