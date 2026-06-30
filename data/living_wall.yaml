@@ -13,27 +13,27 @@
   common: "Pothos"
   latin: "Epipremnum aureum"
   notes: "Trailing vine, glossy heart-shaped leaves."
-  photos: []
+  photos: [/img/living-wall/plant1.jpg]
 
 - row: "Bottom row"
   common: "Umbrella plant"
   qualifier: "(long petioles)"
   latin: "Schefflera actinophylla"
   notes: "The tall-stemmed one with stretched leaf stalks."
-  photos: []
+  photos: [/img/living-wall/plant26.jpg]
 
 - row: "Bottom row"
   common: "Maidenhair Fern"
   latin: "Adiantum sp."
   notes: "Delicate fan-shaped fronds on dark wiry stems."
-  photos: []
+  photos: [/img/living-wall/plant3.jpg]
 
 - row: "Bottom row"
   common: '"Oval Fern"'
   latin: "Unidentified fern"
   tags: ["ID to confirm"]
   notes: "My placeholder name — small ovate leaflets."
-  photos: []
+  photos: [/img/living-wall/plant4.jpg]
 
 - row: "Bottom row"
   common: "Dwarf Umbrella plant"
