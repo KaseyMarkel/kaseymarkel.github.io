@@ -36,11 +36,11 @@
   photos: [/img/living-wall/plant4.jpg]
 
 - row: "Bottom row"
-  common: "Dwarf Umbrella plant"
+  common: "Umbrella plant"
   qualifier: "(short petioles)"
   latin: "Schefflera arboricola"
   notes: "Same family, more compact leaf stalks."
-  photos: []
+  photos: [/img/living-wall/plant5.jpg]
 
 - row: "Row 2"
   common: "Croton"
@@ -52,26 +52,26 @@
 - row: "Row 2"
   common: "Silver Brake Fern"
   latin: "Pteris argyraea"
-  notes: "The stunner — white/silver stripe down each frond center."
-  photos: []
+  notes: "White/silver stripe down each frond center."
+  photos: [/img/living-wall/plant6.jpg]
 
 - row: "Row 2"
   common: "Spider Plant"
   latin: "Chlorophytum comosum"
   notes: "Arching striped leaves; throws plantlets."
-  photos: []
+  photos: [/img/living-wall/plant7.jpg]
 
 - row: "Row 3"
   common: "Polka Dot Begonia"
   latin: "Begonia maculata"
   notes: "Silver-spotted angel-wing leaves, red undersides."
-  photos: []
+  photos: [/img/living-wall/plant2.jpg]
 
 - row: "Row 3"
   common: "Polka Dot Plant"
   latin: "Hypoestes phyllostachya"
   notes: "Pink-freckled small leaves."
-  photos: []
+  photos: [/img/living-wall/plant13.jpg]
 
 - row: "Row 3"
   common: "Neon Pothos"
@@ -80,10 +80,10 @@
   photos: []
 
 - row: "Row 3"
-  common: "Arrowhead Plant"
+  common: "Syngonium"
   latin: "Syngonium podophyllum"
   notes: "A whole cluster of them."
-  photos: []
+  photos: [/img/living-wall/plant8.jpg]
 
 - row: "Row 3"
   common: "Umbrella plant"
@@ -99,17 +99,17 @@
   photos: []
 
 - row: "Row 3"
-  common: "Tradescantia"
+  common: "Tradescantia mix"
   latin: "Tradescantia sp."
   tags: ["ID to confirm"]
   notes: "Possibly 'Nanouk' / 'Marina' — variety to confirm."
-  photos: []
+  photos: [/img/living-wall/plant24.jpg, /img/living-wall/plant23.jpg]
 
 - row: "Row 3"
   common: "Baby Rubber Plant"
   latin: "Peperomia obtusifolia"
   notes: "Thick, glossy, spoon-shaped leaves."
-  photos: []
+  photos: [/img/living-wall/plant12.jpg]
 
 - row: "Row 3"
   common: "Unknown fern"
@@ -117,7 +117,7 @@
   latin: "Unidentified fern"
   tags: ["ID to confirm"]
   notes: "A big blue-green one I haven't identified yet."
-  photos: []
+  photos: [/img/living-wall/plant10.jpg]
 
 - row: "Row 4"
   common: "Pothos"
@@ -130,7 +130,7 @@
   common: "Purple Shamrock"
   latin: "Oxalis triangularis"
   notes: "Deep purple, three triangular leaflets."
-  photos: []
+  photos: [/img/living-wall/plant20.jpg]
 
 - row: "Row 5"
   common: "Oyster Plant"
@@ -147,15 +147,15 @@
 - row: "Row 6"
   common: "Purple Passion"
   latin: "Gynura aurantiaca"
-  notes: "The new one — velvety purple-haired leaves."
-  photos: []
+  notes: "A recent addition, June 2026. Adaxial leaf surfaces are green with with purple trichomes, which makes for a cool optical effect depending on the angle of incidence looking at the leaf."
+  photos: [/img/living-wall/plant21.jpg]
 
 - row: "Row 6"
-  common: "Monstera"
-  latin: "Monstera sp."
+  common: "Stara"
+  latin: "Monstera deliciosa"
   tags: ["ID to confirm"]
-  notes: "Exact species/variety not yet confirmed."
-  photos: []
+  notes: "The only remaininst monstera from my original batch of 3, which survived many months of almost zero light (<40 FC at daily peak) and conistent dessication due to the soil pocket being too small for it. Earned her name through a Claude transcription error, and it's stuck. I've bought several products just for her, including Cal-mag foliar spray magnesium, Kelpak kelp biostimulant, two mini-water-pockets of sphagnum moss for aerial roots to increase water supply, and most recently added a new soil pocket to do the same. After 9 months of slow decline and no new leaves, she's finally recovering and starting to grow vigorously."
+  photos: [/img/living-wall/plant19.jpg]
 
 - row: "Row 6"
   common: "Unknown fern"
@@ -171,10 +171,10 @@
   photos: []
 
 - row: "Row 6"
-  common: "Spikemoss"
+  common: "Selaginella"
   latin: "Selaginella sp."
-  notes: "Low, mossy, fern-ally ground cover."
-  photos: []
+  notes: "Low, mossy, fern-ally ground cover. A new addition June 2026, I've always wanted to grow this early-diverged plant and am excited to try doing so. Placed in a hand-sewn add-on fabric pot in the shade of a vigorously-growing Ficus Audrey."
+  photos: [/img/living-wall/plant16.jpg]
 
 - row: "Top — center"
   common: "Firefly Petunia"
@@ -182,4 +182,4 @@
   tags: ["Bioluminescent"]
   firefly: true
   notes: "The glowing centerpiece. The rest of the top row repeats species already listed below."
-  photos: []
+  photos: [/img/living-wall/plant25.jpg]
