@@ -127,6 +127,12 @@ div[role="main"].container {
 
   <div class="proj-section-label">The World of Bits</div>
   <div class="proj-grid">
+    <a class="proj-card" href="/page/evo-tree/">
+      <div class="proj-icon">🌳</div>
+      <h3>Evo Tree Viewer</h3>
+      <p>The land-plant tree of life grown as a 3D oak: one leaf per species (all 382,376 of them), branches as thick as the number of species they carry. The plants in my living wall glow all the way down to the root.</p>
+      <div class="proj-tags"><span class="proj-tag t-play">Interactive</span><span class="proj-tag t-new">New</span></div>
+    </a>
     <a class="proj-card" href="/page/flying/">
       <div class="proj-icon">🪂</div>
       <h3>Paraglide&nbsp;Go</h3>

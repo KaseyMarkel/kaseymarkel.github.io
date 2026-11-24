@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Evo Tree Viewer</title>
+<meta name="description" content="An interactive 3D tree of life for land plants: every leaf is a species, branch thickness follows species count.">
+<link rel="stylesheet" href="style.css">
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="labels"></div>
+<div id="tip" class="hidden"></div>
+
+<header id="bar">
+  <div class="brand">
+    <h1>Evo Tree</h1>
+    <span id="subtitle">Land plants · <b id="nsp">382,376</b> species</span>
+  </div>
+  <div class="search">
+    <input id="q" type="search" placeholder="Search a clade, family or genus…" autocomplete="off" spellcheck="false">
+    <ul id="qres" class="hidden"></ul>
+  </div>
+</header>
+
+<div id="tools">
+  <button id="bWall" class="on" title="Glow the living-wall lineages">✦ <span>Living wall</span></button>
+  <button id="bLabels" class="on" title="Clade labels">Aa <span>Labels</span></button>
+  <button id="bLeaves" class="on" title="Leaves (one per species)">❦ <span>Leaves</span></button>
+  <button id="bSpin" title="Slow auto-rotate">⟳ <span>Spin</span></button>
+  <button id="bHome" title="Reset view">⌂ <span>Reset</span></button>
+  <button id="bAbout" title="About this tree">? <span>About</span></button>
+  <a id="bFull" class="hidden" href="./" target="_blank" rel="noopener" title="Open in a full window">⤢ <span>Full window</span></a>
+</div>
+
+<aside id="panel" class="hidden">
+  <button id="pClose" aria-label="Close">×</button>
+  <div id="pBody"></div>
+</aside>
+
+<aside id="wall" class="collapsed">
+  <button id="wallHead"><span class="glowdot"></span> My living wall <small id="wallN"></small><i>▾</i></button>
+  <ul id="wallList"></ul>
+</aside>
+
+<div id="about" class="hidden">
+  <div class="card">
+    <button class="x" id="aClose" aria-label="Close">×</button>
+    <h2>Evo Tree Viewer</h2>
+    <p>A phylogeny of all land plants, drawn as a tree.
+      Imagine a wire sculpture with <b>one wire per species</b>. Wires bundle together toward the root, so a branch's
+      cross-sectional area grows linearly with the number of species it carries
+      (that's also <a href="https://en.wikipedia.org/wiki/Leonardo%27s_rule" target="_blank" rel="noopener">Leonardo's rule</a> for real trees).
+      <b>Every leaf is one extant species.</b></p>
+    <p>The <span class="gold">glowing</span> branches trace the plants growing in my
+      <a href="/page/living-wall/" target="_top">living wall</a> back to the root.</p>
+    <p class="small"><b>Data.</b> Topology: <a href="https://tree.opentreeoflife.org" target="_blank" rel="noopener">Open Tree of Life</a>
+      synthetic tree, induced on ~14,500 genera; genera it lacks hang from their family's node. Species counts:
+      <a href="https://wfoplantlist.org" target="_blank" rel="noopener">World Flora Online</a> Plant List (June 2026), accepted species only.
+      Species inside a genus aren't resolved; they're drawn as a cluster of leaves at the genus twig.
+      Branch lengths are artistic, not time.</p>
+    <p class="small"><b>Controls.</b> Drag to orbit · scroll or pinch to zoom · right-drag or two-finger drag to pan ·
+      tap a branch for details · double-tap to fly to it.</p>
+  </div>
+</div>
+
+<div id="loading"><div class="seed"></div><p>Growing 382,376 leaves…</p></div>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>

@@ -43,7 +43,7 @@
   photos: [/img/living-wall/plant5.jpg]
 
 - row: "Row 2"
-  common: "Croton"
+  common: "Croton 'Joseph's coat'"
   qualifier: "(round-leaf form)"
   latin: "Codiaeum variegatum"
   notes: "Bold orange/yellow/green variegation."
@@ -99,10 +99,10 @@
   photos: []
 
 - row: "Row 3"
-  common: "Tradescantia mix"
-  latin: "Tradescantia sp."
+  common: "Wandering dude"
+  latin: "Tradescantia zebrina"
   tags: ["ID to confirm"]
-  notes: "Possibly 'Nanouk' / 'Marina' — variety to confirm."
+  notes: ""
   photos: [/img/living-wall/plant24.jpg, /img/living-wall/plant23.jpg]
 
 - row: "Row 3"
@@ -112,11 +112,11 @@
   photos: [/img/living-wall/plant12.jpg]
 
 - row: "Row 3"
-  common: "Unknown fern"
+  common: "Blue star fern"
   qualifier: "(large bluish leaves)"
-  latin: "Unidentified fern"
+  latin: "Phlebodium aureum"
   tags: ["ID to confirm"]
-  notes: "A big blue-green one I haven't identified yet."
+  notes: "Blue-green fronds, prefers soil not drying to lower than 2/10. Fronds getting larger with age, I've seen them 60+ cm in length in outdoor living walls, but my largest are more like 15 cm."
   photos: [/img/living-wall/plant10.jpg]
 
 - row: "Row 4"
@@ -133,9 +133,9 @@
   photos: [/img/living-wall/plant20.jpg]
 
 - row: "Row 5"
-  common: "Oyster Plant"
+  common: "Oyster Plant & unknown tradescantia"
   latin: "Tradescantia spathacea"
-  notes: "Moses-in-the-cradle — the longer, blade-like Tradescantia."
+  notes: "Moses-in-the-cradle — the longer, blade-like Tradescantia. This has been with the wall since the beginning. Faced with very low light for the first ~8 months, it declined rapidly, leaving some space in its pot for other plants. Since getting grow lights, it's started growing well, and I'm now even starting to propagate it back into the pot. In the remaining space, I've planted a small-leaved variety that I've yet to properly identify."
   photos: []
 
 - row: "Row 5"
@@ -158,10 +158,10 @@
   photos: [/img/living-wall/plant19.jpg]
 
 - row: "Row 6"
-  common: "Unknown fern"
-  latin: "Unidentified fern"
+  common: "Boston fern"
+  latin: "Nephrolepis obliterata"
   tags: ["ID to confirm"]
-  notes: "Another unplaced fern."
+  notes: "Not 100% sure on the ID, fronds remain much shorter than this species sometimes does."
   photos: []
 
 - row: "Row 6"

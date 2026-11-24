@@ -935,7 +935,21 @@ div[role="main"].container .col-md-offset-1 {
 &lt;div class="essays-container">
  &lt;div class="essays-header">
  &lt;h1>Essays&lt;/h1>
- &lt;p class="essays-subtitle">Occasional writing on science, statistics, and thinking clearly&lt;/p></description></item><item><title>Gallery</title><link>https://kaseymarkel.com/page/gallery/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://kaseymarkel.com/page/gallery/</guid><description>&lt;style>
+ &lt;p class="essays-subtitle">Occasional writing on science, statistics, and thinking clearly&lt;/p></description></item><item><title>Evo Tree Viewer</title><link>https://kaseymarkel.com/page/evo-tree/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://kaseymarkel.com/page/evo-tree/</guid><description>&lt;style>
+.intro-header { display: none !important; }
+.header-section.has-img { display: none !important; }
+footer { display: none !important; }
+html, body { overflow: hidden !important; background: #0d1620 !important; }
+
+/* Pin the viewer under the site nav, independent of the theme's Bootstrap columns. */
+.evo-frame {
+ position: fixed; left: 0; right: 0; bottom: 0; top: 92px; z-index: 1;
+ width: 100%; height: calc(100vh - 92px); height: calc(100dvh - 92px); border: 0; display: block; background: #0d1620;
+}
+@media (max-width: 767px) { .evo-frame { top: 52px; height: calc(100vh - 52px); height: calc(100dvh - 52px); } }
+&lt;/style>
+
+&lt;iframe class="evo-frame" src="https://kaseymarkel.com/evotree/" title="Evo Tree Viewer: land plant phylogeny" allow="fullscreen">&lt;/iframe></description></item><item><title>Gallery</title><link>https://kaseymarkel.com/page/gallery/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://kaseymarkel.com/page/gallery/</guid><description>&lt;style>
  .intro-header { display: none !important; }
  div[role="main"].container {
  padding: 0 !important;
