@@ -184,6 +184,12 @@ div[role="main"].container {
           <p>Interactive cost-effectiveness analysis for Semilla Nueva&rsquo;s biofortified maize program &mdash; DALYs, WELLBYs, and benefit-cost modeling.</p>
           <div class="proj-tags"><span class="proj-tag t-new">New</span></div>
         </a>
+        <a class="proj-card" href="https://kaseymarkel.com/newseed-nutrient-model/global.html">
+          <div class="proj-icon">🌾</div>
+          <h3>Global Nutrient Model</h3>
+          <p>What gene-edited nutrition traits in CGIAR maize, rice and wheat could do across 75 countries &mdash; DALYs by crop, nutrient and country, with every assumption as a slider.</p>
+          <div class="proj-tags"><span class="proj-tag t-new">New</span></div>
+        </a>
         <a class="proj-card" href="/page/traffic/">
           <div class="proj-icon">📈</div>
           <h3>Traffic</h3>
