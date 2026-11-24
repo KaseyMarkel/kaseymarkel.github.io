@@ -365,7 +365,7 @@ data = {
     'label': [li[l] for l in out_lab],
     'family': [li[f] for f in out_fam],
     'genus': out_kind,
-    'highlight': {'title': 'My living wall', 'url': '/page/living-wall/', 'items': highlights},
+    'highlight': {'title': "Kasey's living wall", 'url': '/page/living-wall/', 'items': highlights},
 }
 os.makedirs(os.path.dirname(OUT), exist_ok=True)
 json.dump(data, open(OUT, 'w'), separators=(',', ':'))
