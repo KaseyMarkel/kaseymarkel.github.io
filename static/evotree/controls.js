@@ -1,8 +1,8 @@
 // "Drone" camera controls for the Evo Tree viewer.
 // - wheel / pinch: fly toward (or away from) whatever is under the pointer, a fixed fraction of the way per notch,
 //   so you can travel from the whole tree down to a single twig at a steady pace
-// - drag: turn the world around a pivot chosen at the start of each drag (getPivot): the selected branch if there
-//   is one, the tree itself when you're outside it, otherwise yourself (look around like a hovering drone)
+// - drag: turn the world around a pivot chosen at the start of each drag (getPivot), normally whatever is at the
+//   centre of the view; a pivot at the camera itself means "look around" instead
 // - right-drag / shift-drag / two-finger drag: slide sideways
 // The camera always looks at `target` (kept in front of it), so fly-to animations just move position + target.
 import * as THREE from 'three';
@@ -88,6 +88,7 @@ export class DroneControls extends THREE.EventDispatcher {
   _setPivot(v) {
     this.pivot.copy(v);
     this.self = v.distanceTo(this.camera.position) < 1e-4;   // turning around yourself: look around
+    if (!this.self) this.target.copy(v);                      // pivots sit on the line of sight: look straight at it
   }
 
   // ---- motions

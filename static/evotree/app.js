@@ -177,20 +177,22 @@ const bloom = new UnrealBloomPass(new THREE.Vector2(innerWidth / 2, innerHeight 
 composer.addPass(bloom);
 composer.addPass(new OutputPass());
 
-// drag turns the world around: the selected branch if any; the whole tree from outside it; otherwise yourself
+// drag turns the world around whatever sits at the centre of the view (the nearest branch or leaf cluster there;
+// failing that, the point level with the tree's centre), so the thing you're looking at stays put while you turn it
 const controls = new DroneControls(camera, canvas, {
   getPivot: () => {
-    const cam = camera.position, fwd = controls.target.clone().sub(cam);
-    if (selected >= 0 && selCenter && selCenter.clone().sub(cam).dot(fwd) > 0) return selCenter.clone();
-    if (cam.distanceTo(crownCenter) > treeR * 1.3) return crownCenter.clone();
-    return cam.clone();
+    const cam = camera.position, fwd = controls.target.clone().sub(cam).normalize();
+    const hit = pick(innerWidth / 2, innerHeight / 2, 8);
+    let d = hit ? hit.depth : crownCenter.clone().sub(cam).dot(fwd);
+    if (!(d > 0)) d = treeR * 0.15;
+    d = Math.max(d, 0.05);
+    return cam.clone().addScaledVector(fwd, d);
   },
   getDepth: (x, y) => { const h = pick(x, y, 3); return h ? h.depth : null; },
   getBounds: () => ({ center: crownCenter, radius: treeR }),
 });
 controls.rotateSpeed = IS_TOUCH ? 0.7 : 0.8;
 controls.autoRotateSpeed = 0.35;
-let selCenter = null;
 
 // ================================================================ world (rebuilt per model)
 const BARK_DARK = new THREE.Color('#3b3028'), BARK_TWIG = new THREE.Color('#5b4a3a');
@@ -223,7 +225,7 @@ function disposeWorld() {
   scene.remove(world.group);
   world.group.traverse((o) => { if (o.geometry) o.geometry.dispose(); if (o.material) [].concat(o.material).forEach((m) => m.dispose()); });
   for (const el of labelPool.values()) el.remove();
-  labelPool.clear(); shown = new Set();
+  labelPool.clear(); shown = new Set(); placedLabels = [];
 }
 
 function buildWorld() {
@@ -652,7 +654,17 @@ function labelEl(c) {
   return el;
 }
 const P = new THREE.Vector3(), Q = new THREE.Vector3();
-function updateLabels() {
+function labelAnchor(c, out) {
+  const i = c.i;
+  if (c.kind === 'item') return c.it.pos ? out.copy(c.it.pos) : null;
+  if (c.kind === 'genus' && clusterR[i]) return out.fromArray(clusterC, i * 3);
+  out.fromArray(start, i * 3).lerp(Q.fromArray(end, i * 3), 0.55);
+  if (i === 0) out.set(0, end[1] * 0.5, 0);
+  return out;
+}
+let placedLabels = [];
+// full pass: decide which labels show (labels already on screen get a bonus, so the set doesn't flicker)
+function chooseLabels() {
   const W = innerWidth, H = innerHeight;
   const focal = H / 2 / Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
   const camPos = camera.position;
@@ -661,48 +673,64 @@ function updateLabels() {
   for (const c of candidates) {
     if (c.kind === 'item' ? !glowOn && !focusOn : !labelsOn || (focusOn && c.i !== selected)) continue;
     const i = c.i;
-    if (c.kind === 'item') { if (!c.it.pos) continue; P.copy(c.it.pos); }
-    else if (c.kind === 'genus' && clusterR[i]) P.fromArray(clusterC, i * 3);
-    else { P.fromArray(start, i * 3).lerp(Q.fromArray(end, i * 3), 0.55); if (i === 0) P.set(0, end[1] * 0.5, 0); }
+    if (!labelAnchor(c, P)) continue;
     const dist = P.distanceTo(camPos);
     Q.copy(P).project(camera);
     if (Q.z > 1 || Q.x < -1.05 || Q.x > 1.05 || Q.y < -1.05 || Q.y > 1.05) continue;
     const r = c.kind === 'genus' ? (clusterR[i] || radius[i]) * 0.6 : radius[i];
     const sr = (r * focal) / dist;
-    let score;
-    let compact = false;
+    let score, compact = false;
     if (c.kind === 'item') {
       compact = !M.pruned && dist > treeR * 0.55 && i !== selected;
       score = compact && !focusOn ? 5 + 100 / dist : 1e6 / dist;   // far away: big clade names still win the space
-    }
-    else {
+    } else {
       const need = c.kind === 'genus' ? (M.pruned ? 6 : 14) : M.pruned ? 0.8 : 1.6;
-      if (sr < need && i !== selected) continue;
+      if (sr < need * (c.on ? 0.75 : 1) && i !== selected) continue;
       score = sr * c.pri + (i === selected ? 1e9 : 0);
     }
+    if (c.on) score *= 1.5;
     cands.push({ c, x: (Q.x + 1) / 2 * W, y: (1 - Q.y) / 2 * H, score, compact });
   }
   cands.sort((a, b) => b.score - a.score);
   const placed = [], now = new Set();
+  placedLabels = [];
   for (const k of cands) {
     if (placed.length >= maxLabels) break;
     const el = labelEl(k.c);
-    el.classList.toggle('compact', k.compact);
     const w = k.compact ? el._wc : el._w, h = k.compact ? 20 : 38;
     const x0 = k.x - w / 2, y0 = k.y - h / 2;
     if (x0 < 4 || x0 + w > W - 4 || y0 < 60 || y0 + h > H - 8) continue;
+    // a little slack for labels already showing, so neighbours don't knock each other out mid-move
+    const pad = k.c.on ? 6 : 0;
     let ok = true;
-    for (const p of placed) if (x0 < p[2] && x0 + w > p[0] && y0 < p[3] && y0 + h > p[1]) { ok = false; break; }
+    for (const p of placed) if (x0 + pad < p[2] && x0 + w - pad > p[0] && y0 + pad < p[3] && y0 + h - pad > p[1]) { ok = false; break; }
     if (!ok) continue;
     placed.push([x0, y0, x0 + w, y0 + h]);
-    el.style.transform = `translate(${x0 | 0}px, ${y0 | 0}px)`;
+    el.classList.toggle('compact', k.compact);
     el.style.width = w + 'px'; el.style.textAlign = 'center';
     el.classList.toggle('sel', k.c.i === selected && k.c.kind !== 'item');
     el.classList.add('show'); now.add(el);
+    placedLabels.push({ el, c: k.c, w, h });
   }
+  for (const c of candidates) c.on = false;
+  for (const l of placedLabels) l.c.on = true;
   for (const el of shown) if (!now.has(el)) el.classList.remove('show');
   shown = now;
 }
+// every frame: keep the chosen labels glued to their anchors (sub-pixel, so they glide instead of jittering)
+function positionLabels() {
+  const W = innerWidth, H = innerHeight;
+  for (const l of placedLabels) {
+    if (!labelAnchor(l.c, P)) continue;
+    Q.copy(P).project(camera);
+    const off = Q.z > 1 || Q.x < -1.1 || Q.x > 1.1 || Q.y < -1.1 || Q.y > 1.1;
+    l.el.classList.toggle('show', !off);
+    if (off) continue;
+    const x = (Q.x + 1) / 2 * W - l.w / 2, y = (1 - Q.y) / 2 * H - l.h / 2;
+    l.el.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0)`;
+  }
+}
+function updateLabels(full) { if (full) chooseLabels(); positionLabels(); }
 
 // ================================================================ picking
 function pick(cx, cy, tol) {
@@ -750,7 +778,6 @@ function select(i, flyIt, it) {
   selected = i;
   if (i < 0) { $('panel').classList.add('hidden'); if (leafMat) leafMat.uniforms.uSel.value.set(-1, -1); return; }
   paintBark(i, i + size[i], 1);
-  selCenter = subtreeSphere(i).center;
   leafMat.uniforms.uSel.value.set(i, i === 0 ? -1 : i + size[i]);
   renderPanel(i, it || M.item(i));
   if (IS_SMALL || !$('panel').classList.contains('hidden')) $('wall').classList.add('collapsed');
@@ -1079,7 +1106,7 @@ function loop() {
   world.sheen.material.opacity = pulse;
   world.beadMat.size = world.beadSize * (0.9 + 0.2 * Math.sin(t * 3.1));
   composer.render();
-  if (frame++ % 2 === 0) updateLabels();
+  updateLabels(frame++ % 8 === 0);
   doHover();
   requestAnimationFrame(loop);
 }
