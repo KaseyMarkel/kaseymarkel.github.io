@@ -1,7 +1,7 @@
 // Evo Tree Viewer — 3D phylogeny rendered as an oak.
 // The scene is (re)built from a "model": either the full tree, or the tree pruned to a species list.
 import * as THREE from 'three';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { DroneControls } from './controls.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
@@ -177,14 +177,20 @@ const bloom = new UnrealBloomPass(new THREE.Vector2(innerWidth / 2, innerHeight 
 composer.addPass(bloom);
 composer.addPass(new OutputPass());
 
-const controls = new OrbitControls(camera, canvas);
-controls.enableDamping = true; controls.dampingFactor = 0.08;
-controls.zoomToCursor = true;            // zoom toward the pointer, so you can travel anywhere in the crown
-controls.minDistance = 0.15;
-controls.maxPolarAngle = Math.PI * 0.53;
-controls.zoomSpeed = 2.6; controls.rotateSpeed = IS_TOUCH ? 0.7 : 0.9;
+// drag turns the world around: the selected branch if any; the whole tree from outside it; otherwise yourself
+const controls = new DroneControls(camera, canvas, {
+  getPivot: () => {
+    const cam = camera.position, fwd = controls.target.clone().sub(cam);
+    if (selected >= 0 && selCenter && selCenter.clone().sub(cam).dot(fwd) > 0) return selCenter.clone();
+    if (cam.distanceTo(crownCenter) > treeR * 1.3) return crownCenter.clone();
+    return cam.clone();
+  },
+  getDepth: (x, y) => { const h = pick(x, y, 3); return h ? h.depth : null; },
+  getBounds: () => ({ center: crownCenter, radius: treeR }),
+});
+controls.rotateSpeed = IS_TOUCH ? 0.7 : 0.8;
 controls.autoRotateSpeed = 0.35;
-controls.screenSpacePanning = true;
+let selCenter = null;
 
 // ================================================================ world (rebuilt per model)
 const BARK_DARK = new THREE.Color('#3b3028'), BARK_TWIG = new THREE.Color('#5b4a3a');
@@ -239,7 +245,7 @@ function buildWorld() {
   bb.getCenter(crownCenter);
   treeR = Math.max(5, bb.getSize(new THREE.Vector3()).length() / 2);
   scene.fog.near = treeR * 1.6; scene.fog.far = treeR * 5.5;
-  controls.maxDistance = treeR * 6;
+  controls.maxDistance = treeR * 6; controls.autoPivot.copy(crownCenter);
   {
     const m = new THREE.Mesh(new THREE.CircleGeometry(treeR * 0.575, 96), new THREE.MeshLambertMaterial({ map: groundTex, color: 0xc4c4c4, transparent: true, depthWrite: false, fog: false }));
     m.rotation.x = -Math.PI / 2; m.position.set(crownCenter.x, -0.01, crownCenter.z); group.add(m); world.ground = m;
@@ -602,6 +608,7 @@ function flyToNode(i) {
 
 // ================================================================ labels
 const labelsEl = $('labels');
+labelsEl.addEventListener('wheel', (e) => controls._wheel(e), { passive: false });   // scrolling over a label still flies
 const labelPool = new Map();
 let shown = new Set();
 const itemSub = (it) => (it.sci && it.sci !== it.label ? it.sci : (it.family || ''));
@@ -714,7 +721,7 @@ function pick(cx, cy, tol) {
   // listed species beads first
   if (glowOn || focusOn) for (let k = 0; k < items.length; k++) {
     const it = items[k]; if (!it.pos || hlNode[k] === undefined || !proj(it.pos.x, it.pos.y, it.pos.z, a)) continue;
-    if (Math.hypot(a[0] - cx, a[1] - cy) < tol + 8) return { i: hlNode[k], it };
+    if (Math.hypot(a[0] - cx, a[1] - cy) < tol + 8) return { i: hlNode[k], it, depth: a[2] };
   }
   let best = -1, bestD = Infinity;
   for (let i = 0; i < N; i++) {
@@ -733,7 +740,7 @@ function pick(cx, cy, tol) {
   }
   if (best < 0) return null;
   const it = M.item(best);
-  return { i: best, it: it || undefined };
+  return { i: best, it: it || undefined, depth: bestD };
 }
 function namedAncestor(i) { let u = i; while (u > 0 && !NAME(u)) u = M.parent[u]; return u; }
 
@@ -743,6 +750,7 @@ function select(i, flyIt, it) {
   selected = i;
   if (i < 0) { $('panel').classList.add('hidden'); if (leafMat) leafMat.uniforms.uSel.value.set(-1, -1); return; }
   paintBark(i, i + size[i], 1);
+  selCenter = subtreeSphere(i).center;
   leafMat.uniforms.uSel.value.set(i, i === 0 ? -1 : i + size[i]);
   renderPanel(i, it || M.item(i));
   if (IS_SMALL || !$('panel').classList.contains('hidden')) $('wall').classList.add('collapsed');

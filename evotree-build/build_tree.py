@@ -381,11 +381,11 @@ data = {
     'genus': out_kind,
     'highlight': {'title': "Kasey's living wall", 'url': '/page/living-wall/', 'items': highlights},
     'presets': [
-        {'id': 'wall', 'title': "Kasey's living wall", 'short': 'Living wall', 'url': '/page/living-wall/', 'items': highlights},
         {'id': 'food', 'group': 'food', 'title': 'Common food plants', 'short': 'Food plants', 'sub': 'All', 'items': food},
         {'id': 'fruit', 'group': 'food', 'title': 'Fruits', 'sub': 'Fruit', 'items': food_sub('fruit')},
         {'id': 'berries', 'group': 'food', 'title': 'Berries', 'sub': 'Berries', 'items': food_sub('berry')},
         {'id': 'herbs', 'group': 'food', 'title': 'Herbs & spices', 'sub': 'Herbs & spices', 'items': food_sub('herb')},
+        {'id': 'wall', 'title': "Kasey's living wall", 'short': "Kasey's living wall", 'url': '/page/living-wall/', 'items': highlights},
     ],
 }
 os.makedirs(os.path.dirname(OUT), exist_ok=True)
