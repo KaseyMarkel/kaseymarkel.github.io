@@ -162,7 +162,7 @@ let crownCenter = new THREE.Vector3(), treeR = 50;
 let clusterR, clusterC;
 let selected = -1;
 let leafMat;
-let labelsOn = true, glowOn = true, leavesOn = true;
+let labelsOn = true, glowOn = true, leavesOn = true, focusOn = false;
 let candidates = [], index = [];
 const NAME = (i) => M.name(i);
 const FAM = (i) => M.fam(i);
@@ -172,7 +172,7 @@ const display = (i) => { const nm = NAME(i); if (!nm) return 'Unnamed clade'; re
 function disposeWorld() {
   if (!world) return;
   scene.remove(world.group);
-  world.group.traverse((o) => { if (o.geometry) o.geometry.dispose(); if (o.material) o.material.dispose(); });
+  world.group.traverse((o) => { if (o.geometry) o.geometry.dispose(); if (o.material) [].concat(o.material).forEach((m) => m.dispose()); });
   for (const el of labelPool.values()) el.remove();
   labelPool.clear(); shown = new Set();
 }
@@ -199,7 +199,7 @@ function buildWorld() {
   controls.maxDistance = treeR * 6;
   {
     const m = new THREE.Mesh(new THREE.CircleGeometry(treeR * 1.5, 64), new THREE.MeshBasicMaterial({ map: groundTex, transparent: true, depthWrite: false, fog: false }));
-    m.rotation.x = -Math.PI / 2; m.position.set(crownCenter.x, -0.01, crownCenter.z); group.add(m);
+    m.rotation.x = -Math.PI / 2; m.position.set(crownCenter.x, -0.01, crownCenter.z); group.add(m); world.ground = m;
   }
   buildBark(group);
   buildLeaves(group);
@@ -207,6 +207,17 @@ function buildWorld() {
   buildCandidates();
   buildSearchIndex();
   world.glow.visible = glowOn; world.leaves.visible = leavesOn;
+  applyFocus();
+}
+// "Your species only": everything off your lineages fades to 10% and loses its labels
+function applyFocus() {
+  const on = focusOn && items.length > 0;
+  const gm = world.barkGhost;
+  gm.transparent = on; gm.opacity = on ? 0.1 : 1; gm.depthWrite = !on; gm.needsUpdate = true;
+  leafMat.uniforms.uFocus.value = on ? 1 : 0;
+  leafMat.transparent = on; leafMat.depthWrite = !on; leafMat.needsUpdate = true;
+  world.ground.material.opacity = on ? 0.35 : 1;
+  $('bFocus').classList.toggle('on', focusOn);
 }
 
 // ---------------------------------------------------------------- bark
@@ -240,8 +251,10 @@ function buildBark(group) {
   vStart[N] = nVert;
   const bPos = new Float32Array(nVert * 3); bNor = new Float32Array(nVert * 3); bCol = new Float32Array(nVert * 3);
   const bIdx = new Uint32Array(nIdx);
+  let nOn = 0; for (let i = 0; i < N; i++) if (onPath[i]) { const [a, sg] = tubeSpec(i); nOn += a * sg * 6; }
+  let iOn = 0, iOff = nOn;
   baseCol = new Float32Array(N * 3);
-  let vi = 0, ii = 0;
+  let vi = 0;
   const S = new THREE.Vector3(), E = new THREE.Vector3(), C = new THREE.Vector3(), P = new THREE.Vector3(), T = new THREE.Vector3();
   const U = new THREE.Vector3(), V = new THREE.Vector3(), ref = new THREE.Vector3(), prevU = new THREE.Vector3();
   for (let i = 0; i < N; i++) {
@@ -277,11 +290,13 @@ function buildBark(group) {
         vi++;
       }
     }
+    let ii = onPath[i] ? iOn : iOff;
     for (let s = 0; s < segs; s++) for (let a = 0; a < radial; a++) {
       const a1 = (a + 1) % radial;
       const i0 = base + s * radial + a, i1 = base + s * radial + a1, i2 = base + (s + 1) * radial + a, i3 = base + (s + 1) * radial + a1;
       bIdx[ii++] = i0; bIdx[ii++] = i2; bIdx[ii++] = i1; bIdx[ii++] = i1; bIdx[ii++] = i2; bIdx[ii++] = i3;
     }
+    if (onPath[i]) iOn = ii; else iOff = ii;
   }
   const g = new THREE.BufferGeometry();
   g.setAttribute('position', new THREE.BufferAttribute(bPos, 3));
@@ -289,7 +304,10 @@ function buildBark(group) {
   bColAttr = new THREE.BufferAttribute(bCol, 3); bColAttr.setUsage(THREE.DynamicDrawUsage);
   g.setAttribute('color', bColAttr);
   g.setIndex(new THREE.BufferAttribute(bIdx, 1));
-  world.bark = new THREE.Mesh(g, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.92, metalness: 0 }));
+  g.addGroup(0, nOn, 0); g.addGroup(nOn, nIdx - nOn, 1);
+  const barkMat = () => new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.92, metalness: 0 });
+  world.barkGhost = barkMat();
+  world.bark = new THREE.Mesh(g, [barkMat(), world.barkGhost]);
   group.add(world.bark);
 }
 function paintBark(i0, i1, mode) {
@@ -311,7 +329,7 @@ function buildLeaves(group) {
   const leafN = (i) => (M.pruned ? 36 : M.n[i]);
   for (let i = 0; i < N; i++) if ((M.pruned ? KIND(i) === 2 : KIND(i) === 1 && M.n[i] > 0)) tips.push(i);
   const total = tips.reduce((a, i) => a + leafN(i), 0);
-  const lPos = new Float32Array(total * 3), lCol = new Float32Array(total * 3), lSize = new Float32Array(total), lAng = new Float32Array(total), lNode = new Float32Array(total);
+  const lPos = new Float32Array(total * 3), lCol = new Float32Array(total * 3), lSize = new Float32Array(total), lAng = new Float32Array(total), lNode = new Float32Array(total), lOn = new Float32Array(total);
   const r = mulberry32(3); const col = new THREE.Color(); let k = 0;
   for (const i of tips) {
     const n = leafN(i);
@@ -329,7 +347,7 @@ function buildLeaves(group) {
       lPos[k * 3] = cx + x * rho * sh; lPos[k * 3 + 1] = cy + y * rho * sh * 0.75; lPos[k * 3 + 2] = cz + z * rho * sh;
       col.setHSL(h + hj + (r() - 0.5) * 0.02, Math.min(1, s + sj), l * (0.8 + r() * 0.45));
       lCol[k * 3] = col.r; lCol[k * 3 + 1] = col.g; lCol[k * 3 + 2] = col.b;
-      lSize[k] = leafSz * (0.7 + r() * 0.6); lAng[k] = r() * Math.PI * 2; lNode[k] = i;
+      lSize[k] = leafSz * (0.7 + r() * 0.6); lAng[k] = r() * Math.PI * 2; lNode[k] = i; lOn[k] = onPath[i];
     }
   }
   const g = new THREE.BufferGeometry();
@@ -338,16 +356,17 @@ function buildLeaves(group) {
   g.setAttribute('size', new THREE.BufferAttribute(lSize, 1));
   g.setAttribute('ang', new THREE.BufferAttribute(lAng, 1));
   g.setAttribute('node', new THREE.BufferAttribute(lNode, 1));
+  g.setAttribute('onp', new THREE.BufferAttribute(lOn, 1));
   leafMat = new THREE.ShaderMaterial({
     uniforms: {
-      uScale: { value: leafScale() }, uTime: { value: 0 }, uSel: { value: new THREE.Vector2(-1, -1) },
+      uScale: { value: leafScale() }, uFocus: { value: 0 }, uTime: { value: 0 }, uSel: { value: new THREE.Vector2(-1, -1) },
       uSun: { value: SUN_DIR }, uCenter: { value: crownCenter.clone() }, uR: { value: treeR },
       uFog: { value: FOG }, uFogNear: { value: scene.fog.near }, uFogFar: { value: scene.fog.far },
     },
     vertexShader: /* glsl */`
-      attribute float size; attribute float ang; attribute float node; attribute vec3 color;
-      uniform float uScale, uTime, uR; uniform vec2 uSel; uniform vec3 uSun, uCenter;
-      varying vec3 vCol; varying float vAng, vDim, vFogD;
+      attribute float size; attribute float ang; attribute float node; attribute float onp; attribute vec3 color;
+      uniform float uScale, uTime, uR, uFocus; uniform vec2 uSel; uniform vec3 uSun, uCenter;
+      varying vec3 vCol; varying float vAng, vDim, vFogD, vAlpha;
       void main() {
         vec3 p = position;
         float w = sin(uTime * 1.3 + p.x * 0.7 + p.z * 0.5) * 0.012 + sin(uTime * 2.1 + p.y * 1.3) * 0.006;
@@ -361,10 +380,11 @@ function buildLeaves(group) {
         vAng = ang;
         vDim = (uSel.y > 0.0 && (node < uSel.x || node >= uSel.y)) ? 1.0 : 0.0;
         vFogD = -mv.z;
+        vAlpha = mix(1.0, 0.1, uFocus * (1.0 - onp));
       }`,
     fragmentShader: /* glsl */`
       uniform vec3 uFog; uniform float uFogNear, uFogFar;
-      varying vec3 vCol; varying float vAng, vDim, vFogD;
+      varying vec3 vCol; varying float vAng, vDim, vFogD, vAlpha;
       void main() {
         vec2 q = gl_PointCoord * 2.0 - 1.0;
         float c = cos(vAng), s = sin(vAng);
@@ -375,7 +395,7 @@ function buildLeaves(group) {
         vec3 col = vCol * (0.78 + 0.22 * rib) * (0.92 + 0.12 * q.y);
         col = mix(col, col * 0.28 + vec3(0.02, 0.03, 0.04), vDim);
         float f = smoothstep(uFogNear, uFogFar, vFogD);
-        gl_FragColor = vec4(mix(col, uFog, f), 1.0);
+        gl_FragColor = vec4(mix(col, uFog, f), vAlpha);
         #include <colorspace_fragment>
       }`,
   });
@@ -394,8 +414,8 @@ function buildGlow(group) {
   const U = new THREE.Vector3(), V = new THREE.Vector3(), ref = new THREE.Vector3(), prev = new THREE.Vector3();
   // (a) a warm sheen over every lineage branch, brightest on thin twigs
   const pos = [], idx = [], col = [], lp = [];
-  // (b) a glowing vine spiralling around branches too thick for the sheen to read, all the way down the trunk
-  const vpos = [], vidx = [];
+  // (b) a glowing vine along branches too thick for the sheen to read, all the way down the trunk
+  const vpos = [], vidx = [], vtan = [], vang = [];
   for (const i of segs) {
     branchCurve(i, S, C, E);
     const p = M.parent[i];
@@ -421,37 +441,24 @@ function buildGlow(group) {
       idx.push(o + a, o + radial + a, o + a1, o + a1, o + radial + a, o + radial + a1);
     }
     if (r1 >= 0.1) {
-      // helix on the bark surface; strands thicken with the number of listed species they carry
+      // a vine painted on the camera-facing side of the bark (oriented in the vertex shader, so it never
+      // wraps out of sight); it wanders gently side to side and thickens with the listed species it carries
       const len = L.len[i] || E.length();
       const turns = Math.max(0.6, len / (r1 * 7));
-      const steps = Math.ceil(turns * 18);
-      const vr = Math.min(r1 * 0.22, 0.02 + 0.018 * Math.sqrt(listCount[i]));
-      const vrad = 5;
+      const steps = Math.ceil(turns * 14);
+      const hw = Math.min(r1 * 0.3, 0.026 + 0.024 * Math.sqrt(listCount[i]));   // half-width
       const phase = (i * 2.399) % (Math.PI * 2);
-      let U2 = new THREE.Vector3();
-      const pts = [];
+      const vb = vpos.length / 3;
       for (let s = 0; s <= steps; s++) {
         const t = s / steps; bez(S, C, E, t, P, T);
-        if (s === 0) { ref.set(0, 1, 0); if (Math.abs(T.y) > 0.9) ref.set(1, 0, 0); U2.crossVectors(T, ref).normalize(); }
-        else U2.addScaledVector(T, -U2.dot(T)).normalize();
-        V.crossVectors(T, U2);
-        const r = (r0 + (r1 - r0) * t) * 1.04;
-        const a = phase + t * turns * Math.PI * 2;
-        pts.push(P.clone().addScaledVector(U2, Math.cos(a) * r).addScaledVector(V, Math.sin(a) * r));
+        const r = (r0 + (r1 - r0) * t) * (r1 > 0.06 ? 1 + 0.06 * Math.sin(t * 9 + i) : 1);
+        const wave = 0.42 * Math.sin(phase + t * turns * Math.PI * 2);
+        const da = Math.min(0.7, hw / r);
+        for (let a = -1; a <= 1; a++) { vpos.push(P.x, P.y, P.z); vtan.push(T.x, T.y, T.z); vang.push(wave + a * da, r, a); }
       }
-      const vb = vpos.length / 3;
-      for (let s = 0; s < pts.length; s++) {
-        const tan = (s < pts.length - 1 ? pts[s + 1].clone().sub(pts[s]) : pts[s].clone().sub(pts[s - 1])).normalize();
-        ref.set(0, 1, 0); if (Math.abs(tan.y) > 0.9) ref.set(1, 0, 0);
-        const a1 = new THREE.Vector3().crossVectors(tan, ref).normalize(), a2 = new THREE.Vector3().crossVectors(tan, a1);
-        for (let a = 0; a < vrad; a++) {
-          const ang = a / vrad * Math.PI * 2;
-          vpos.push(pts[s].x + (a1.x * Math.cos(ang) + a2.x * Math.sin(ang)) * vr, pts[s].y + (a1.y * Math.cos(ang) + a2.y * Math.sin(ang)) * vr, pts[s].z + (a1.z * Math.cos(ang) + a2.z * Math.sin(ang)) * vr);
-        }
-      }
-      for (let s = 0; s < pts.length - 1; s++) for (let a = 0; a < vrad; a++) {
-        const a1 = (a + 1) % vrad, o = vb + s * vrad;
-        vidx.push(o + a, o + vrad + a, o + a1, o + a1, o + vrad + a, o + vrad + a1);
+      for (let s = 0; s < steps; s++) for (let a = 0; a < 2; a++) {
+        const o = vb + s * 3 + a;
+        vidx.push(o, o + 3, o + 1, o + 1, o + 3, o + 4);
       }
     }
   }
@@ -464,7 +471,34 @@ function buildGlow(group) {
   {
     const g = new THREE.BufferGeometry();
     g.setAttribute('position', new THREE.Float32BufferAttribute(vpos, 3)); g.setIndex(vidx);
-    world.vine = add(g, new THREE.MeshBasicMaterial({ color: new THREE.Color(2.6, 1.75, 0.6), fog: false }));
+    g.setAttribute('tang', new THREE.Float32BufferAttribute(vtan, 3)); g.setAttribute('arc', new THREE.Float32BufferAttribute(vang, 3));
+    world.vine = add(g, new THREE.ShaderMaterial({
+      uniforms: { uCol: { value: new THREE.Color(2.6, 1.75, 0.6) } },
+      side: THREE.DoubleSide,
+      vertexShader: /* glsl */`
+        attribute vec3 tang; attribute vec3 arc;   // arc = (angle from the camera-facing line, bark radius, -1..1 across)
+        varying float vAcross;
+        void main() {
+          vec3 c = (modelMatrix * vec4(position, 1.0)).xyz;
+          vec3 t = normalize(mat3(modelMatrix) * tang);
+          vec3 v = cameraPosition - c;
+          vec3 n = v - t * dot(v, t);
+          if (dot(n, n) < 1e-8) n = cross(t, abs(t.y) < 0.9 ? vec3(0.0, 1.0, 0.0) : vec3(1.0, 0.0, 0.0));
+          n = normalize(n);
+          vec3 b = normalize(cross(t, n));
+          float r = arc.y * 1.13 + 0.004;
+          vec3 p = c + (n * cos(arc.x) + b * sin(arc.x)) * r + n * arc.y * 0.06;
+          vAcross = arc.z;
+          gl_Position = projectionMatrix * viewMatrix * vec4(p, 1.0);
+        }`,
+      fragmentShader: /* glsl */`
+        uniform vec3 uCol; varying float vAcross;
+        void main() {
+          gl_FragColor = vec4(uCol * (1.0 - 0.45 * vAcross * vAcross), 1.0);
+          #include <colorspace_fragment>
+        }`,
+    }));
+    world.vine.frustumCulled = false;
   }
   {
     const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(lp, 3));
@@ -566,10 +600,10 @@ function updateLabels() {
   const W = innerWidth, H = innerHeight;
   const focal = H / 2 / Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
   const camPos = camera.position;
-  const maxLabels = (IS_SMALL ? 16 : 34) + (M.pruned ? 14 : 0);
+  const maxLabels = (IS_SMALL ? 16 : 34) + (M.pruned || focusOn ? 14 : 0);
   const cands = [];
   for (const c of candidates) {
-    if (c.kind === 'item' ? !glowOn : !labelsOn) continue;
+    if (c.kind === 'item' ? !glowOn && !focusOn : !labelsOn || (focusOn && c.i !== selected)) continue;
     const i = c.i;
     if (c.kind === 'item') { if (!c.it.pos) continue; P.copy(c.it.pos); }
     else if (c.kind === 'genus' && clusterR[i]) P.fromArray(clusterC, i * 3);
@@ -580,7 +614,7 @@ function updateLabels() {
     const r = c.kind === 'genus' ? (clusterR[i] || radius[i]) * 0.6 : radius[i];
     const sr = (r * focal) / dist;
     let score;
-    if (c.kind === 'item') { if (!M.pruned && dist > treeR * 1.2 && i !== selected) continue; score = 1e6 / dist; }
+    if (c.kind === 'item') { if (!M.pruned && !focusOn && dist > treeR * 1.2 && i !== selected) continue; score = 1e6 / dist; }
     else {
       const need = c.kind === 'genus' ? (M.pruned ? 6 : 14) : M.pruned ? 0.8 : 1.6;
       if (sr < need && i !== selected) continue;
@@ -624,12 +658,13 @@ function pick(cx, cy, tol) {
   };
   const a = [0, 0, 0], b = [0, 0, 0];
   // listed species beads first
-  if (glowOn) for (let k = 0; k < items.length; k++) {
+  if (glowOn || focusOn) for (let k = 0; k < items.length; k++) {
     const it = items[k]; if (!it.pos || hlNode[k] === undefined || !proj(it.pos.x, it.pos.y, it.pos.z, a)) continue;
     if (Math.hypot(a[0] - cx, a[1] - cy) < tol + 8) return { i: hlNode[k], it };
   }
   let best = -1, bestD = Infinity;
   for (let i = 0; i < N; i++) {
+    if (focusOn && items.length && !onPath[i]) continue;
     if (leavesOn && clusterR[i] && proj(clusterC[i * 3], clusterC[i * 3 + 1], clusterC[i * 3 + 2], a)) {
       const sr = clusterR[i] * focal / a[2];
       if (Math.hypot(a[0] - cx, a[1] - cy) < sr + tol && a[2] < bestD) { best = i; bestD = a[2]; }
@@ -780,17 +815,40 @@ qEl.addEventListener('keydown', (e) => {
 document.addEventListener('pointerdown', (e) => { if (!e.target.closest('.search')) qRes.classList.add('hidden'); });
 
 // ================================================================ the species list
-function defaultList() {
-  const hs = (D.highlight && D.highlight.items) || [];
+const PRESETS = D.presets || (D.highlight ? [{ id: 'wall', short: 'Highlighted', ...D.highlight }] : []);
+function defaultList(id) {
+  const p = PRESETS.find((x) => x.id === id) || PRESETS[0];
+  if (!p) return { title: 'Highlighted', source: 'default', items: [] };
   return {
-    title: D.highlight ? D.highlight.title : 'Highlighted', source: 'default',
-    items: hs.map((h) => ({ label: h.plants[0].replace(/\s*\(.*?\)\s*/g, ' ').replace(/\s+/g, ' ').trim(), sci: h.name, family: h.family, at: h.at, entries: h.plants })),
+    title: p.title, source: 'preset', preset: p.id,
+    items: p.items.map((h) => ({ label: h.plants[0].replace(/\s*\(.*?\)\s*/g, ' ').replace(/\s+/g, ' ').trim(), sci: h.name, family: h.family, at: h.at, entries: h.plants })),
   };
 }
+let presetId = '';
+function usePreset(id) {
+  pruneMode = false;
+  const q = new URLSearchParams(location.search); q.delete('prune');
+  if (id === PRESETS[0].id) q.delete('preset'); else q.set('preset', id);
+  history.replaceState(null, '', location.pathname + (q.toString() ? '?' + q : ''));   // also drops any #list=
+  setList(defaultList(id));
+}
+function renderPresets() {
+  const html = PRESETS.map((p) => `<button data-p="${esc(p.id)}" class="${p.id === presetId ? 'on' : ''}">${esc(p.short || p.title)}</button>`).join('');
+  $('presets').innerHTML = PRESETS.length > 1 || listSource === 'user' ? `<span>Lists</span>${html}` : '';
+  $('lPresets').innerHTML = PRESETS.map((p) => `<button class="ghost" data-p="${esc(p.id)}">Load ${esc(p.short || p.title).toLowerCase()}</button>`).join('');
+}
+$('presets').addEventListener('click', (e) => { const b = e.target.closest('[data-p]'); if (b) usePreset(b.dataset.p); });
+$('lPresets').addEventListener('click', (e) => {
+  const b = e.target.closest('[data-p]'); if (!b) return;
+  const d = defaultList(b.dataset.p);
+  lTitle.value = d.title;
+  lText.value = d.items.map((it) => `${it.label} (${it.sci})`).join('\n');
+});
 let pruneMode = false;
 function setList(list, { keepView } = {}) {
   items = list.items.filter((it) => it.at !== undefined && it.at !== null);
   listTitle = list.title || 'Your list'; listSource = list.source || 'user';
+  presetId = list.source === 'preset' ? list.preset : '';
   if (!items.length) pruneMode = false;
   rebuild(keepView);
   renderListPanel();
@@ -808,7 +866,8 @@ function renderListPanel() {
   $('wallTitle').textContent = listTitle;
   $('wallN').textContent = `${items.length} taxa`;
   $('wallList').innerHTML = items.map((w, k) => `<li data-k="${k}">${esc(w.entries && w.entries.length > 1 ? w.entries.join(', ') : w.label)}<em>${esc([w.sci !== w.label ? w.sci : '', w.family].filter(Boolean).join(' · '))}</em></li>`).join('');
-  $('wall').classList.toggle('hidden', !items.length);
+  $('wall').classList.toggle('hidden', !items.length && !PRESETS.length);
+  renderPresets();
 }
 $('wallList').addEventListener('click', (e) => {
   const li = e.target.closest('li'); if (!li) return;
@@ -831,11 +890,6 @@ function openListModal() {
 $('bList').onclick = openListModal;
 $('lClose').onclick = () => $('listModal').classList.add('hidden');
 $('listModal').addEventListener('click', (e) => { if (e.target.id === 'listModal') $('listModal').classList.add('hidden'); });
-$('lExample').onclick = () => {
-  const d = defaultList();
-  lTitle.value = d.title;
-  lText.value = d.items.map((it) => `${it.label} (${it.sci})`).join('\n');
-};
 $('lFile').onchange = async (e) => {
   const f = e.target.files[0]; if (!f) return;
   lText.value = await f.text();
@@ -900,6 +954,7 @@ toggle('bWall', (on) => { glowOn = on; world.glow.visible = on; });
 toggle('bLabels', (on) => { labelsOn = on; });
 toggle('bLeaves', (on) => { leavesOn = on; world.leaves.visible = on; });
 toggle('bSpin', (on) => { controls.autoRotate = on; });
+toggle('bFocus', (on) => { focusOn = on; applyFocus(); });
 $('bHome').onclick = () => { select(-1); homeView(true); };
 if (window.self !== window.top) $('bFull').classList.remove('hidden');
 $('bFull').onclick = (e) => { e.currentTarget.href = './' + location.hash; };
@@ -921,7 +976,8 @@ addEventListener('resize', resize);
 // ---- boot
 const fromHash = await listFromHash();
 if (params.get('prune') !== null) pruneMode = true;
-setList(fromHash && fromHash.items.some((x) => x.at !== undefined) ? fromHash : defaultList());
+if (params.has('only')) focusOn = true;   // ?only → start in "your species only"
+setList(fromHash && fromHash.items.some((x) => x.at !== undefined) ? fromHash : defaultList(params.get('preset')));
 resize();
 controls.autoRotate = !params.has('still');
 let userTouched = false;

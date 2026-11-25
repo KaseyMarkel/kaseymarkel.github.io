@@ -1,0 +1,132 @@
+# Common food plants preset for the Evo Tree viewer.
+# One crop per line: scientific name <TAB> common names (comma-separated; first one is the label).
+# Several crops from one species are merged (e.g. Brassica oleracea = broccoli, cabbage, kale, ...).
+# Names follow WFO (pea = Lathyrus oleraceus, lentil = Vicia lens, pearl millet = Cenchrus americanus).
+# Mushrooms are left out (fungi aren't on the land-plant tree).
+# --- vegetables
+Solanum lycopersicum	Tomato
+Solanum tuberosum	Potato
+Solanum melongena	Eggplant
+Capsicum annuum	Bell pepper, Jalapeño
+Allium cepa	Onion, Shallot
+Allium sativum	Garlic
+Allium ampeloprasum	Leek
+Allium schoenoprasum	Chives
+Daucus carota	Carrot
+Pastinaca sativa	Parsnip
+Apium graveolens	Celery
+Foeniculum vulgare	Fennel
+Brassica oleracea	Cabbage, Broccoli, Cauliflower, Kale, Brussels sprouts, Collard greens, Kohlrabi
+Brassica rapa	Bok choy, Turnip
+Brassica juncea	Mustard greens
+Brassica napus	Canola (rapeseed)
+Raphanus sativus	Radish, Daikon
+Eruca vesicaria	Arugula
+Nasturtium officinale	Watercress
+Spinacia oleracea	Spinach
+Beta vulgaris	Beet, Swiss chard, Sugar beet
+Lactuca sativa	Lettuce
+Cichorium intybus	Radicchio
+Cynara cardunculus	Artichoke
+Cucumis sativus	Cucumber
+Cucumis melo	Melon, Honeydew
+Citrullus lanatus	Watermelon
+Cucurbita pepo	Zucchini, Pumpkin, Pumpkin seed
+Phaseolus vulgaris	Green beans
+Lathyrus oleraceus	Peas, Snap peas
+Ipomoea batatas	Sweet potato
+Asparagus officinalis	Asparagus
+Abelmoschus esculentus	Okra
+Manihot esculenta	Cassava
+Dioscorea rotundata	Yam
+Colocasia esculenta	Taro
+Matteuccia struthiopteris	Fiddlehead fern
+# --- grains, pulses & seeds
+Zea mays	Corn
+Oryza sativa	Rice
+Triticum aestivum	Wheat
+Hordeum vulgare	Barley
+Avena sativa	Oats
+Secale cereale	Rye
+Sorghum bicolor	Sorghum
+Cenchrus americanus	Pearl millet
+Saccharum officinarum	Sugarcane
+Fagopyrum esculentum	Buckwheat
+Chenopodium quinoa	Quinoa
+Glycine max	Soybean
+Cicer arietinum	Chickpea
+Vicia lens	Lentil
+Vigna unguiculata	Cowpea (black-eyed pea)
+Arachis hypogaea	Peanut
+Helianthus annuus	Sunflower seed
+Linum usitatissimum	Flax seed
+Cannabis sativa	Hemp seed
+Sesamum indicum	Sesame seed
+Salvia hispanica	Chia seed
+# --- fruits
+Malus domestica	Apple
+Pyrus communis	Pear
+Prunus persica	Peach, Nectarine
+Prunus armeniaca	Apricot
+Prunus domestica	Plum
+Prunus avium	Cherry
+Fragaria × ananassa	Strawberry
+Rubus idaeus	Raspberry
+Rubus fruticosus	Blackberry
+Vaccinium corymbosum	Blueberry
+Vaccinium macrocarpon	Cranberry
+Vitis vinifera	Grape
+Citrus sinensis	Orange
+Citrus × paradisi	Grapefruit
+Citrus reticulata	Mandarin, Tangerine
+Citrus limon	Lemon
+Citrus aurantiifolia	Lime
+Musa acuminata	Banana
+Cocos nucifera	Coconut
+Phoenix dactylifera	Date
+Elaeis guineensis	Oil palm
+Ananas comosus	Pineapple
+Carica papaya	Papaya
+Mangifera indica	Mango
+Actinidia deliciosa	Kiwifruit
+Passiflora edulis	Passionfruit
+Persea americana	Avocado
+Olea europaea	Olive
+Ficus carica	Fig
+Diospyros kaki	Persimmon
+Punica granatum	Pomegranate
+# --- nuts
+Prunus dulcis	Almond
+Anacardium occidentale	Cashew
+Pistacia vera	Pistachio
+Juglans regia	Walnut
+Carya illinoinensis	Pecan
+Corylus avellana	Hazelnut
+Castanea sativa	Chestnut
+Bertholletia excelsa	Brazil nut
+Macadamia integrifolia	Macadamia
+Pinus pinea	Pine nut
+Ginkgo biloba	Ginkgo nut
+# --- spices, herbs & drinks
+Myristica fragrans	Nutmeg
+Syzygium aromaticum	Clove
+Cinnamomum verum	Cinnamon
+Piper nigrum	Black pepper
+Zingiber officinale	Ginger
+Curcuma longa	Turmeric
+Elettaria cardamomum	Cardamom
+Crocus sativus	Saffron
+Vanilla planifolia	Vanilla
+Theobroma cacao	Cocoa
+Coffea arabica	Coffee
+Camellia sinensis	Tea
+Ocimum basilicum	Basil
+Origanum vulgare	Oregano
+Thymus vulgaris	Thyme
+Salvia rosmarinus	Rosemary
+Salvia officinalis	Sage
+Mentha spicata	Mint
+Coriandrum sativum	Cilantro
+Petroselinum crispum	Parsley
+Anethum graveolens	Dill
+Artemisia dracunculus	Tarragon

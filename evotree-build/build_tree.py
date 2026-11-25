@@ -236,17 +236,29 @@ GENUS_SYN = {'Schefflera': None}  # (kept as-is if present)
 named_clade = {}
 for i, nd in enumerate(nodes):
     if nd['label'] and nd['kind'] == 'clade': named_clade.setdefault(nd['label'], i)
-highlights = []
-for key, h in hl.items():
-    if h['clade']:
-        at = named_clade.get(h['clade'])
-    else:
-        at = gnode.get(h['genus'])
-    if at is None:
-        print('!! could not place', key, file=sys.stderr); continue
-    fam = gen_fam.get(h['genus'], '') if h['genus'] else ''
-    highlights.append({'name': key, 'at': at, 'family': fam, 'plants': h['plants']})
-    print('wall:', key, '->', nodes[at]['label'], fam, file=sys.stderr)
+def place(hl, tag):
+    out = []
+    for key, h in hl.items():
+        if h['clade']:
+            at = named_clade.get(h['clade'])
+        else:
+            at = gnode.get(h['genus'])
+        if at is None:
+            print('!! could not place', tag, key, file=sys.stderr); continue
+        fam = gen_fam.get(h['genus'], '') if h['genus'] else ''
+        out.append({'name': key, 'at': at, 'family': fam, 'plants': h['plants']})
+        print(tag + ':', key, '->', nodes[at]['label'], fam, file=sys.stderr)
+    return out
+highlights = place(hl, 'wall')
+
+# ---------------- preset: common food plants (food_plants.tsv) -----------------
+food_hl = collections.OrderedDict()
+for line in open(os.path.join(HERE, 'food_plants.tsv'), encoding='utf-8'):
+    if not line.strip() or line.startswith('#'): continue
+    sci, common = line.rstrip('\n').split('\t')
+    h = food_hl.setdefault(sci, {'name': sci, 'genus': sci.split()[0], 'clade': None, 'plants': []})
+    h['plants'] += [c.strip() for c in common.split(',')]
+food = place(food_hl, 'food')
 
 # ---------------- clean: drop zero-species subtrees, collapse unifurcations -----------------
 def total(i):
@@ -259,7 +271,7 @@ def total(i):
 def totn(i):
     nd = nodes[i]; return nd.get('tot', nd['n'])
 total(root)
-hl_nodes = {h['at'] for h in highlights}
+hl_nodes = {h['at'] for h in highlights + food}
 
 # ---- clade names: LCA of each taxon's genera (OTT higher taxa + WFO families), if >=85% pure ----
 T = {int(k): v for k, v in json.load(open(C('emb_ott.json'))).items()}
@@ -345,7 +357,7 @@ def emit(i, par_out):
     out_fam.append(gen_fam.get(nd['genus'], '') if nd['kind'] == 'genus' else (fam_label_at.get(i, '')))
     for k in sorted(kids, key=lambda k: -totn(k)): emit(k, me)
 emit(root, -1)
-for h in highlights: h['at'] = remap[h['at']]
+for h in highlights + food: h['at'] = remap[h['at']]
 
 # fix the root name
 out_lab[0] = out_lab[0] or 'Embryophyta'
@@ -366,6 +378,10 @@ data = {
     'family': [li[f] for f in out_fam],
     'genus': out_kind,
     'highlight': {'title': "Kasey's living wall", 'url': '/page/living-wall/', 'items': highlights},
+    'presets': [
+        {'id': 'wall', 'title': "Kasey's living wall", 'short': 'Living wall', 'url': '/page/living-wall/', 'items': highlights},
+        {'id': 'food', 'title': 'Common food plants', 'short': 'Food plants', 'items': food},
+    ],
 }
 os.makedirs(os.path.dirname(OUT), exist_ok=True)
 json.dump(data, open(OUT, 'w'), separators=(',', ':'))
