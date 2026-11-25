@@ -113,13 +113,39 @@ const sun = new THREE.DirectionalLight(0xffe2b8, 2.4);
 sun.position.set(-0.6, 1, 0.45).multiplyScalar(100);
 scene.add(sun);
 const SUN_DIR = sun.position.clone().normalize();
+// a round lawn under the tree: mottled grass, a worn patch at the trunk, soft edge into the dusk
 const groundTex = (() => {
-  const c = document.createElement('canvas'); c.width = c.height = 256;
-  const g = c.getContext('2d'), gr = g.createRadialGradient(128, 128, 0, 128, 128, 128);
-  gr.addColorStop(0, 'rgba(20,28,18,1)'); gr.addColorStop(0.35, 'rgba(32,44,28,0.9)');
-  gr.addColorStop(0.75, 'rgba(36,46,38,0.35)'); gr.addColorStop(1, 'rgba(40,50,50,0)');
-  g.fillStyle = gr; g.fillRect(0, 0, 256, 256);
-  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
+  const S = 1024, c = document.createElement('canvas'); c.width = c.height = S;
+  const g = c.getContext('2d'), h = S / 2, rnd = mulberry32(7);
+  g.fillStyle = '#2f4a22'; g.beginPath(); g.arc(h, h, h, 0, Math.PI * 2); g.fill();
+  for (let k = 0; k < 220; k++) {   // mottling
+    const a = rnd() * Math.PI * 2, d = Math.sqrt(rnd()) * h * 0.95, r = 20 + rnd() * 70;
+    const x = h + Math.cos(a) * d, y = h + Math.sin(a) * d;
+    const gr = g.createRadialGradient(x, y, 0, x, y, r);
+    const tone = rnd() < 0.5 ? '58,88,40' : '30,52,24';
+    gr.addColorStop(0, `rgba(${tone},0.45)`); gr.addColorStop(1, `rgba(${tone},0)`);
+    g.fillStyle = gr; g.fillRect(x - r, y - r, r * 2, r * 2);
+  }
+  g.lineCap = 'round';
+  for (let k = 0; k < 26000; k++) {   // blades
+    const a = rnd() * Math.PI * 2, d = Math.sqrt(rnd()) * h * 0.97;
+    const x = h + Math.cos(a) * d, y = h + Math.sin(a) * d;
+    const L = 3 + rnd() * 6, ang = rnd() * Math.PI * 2, l = 22 + rnd() * 26;
+    g.strokeStyle = `hsla(${88 + rnd() * 22},${40 + rnd() * 25}%,${l}%,${0.5 + rnd() * 0.4})`;
+    g.lineWidth = 0.8 + rnd() * 0.9;
+    g.beginPath(); g.moveTo(x, y); g.lineTo(x + Math.cos(ang) * L, y + Math.sin(ang) * L); g.stroke();
+  }
+  let gr = g.createRadialGradient(h, h, 0, h, h, h * 0.16);   // worn earth + shade at the trunk
+  gr.addColorStop(0, 'rgba(48,36,24,0.95)'); gr.addColorStop(0.6, 'rgba(40,34,22,0.55)'); gr.addColorStop(1, 'rgba(30,30,20,0)');
+  g.fillStyle = gr; g.fillRect(0, 0, S, S);
+  gr = g.createRadialGradient(h, h, h * 0.1, h, h, h * 0.75);   // crown shadow
+  gr.addColorStop(0, 'rgba(0,0,0,0.35)'); gr.addColorStop(1, 'rgba(0,0,0,0)');
+  g.fillStyle = gr; g.fillRect(0, 0, S, S);
+  g.globalCompositeOperation = 'destination-in';   // soft rim
+  gr = g.createRadialGradient(h, h, h * 0.8, h, h, h);
+  gr.addColorStop(0, 'rgba(0,0,0,1)'); gr.addColorStop(1, 'rgba(0,0,0,0)');
+  g.fillStyle = gr; g.fillRect(0, 0, S, S);
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8; return t;
 })();
 const beadTex = (() => {
   const c = document.createElement('canvas'); c.width = c.height = 64;
@@ -139,7 +165,7 @@ controls.enableDamping = true; controls.dampingFactor = 0.08;
 controls.zoomToCursor = true;            // zoom toward the pointer, so you can travel anywhere in the crown
 controls.minDistance = 0.15;
 controls.maxPolarAngle = Math.PI * 0.53;
-controls.zoomSpeed = 1.1; controls.rotateSpeed = IS_TOUCH ? 0.7 : 0.9;
+controls.zoomSpeed = 2.6; controls.rotateSpeed = IS_TOUCH ? 0.7 : 0.9;
 controls.autoRotateSpeed = 0.35;
 controls.screenSpacePanning = true;
 
@@ -198,7 +224,7 @@ function buildWorld() {
   scene.fog.near = treeR * 1.6; scene.fog.far = treeR * 5.5;
   controls.maxDistance = treeR * 6;
   {
-    const m = new THREE.Mesh(new THREE.CircleGeometry(treeR * 1.5, 64), new THREE.MeshBasicMaterial({ map: groundTex, transparent: true, depthWrite: false, fog: false }));
+    const m = new THREE.Mesh(new THREE.CircleGeometry(treeR * 1.15, 96), new THREE.MeshLambertMaterial({ map: groundTex, color: 0x9a9a9a, transparent: true, depthWrite: false, fog: false }));
     m.rotation.x = -Math.PI / 2; m.position.set(crownCenter.x, -0.01, crownCenter.z); group.add(m); world.ground = m;
   }
   buildBark(group);
@@ -216,7 +242,7 @@ function applyFocus() {
   gm.transparent = on; gm.opacity = on ? 0.1 : 1; gm.depthWrite = !on; gm.needsUpdate = true;
   leafMat.uniforms.uFocus.value = on ? 1 : 0;
   leafMat.transparent = on; leafMat.depthWrite = !on; leafMat.needsUpdate = true;
-  world.ground.material.opacity = on ? 0.35 : 1;
+  world.ground.material.opacity = on ? 0.5 : 1;
   $('bFocus').classList.toggle('on', focusOn);
 }
 
@@ -580,6 +606,7 @@ function labelEl(c) {
     let w;
     if (c.kind === 'item') {
       el.className = 'lab wall';
+      el._wc = c.it.label.length * 6.4 + 18;
       el.innerHTML = `${esc(c.it.label)}<small>${esc(itemSub(c.it))}</small>`;
       w = Math.max(c.it.label.length * 7.5, itemSub(c.it).length * 6.2);
     } else {
@@ -614,20 +641,25 @@ function updateLabels() {
     const r = c.kind === 'genus' ? (clusterR[i] || radius[i]) * 0.6 : radius[i];
     const sr = (r * focal) / dist;
     let score;
-    if (c.kind === 'item') { if (!M.pruned && !focusOn && dist > treeR * 1.2 && i !== selected) continue; score = 1e6 / dist; }
+    let compact = false;
+    if (c.kind === 'item') {
+      compact = !M.pruned && dist > treeR * 0.55 && i !== selected;
+      score = compact && !focusOn ? 5 + 100 / dist : 1e6 / dist;   // far away: big clade names still win the space
+    }
     else {
       const need = c.kind === 'genus' ? (M.pruned ? 6 : 14) : M.pruned ? 0.8 : 1.6;
       if (sr < need && i !== selected) continue;
       score = sr * c.pri + (i === selected ? 1e9 : 0);
     }
-    cands.push({ c, x: (Q.x + 1) / 2 * W, y: (1 - Q.y) / 2 * H, score });
+    cands.push({ c, x: (Q.x + 1) / 2 * W, y: (1 - Q.y) / 2 * H, score, compact });
   }
   cands.sort((a, b) => b.score - a.score);
   const placed = [], now = new Set();
   for (const k of cands) {
     if (placed.length >= maxLabels) break;
     const el = labelEl(k.c);
-    const w = el._w, h = 38;
+    el.classList.toggle('compact', k.compact);
+    const w = k.compact ? el._wc : el._w, h = k.compact ? 20 : 38;
     const x0 = k.x - w / 2, y0 = k.y - h / 2;
     if (x0 < 4 || x0 + w > W - 4 || y0 < 60 || y0 + h > H - 8) continue;
     let ok = true;
