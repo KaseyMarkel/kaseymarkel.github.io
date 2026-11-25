@@ -1,7 +1,7 @@
 // Evo Tree Viewer — 3D phylogeny rendered as an oak.
 // The scene is (re)built from a "model": either the full tree, or the tree pruned to a species list.
 import * as THREE from 'three';
-import { DroneControls } from './controls.js';
+import { TurntableControls } from './controls.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
@@ -177,21 +177,9 @@ const bloom = new UnrealBloomPass(new THREE.Vector2(innerWidth / 2, innerHeight 
 composer.addPass(bloom);
 composer.addPass(new OutputPass());
 
-// drag turns the world around whatever sits at the centre of the view (the nearest branch or leaf cluster there;
-// failing that, the point level with the tree's centre), so the thing you're looking at stays put while you turn it
-const controls = new DroneControls(camera, canvas, {
-  getPivot: () => {
-    const cam = camera.position, fwd = controls.target.clone().sub(cam).normalize();
-    const hit = pick(innerWidth / 2, innerHeight / 2, 8);
-    let d = hit ? hit.depth : crownCenter.clone().sub(cam).dot(fwd);
-    if (!(d > 0)) d = treeR * 0.15;
-    d = Math.max(d, 0.05);
-    return cam.clone().addScaledVector(fwd, d);
-  },
-  getDepth: (x, y) => { const h = pick(x, y, 3); return h ? h.depth : null; },
-  getBounds: () => ({ center: crownCenter, radius: treeR }),
-});
-controls.rotateSpeed = IS_TOUCH ? 0.7 : 0.8;
+// the tree stands on a turntable (see controls.js); double-clicking a branch puts that branch at the centre of it
+const controls = new TurntableControls(camera, canvas, { getBounds: () => ({ center: crownCenter, radius: treeR }) });
+controls.rotateSpeed = IS_TOUCH ? 0.9 : 1;
 controls.autoRotateSpeed = 0.35;
 
 // ================================================================ world (rebuilt per model)
@@ -247,7 +235,7 @@ function buildWorld() {
   bb.getCenter(crownCenter);
   treeR = Math.max(5, bb.getSize(new THREE.Vector3()).length() / 2);
   scene.fog.near = treeR * 1.6; scene.fog.far = treeR * 5.5;
-  controls.maxDistance = treeR * 6; controls.autoPivot.copy(crownCenter);
+  controls.maxDistance = treeR * 6;
   {
     const m = new THREE.Mesh(new THREE.CircleGeometry(treeR * 0.575, 96), new THREE.MeshLambertMaterial({ map: groundTex, color: 0xc4c4c4, transparent: true, depthWrite: false, fog: false }));
     m.rotation.x = -Math.PI / 2; m.position.set(crownCenter.x, -0.01, crownCenter.z); group.add(m); world.ground = m;
@@ -589,7 +577,7 @@ function fitDist(r, k) {
 function homeView(animate) {
   const target = crownCenter.clone(); target.y *= 0.92;
   const pos = target.clone().add(new THREE.Vector3(0.55, 0.18, 1).normalize().multiplyScalar(fitDist(treeR, camera.aspect < 0.8 ? 0.85 : 0.82)));
-  if (animate) fly(pos, target); else { flyAnim = null; camera.position.copy(pos); controls.target.copy(target); controls.update(); }
+  if (animate) fly(pos, target); else { flyAnim = null; camera.position.copy(pos); controls.target.copy(target); controls.setFromCamera(); }
 }
 function subtreeSphere(i) {
   const b = new THREE.Box3();
@@ -610,7 +598,7 @@ function flyToNode(i) {
 
 // ================================================================ labels
 const labelsEl = $('labels');
-labelsEl.addEventListener('wheel', (e) => controls._wheel(e), { passive: false });   // scrolling over a label still flies
+labelsEl.addEventListener('wheel', (e) => controls.wheel(e), { passive: false });   // scrolling over a label still zooms
 const labelPool = new Map();
 let shown = new Set();
 const itemSub = (it) => (it.sci && it.sci !== it.label ? it.sci : (it.family || ''));
@@ -706,6 +694,10 @@ function chooseLabels() {
     for (const p of placed) if (x0 + pad < p[2] && x0 + w - pad > p[0] && y0 + pad < p[3] && y0 + h - pad > p[1]) { ok = false; break; }
     if (!ok) continue;
     placed.push([x0, y0, x0 + w, y0 + h]);
+    const fresh = !el.classList.contains('show');
+    if (fresh) el.style.transition = 'none';   // appear in place; only already-visible labels glide
+    el.style.transform = `translate3d(${x0.toFixed(1)}px, ${y0.toFixed(1)}px, 0)`;
+    if (fresh) { void el.offsetWidth; el.style.transition = ''; }
     el.classList.toggle('compact', k.compact);
     el.style.width = w + 'px'; el.style.textAlign = 'center';
     el.classList.toggle('sel', k.c.i === selected && k.c.kind !== 'item');
@@ -717,20 +709,10 @@ function chooseLabels() {
   for (const el of shown) if (!now.has(el)) el.classList.remove('show');
   shown = now;
 }
-// every frame: keep the chosen labels glued to their anchors (sub-pixel, so they glide instead of jittering)
-function positionLabels() {
-  const W = innerWidth, H = innerHeight;
-  for (const l of placedLabels) {
-    if (!labelAnchor(l.c, P)) continue;
-    Q.copy(P).project(camera);
-    const off = Q.z > 1 || Q.x < -1.1 || Q.x > 1.1 || Q.y < -1.1 || Q.y > 1.1;
-    l.el.classList.toggle('show', !off);
-    if (off) continue;
-    const x = (Q.x + 1) / 2 * W - l.w / 2, y = (1 - Q.y) / 2 * H - l.h / 2;
-    l.el.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0)`;
-  }
-}
-function updateLabels(full) { if (full) chooseLabels(); positionLabels(); }
+// Labels refresh at most ~6 times a second and CSS glides each one to its new spot, so they trail the motion
+// slightly instead of jittering.
+let lastLabels = 0;
+function updateLabels(now) { if (now - lastLabels >= 160) { lastLabels = now; chooseLabels(); } }
 
 // ================================================================ picking
 function pick(cx, cy, tol) {
@@ -1084,7 +1066,7 @@ if (params.has('az')) {   // debug/deep-link: ?az=deg&el=deg&zoom=f
   sph.theta = THREE.MathUtils.degToRad(+params.get('az'));
   if (params.has('el')) sph.phi = THREE.MathUtils.degToRad(90 - +params.get('el'));
   sph.radius *= +(params.get('zoom') || 1);
-  camera.position.copy(controls.target).add(new THREE.Vector3().setFromSpherical(sph)); controls.update();
+  camera.position.copy(controls.target).add(new THREE.Vector3().setFromSpherical(sph)); controls.setFromCamera();
 }
 if (!IS_SMALL) $('wall').classList.remove('collapsed');
 addEventListener('hashchange', async () => { const l = await listFromHash(); if (l) setList(l); });
@@ -1098,6 +1080,7 @@ function loop() {
     const e = k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
     camera.position.lerpVectors(flyAnim.p0, flyAnim.p1, e);
     controls.target.lerpVectors(flyAnim.t0, flyAnim.t1, e);
+    controls.setFromCamera();
     if (k >= 1) flyAnim = null;
   }
   controls.update();
@@ -1106,7 +1089,7 @@ function loop() {
   world.sheen.material.opacity = pulse;
   world.beadMat.size = world.beadSize * (0.9 + 0.2 * Math.sin(t * 3.1));
   composer.render();
-  updateLabels(frame++ % 8 === 0);
+  updateLabels(performance.now()); frame++;
   doHover();
   requestAnimationFrame(loop);
 }
