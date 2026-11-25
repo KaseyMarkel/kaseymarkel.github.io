@@ -255,10 +255,12 @@ highlights = place(hl, 'wall')
 food_hl = collections.OrderedDict()
 for line in open(os.path.join(HERE, 'food_plants.tsv'), encoding='utf-8'):
     if not line.strip() or line.startswith('#'): continue
-    sci, common = line.rstrip('\n').split('\t')
-    h = food_hl.setdefault(sci, {'name': sci, 'genus': sci.split()[0], 'clade': None, 'plants': []})
+    sci, common, *tags = line.rstrip('\n').split('\t')
+    h = food_hl.setdefault(sci, {'name': sci, 'genus': sci.split()[0], 'clade': None, 'plants': [], 'tags': set()})
     h['plants'] += [c.strip() for c in common.split(',')]
+    h['tags'] |= {t for t in (tags[0] if tags else '').split(',') if t}
 food = place(food_hl, 'food')
+food_sub = lambda tag: [h for h in food if tag in food_hl[h['name']]['tags']]
 
 # ---------------- clean: drop zero-species subtrees, collapse unifurcations -----------------
 def total(i):
@@ -380,7 +382,10 @@ data = {
     'highlight': {'title': "Kasey's living wall", 'url': '/page/living-wall/', 'items': highlights},
     'presets': [
         {'id': 'wall', 'title': "Kasey's living wall", 'short': 'Living wall', 'url': '/page/living-wall/', 'items': highlights},
-        {'id': 'food', 'title': 'Common food plants', 'short': 'Food plants', 'items': food},
+        {'id': 'food', 'group': 'food', 'title': 'Common food plants', 'short': 'Food plants', 'sub': 'All', 'items': food},
+        {'id': 'fruit', 'group': 'food', 'title': 'Fruits', 'sub': 'Fruit', 'items': food_sub('fruit')},
+        {'id': 'berries', 'group': 'food', 'title': 'Berries', 'sub': 'Berries', 'items': food_sub('berry')},
+        {'id': 'herbs', 'group': 'food', 'title': 'Herbs & spices', 'sub': 'Herbs & spices', 'items': food_sub('herb')},
     ],
 }
 os.makedirs(os.path.dirname(OUT), exist_ok=True)

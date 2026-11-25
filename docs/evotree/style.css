@@ -239,3 +239,5 @@ button { font: inherit; color: inherit; }
 #presets button.on { color: var(--gold); border-color: rgba(255, 207, 107, 0.6); background: rgba(255, 207, 107, 0.14); }
 .lab.wall.compact { font-size: 10.5px; font-weight: 600; padding: 1px 3px; }
 .lab.wall.compact small { display: none; }
+#presets .sub { flex-basis: 100%; display: flex; flex-wrap: wrap; gap: 5px; padding: 2px 0 0 10px; border-left: 2px solid rgba(255, 207, 107, 0.3); margin-left: 4px; }
+#presets .sub button { font-size: 11.5px; padding: 3px 9px; }
