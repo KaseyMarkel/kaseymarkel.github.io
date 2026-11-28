@@ -127,6 +127,12 @@ div[role="main"].container {
 
   <div class="proj-section-label">The World of Bits</div>
   <div class="proj-grid">
+    <a class="proj-card" href="/page/sf-density/">
+      <div class="proj-icon">🏙️</div>
+      <h3>How Dense Is San Francisco?</h3>
+      <p>A block-by-block density map of SF, and the 50 densest 1&ndash;10&nbsp;km squares across the US, England &amp; Wales, Spain and France. SF beats every American city but New York for homes, and falls well short of Barcelona, Madrid and Paris for people.</p>
+      <div class="proj-tags"><span class="proj-tag t-play">Interactive</span><span class="proj-tag t-new">New</span></div>
+    </a>
     <a class="proj-card" href="/page/evo-tree/">
       <div class="proj-icon">🌳</div>
       <h3>Evo Tree Viewer</h3>

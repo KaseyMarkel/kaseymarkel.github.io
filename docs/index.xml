@@ -1169,7 +1169,76 @@ html, body { overflow: hidden !important; background: #0d1620 !important; }
 &lt;p>I&amp;rsquo;ve had the immense fortune to be in the right place at the right time to learn the ancient art of glassblowing at a steeply discounted price.&lt;/p></description></item><item><title>Glass</title><link>https://kaseymarkel.com/page/thing-4/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://kaseymarkel.com/page/thing-4/</guid><description>&lt;p>I&amp;rsquo;ve had the immense fortune to be in the right place at the right time to learn the ancient art of glassblowing at a steeply discounted price.&lt;/p>
 &lt;h2>Furnace glass&lt;/h2>
 I first learned Furnace Glass in undergrad at one of the few schools that has a furnace studio that a random science major can just take classes at and then start using whenever it was free - so I ended up being an odd duck that usually works alone in an art style mostly performed in a team.
-&lt;p>Furnace glass still follows the basic process developed in ancient Rome: start with a pot of glowing golden liquid glass in the furnace, then use ~2m long metal rods and tubes to gather it, shape it, and blow it into hollow vessels.&lt;/p></description></item><item><title>Living Wall</title><link>https://kaseymarkel.com/page/living-wall/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://kaseymarkel.com/page/living-wall/</guid><description>&lt;style>
+&lt;p>Furnace glass still follows the basic process developed in ancient Rome: start with a pot of glowing golden liquid glass in the furnace, then use ~2m long metal rods and tubes to gather it, shape it, and blow it into hollow vessels.&lt;/p></description></item><item><title>How dense is San Francisco, really?</title><link>https://kaseymarkel.com/page/sf-density/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://kaseymarkel.com/page/sf-density/</guid><description>&lt;style>
+.intro-header { display: none !important; }
+.header-section.has-img { display: none !important; }
+div[role="main"].container { padding-top: 100px !important; margin-top: 0 !important; max-width: 100% !important; }
+div[role="main"].container .row { margin: 0 !important; }
+div[role="main"].container .row > div[class*="col-"] {
+ width: 100% !important; max-width: 100% !important; flex: 0 0 100% !important; margin: 0 !important; padding: 0 !important;
+}
+
+.sfd { max-width: 1180px; margin: 0 auto; padding: 0 18px 60px; }
+.sfd-text { max-width: 760px; }
+.sfd h1 { font-size: 34px; line-height: 1.15; letter-spacing: -0.02em; margin: 0 0 14px; }
+.sfd h2 { font-size: 24px; letter-spacing: -0.01em; margin: 44px 0 6px; }
+.sfd p { font-size: 18px; line-height: 1.6; }
+.sfd .lede { font-size: 19px; }
+.sfd .muted { color: #667; font-size: 15px; line-height: 1.5; }
+.sfd-back { font-size: 15px; color: #0085a1; }
+
+.sfd-map { width: 100%; border: 0; display: block; height: 760px; margin: 10px 0 4px; }
+.sfd-open { font-size: 15px; }
+
+.sfd-controls { display: flex; flex-wrap: wrap; gap: 14px 22px; align-items: center; margin: 14px 0 12px; }
+.sfd-group { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.sfd-group > span { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: #778; font-weight: 700; font-family: "Open Sans", sans-serif; }
+.sfd-seg { display: inline-flex; border: 1px solid #d5dde0; border-radius: 9px; overflow: hidden; }
+.sfd-seg button { font: 600 14px "Open Sans", sans-serif; border: 0; border-right: 1px solid #d5dde0; background: #fff; color: #234; padding: 7px 13px; cursor: pointer; }
+.sfd-seg button:last-child { border-right: 0; }
+.sfd-seg button[aria-pressed="true"] { background: #0085a1; color: #fff; }
+.sfd-seg button:focus-visible { outline: 2px solid #0085a1; outline-offset: 2px; }
+
+.sfd-tablewrap { overflow-x: auto; border: 1px solid #e6eaec; border-radius: 12px; }
+.sfd table { width: 100%; border-collapse: collapse; font: 14.5px/1.35 "Open Sans", sans-serif; font-variant-numeric: tabular-nums; }
+.sfd th, .sfd td { padding: 7px 10px; border-bottom: 1px solid #eef1f2; text-align: left; white-space: nowrap; }
+.sfd th { background: #f6f8f9; font-weight: 700; color: #345; position: sticky; top: 0; }
+.sfd th.sortable { cursor: pointer; user-select: none; }
+.sfd th.sortable:hover { color: #0085a1; }
+.sfd th .arr { color: #0085a1; font-size: 11px; }
+.sfd td.num, .sfd th.num { text-align: right; }
+.sfd td.where { white-space: normal; min-width: 180px; }
+.sfd td .nb { color: #8a5a00; font-size: 12.5px; }
+.sfd tr.sf td { background: #fff4d1; }
+.sfd tr.sf td:first-child { box-shadow: inset 4px 0 0 #e0a400; }
+.sfd .flag { display: inline-block; min-width: 54px; font-size: 12px; font-weight: 700; color: #456; }
+.sfd .lowland { color: #b4572b; font-weight: 700; }
+.sfd td a.m { color: #0085a1; text-decoration: none; font-size: 13px; }
+.sfd .blank { color: #bbb; }
+.sfd .best { font-weight: 700; }
+.sfd-legend { font-size: 13.5px; color: #667; margin: 8px 2px 0; font-family: "Open Sans", sans-serif; }
+.sfd-legend i { display: inline-block; width: 12px; height: 12px; background: #fff4d1; border-left: 4px solid #e0a400; vertical-align: -1px; margin-right: 4px; }
+@media (prefers-color-scheme: dark) {
+ .sfd .muted, .sfd-legend { color: #a3aab2; }
+ .sfd-group > span { color: #a3aab2; }
+ .sfd-seg { border-color: #3a4248; }
+ .sfd-seg button { background: #15191c; color: #e6e9eb; border-right-color: #3a4248; }
+ .sfd-seg button[aria-pressed="true"] { background: #0085a1; color: #fff; }
+ .sfd-tablewrap { border-color: #2b3236; }
+ .sfd th { background: #1b2023; color: #cfd6da; }
+ .sfd th, .sfd td { border-bottom-color: #24292c; }
+ .sfd .flag { color: #b9c3c8; }
+ .sfd tr.sf td { background: #3d3212; }
+ .sfd td .nb { color: #f0c060; }
+ .sfd td a.m, .sfd th.sortable:hover, .sfd th .arr { color: #50afff; }
+ .sfd .blank { color: #555; }
+ .sfd-legend i { background: #3d3212; }
+}
+@media (max-width: 600px) { .sfd h1 { font-size: 27px; } .sfd p { font-size: 17px; } .sfd th, .sfd td { padding: 6px 7px; } }
+&lt;/style>
+
+&lt;div class="sfd">
+ &lt;p>&lt;a class="sfd-back" href="https://kaseymarkel.com/page/projects/">&amp;larr; Projects&lt;/a>&lt;/p></description></item><item><title>Living Wall</title><link>https://kaseymarkel.com/page/living-wall/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://kaseymarkel.com/page/living-wall/</guid><description>&lt;style>
 .living-wall-photo-grid {
  display: grid;
  grid-template-columns: repeat(2, 1fr);
